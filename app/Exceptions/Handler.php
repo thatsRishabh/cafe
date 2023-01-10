@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
 class Handler extends ExceptionHandler
 {
@@ -46,5 +47,19 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+        
+    }
+
+    public function render($request, Throwable $exception)
+    {
+        // don't forget to import RouteNotFoundException above
+        if($exception instanceof RouteNotFoundException){
+        
+
+             return response(['success' => false, 'message' =>'Unauthenticated', "code" => 401], 401);
+
+        }
+
+       return parent::render($request, $exception);
     }
 }

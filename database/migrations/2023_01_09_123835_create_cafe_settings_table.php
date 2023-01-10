@@ -13,13 +13,19 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('units', function (Blueprint $table) {
+        Schema::create('cafe_settings', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('cafe_id')->nullable();
             $table->foreign('cafe_id')->references('id')->on('users')->onDelete('cascade');
+            $table->string('email');
             $table->string('name');
-            $table->string('abbreiation')->nullable();
-            $table->integer('minvalue')->nullable();
+            $table->string('website')->nullable();
+            $table->string('contact_person_name')->nullable();
+            $table->string('contact_person_email')->nullable();
+            $table->string('contact_person_phone')->nullable();
+            $table->text('address');
+            $table->text('description')->nullable();
+            $table->string('logo')->nullable();
             $table->timestamps();
         });
     }
@@ -31,6 +37,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('units');
+        Schema::dropIfExists('cafe_settings');
     }
 };
