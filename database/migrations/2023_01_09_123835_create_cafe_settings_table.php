@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('cafe_id')->nullable();
             $table->foreign('cafe_id')->references('id')->on('users')->onDelete('cascade');
-            $table->string('email');
+            // $table->string('email');
             $table->string('name');
             $table->string('website')->nullable();
             $table->string('contact_person_name')->nullable();

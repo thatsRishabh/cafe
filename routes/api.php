@@ -45,4 +45,9 @@ Route::middleware('auth:api')->group(function () {
     Route::resource('user', App\Http\Controllers\Api\UserController::class)->only(['store','destroy','show']);
     Route::post('user-update/{id?}', [App\Http\Controllers\Api\UserController::class, 'update']); 
 
+     // CafeSetting
+     Route::post('cafe-settings', [App\Http\Controllers\Api\CafeSettingController::class, 'searchCafeSetting']); 
+     Route::resource('cafe-setting', App\Http\Controllers\Api\CafeSettingController::class)->only(['store','destroy','show']);
+     Route::post('cafe-setting-update/{id?}', [App\Http\Controllers\Api\CafeSettingController::class, 'update']); 
+
 });

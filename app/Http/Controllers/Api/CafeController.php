@@ -9,16 +9,15 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
-use App\Models\User;
+use App\Models\CafeSetting;
 
-
-class UserController extends Controller
+class CafeController extends Controller
 {
     //
-    public function searchUser(Request $request)
+    public function searchCafeSetting(Request $request)
     {
         try {
-            $query = User::select('*')
+            $query = CafeSetting::select('*')
                     ->orderBy('id', 'desc');
 
                     
@@ -72,13 +71,10 @@ class UserController extends Controller
         try {
         $validation = Validator::make($request->all(),  [
             'name'                      => 'required',
-            'mobile'                      => 'required|numeric|digits_between:10,10',
-            'email'                      => 'required|email|unique:App\Models\User,email',
-            'gender'                   => 'required',
-            // 'account_balance'             => 'required|numeric',
-            // 'password'              => 'required|confirmed|min:6|max:25',
-            'password'              => 'required|min:6|max:25',
-            // 'password_confirmation' => 'required'
+            'cafe_id'                      => 'required|numeric',
+            'email'                      => 'required|email|unique:App\Models\CafeSetting,email',
+            'address'                   => 'required',
+           
            
         ]);
 
@@ -90,38 +86,31 @@ class UserController extends Controller
 
         //  $formatCheck = ['doc','docx','png','jpeg','jpg','pdf','svg','mp4','tif','tiff','bmp','gif','eps','raw','jfif','webp','pem','csv'];
         $formatCheck = ['png','jpeg','jpg','bmp','webp'];
-         $extension = strtolower($request->image->getClientOriginalExtension());
+         $extension = strtolower($request->logo->getClientOriginalExtension());
  
          if(!in_array($extension, $formatCheck))
          {
              return prepareResult(false,'file_not_allowed' ,[], 500);
          } 
-           
+       
 
-
-            $info = new User;
+            $info = new CafeSetting;
             $info->name = $request->name;
-            $info->store_id = $request->store_id;
+            $info->cafe_id = $request->cafe_id;
             $info->email = $request->email;
-            $info->password = $request->password;
-            $info->role_id = $request->role_id;
-            $info->mobile = $request->mobile;
-            $info->designation = $request->designation;
-            $info->document_type = $request->document_type;
-            $info->document_number = $request->document_number;
+            $info->website = $request->website;
+            $info->contact_person_name = $request->contact_person_name;
+            $info->contact_person_email = $request->contact_person_email;
+            $info->contact_person_phone = $request->contact_person_phone;
             $info->address = $request->address;
-            $info->joining_date = $request->joining_date;
-            $info->birth_date = $request->birth_date;
-            $info->gender = $request->gender;
-            $info->salary = $request->salary;
-            $info->salary_balance = $request->salary_balance;
-            $info->account_balance = $request->account_balance;
-            if(!empty($request->image))
+            $info->description = $request->description;
+    
+            if(!empty($request->logo))
             {
-              $file=$request->image;
+              $file=$request->logo;
             $filename=time().'.'.$file->getClientOriginalExtension();
             // $info->image=env('CDN_DOC_URL').$request->image->move('assets',$filename);
-            $info->image=env('CDN_DOC_URL').$request->image->move('assets\user_photos',$filename);
+            $info->logo=env('CDN_DOC_URL').$request->logo->move('assets\logo',$filename);
             }
             
             $info->save();
@@ -144,15 +133,14 @@ class UserController extends Controller
         try {
             
             // $emailCheck = User::where('id',  $id)->get('email')->first();
-            $emailCheck = User::find($id);
+            $emailCheck = CafeSetting::find($id);
             // return $emailCheck->email;
 
         $validation = Validator::make($request->all(), [
             'name'                      => 'required',
-            'mobile'                      => 'required|numeric|digits_between:10,10',
-            // 'email'                      => 'required|email|unique:App\Models\User,email',
-            'gender'                   => 'required',
-            'email'                      => $emailCheck->email == $request->email ? 'required' : 'required|email|unique:App\Models\User,email',
+            'address'                      => 'required',
+            'cafe_id'                      => 'required|numeric',
+            'email'                      => $emailCheck->email == $request->email ? 'required' : 'required|email|unique:App\Models\CafeSetting,email',
             // 'account_balance'             => 'required|numeric',
             // 'password'              => 'required|confirmed|min:6|max:25',
             // 'password'              => 'required|min:6|max:25',
@@ -168,37 +156,32 @@ class UserController extends Controller
 
         //  $formatCheck = ['doc','docx','png','jpeg','jpg','pdf','svg','mp4','tif','tiff','bmp','gif','eps','raw','jfif','webp','pem','csv'];
         $formatCheck = ['png','jpeg','jpg','bmp','webp'];
-         $extension = strtolower($request->image->getClientOriginalExtension());
+         $extension = strtolower($request->logo->getClientOriginalExtension());
  
          if(!in_array($extension, $formatCheck))
          {
              return prepareResult(false,'file_not_allowed' ,[], 500);
          } 
 
-             $info = User::find($id);
+             $info = CafeSetting::find($id);
              $info->name = $request->name;
-            $info->store_id = $request->store_id;
-            $info->email = $request->email;
-            $info->password = $request->password;
-            $info->role_id = $request->role_id;
-            $info->mobile = $request->mobile;
-            $info->designation = $request->designation;
-            $info->document_type = $request->document_type;
-            $info->document_number = $request->document_number;
-            $info->address = $request->address;
-            $info->joining_date = $request->joining_date;
-            $info->birth_date = $request->birth_date;
-            $info->gender = $request->gender;
-            $info->salary = $request->salary;
-            $info->salary_balance = $request->salary_balance;
-            $info->account_balance = $request->account_balance;
-            if(!empty($request->image))
-            {
-              $file=$request->image;
-            $filename=time().'.'.$file->getClientOriginalExtension();
-            // $info->image=env('CDN_DOC_URL').$request->image->move('assets',$filename);
-            $info->image=env('CDN_DOC_URL').$request->image->move('assets\user_photos',$filename);
-            }
+             $info->cafe_id = $request->cafe_id;
+             $info->email = $request->email;
+             $info->website = $request->website;
+             $info->contact_person_name = $request->contact_person_name;
+             $info->contact_person_email = $request->contact_person_email;
+             $info->contact_person_phone = $request->contact_person_phone;
+             $info->address = $request->address;
+             $info->description = $request->description;
+     
+             if(!empty($request->logo))
+             {
+               $file=$request->logo;
+             $filename=time().'.'.$file->getClientOriginalExtension();
+             // $info->image=env('CDN_DOC_URL').$request->image->move('assets',$filename);
+             $info->logo=env('CDN_DOC_URL').$request->logo->move('assets\logo',$filename);
+             }
+             
             
             $info->save();
    
@@ -217,7 +200,7 @@ class UserController extends Controller
     {
         try {
             
-            $info = User::find($id);
+            $info = CafeSetting::find($id);
             if($info)
             {
                 return prepareResult(true,'Record Fatched Successfully' ,$info, 200); 
@@ -233,7 +216,7 @@ class UserController extends Controller
     {
         try {
             
-            $info = User::find($id);
+            $info = CafeSetting::find($id);
             if($info)
             {
                 $result=$info->delete();
@@ -245,5 +228,5 @@ class UserController extends Controller
             return prepareResult(false,'something_went_wrong' ,$e->getMessage(), 500);
         }
     }
-    
+
 }

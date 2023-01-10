@@ -38,7 +38,7 @@ class UserLoginController extends Controller
                    
                     'email'                      => 'required|email',
                     'password'                  => 'required',
-                    'entry_mode'                  => ($request->entry_mode =="web-0.0.1" && $userRoleID->role_id =="1 ") || ($request->entry_mode =="mobile" && ($userRoleID->role_id =="1" ||$userRoleID->role_id =="2") )  ? 'required' : 'declined:false', 
+                    // 'entry_mode'                  => ($request->entry_mode =="web-0.0.1" && $userRoleID->role_id =="1 ") || ($request->entry_mode =="mobile" && ($userRoleID->role_id =="1" ||$userRoleID->role_id =="2") )  ? 'required' : 'declined:false', 
         
                    
                 ],
@@ -63,7 +63,8 @@ class UserLoginController extends Controller
                     ];
                     $data['permissions'] =  $permissionData;
                     $userData =[
-                        'role'=>"admin"
+                        // 'role'=>"admin"$user
+                        'role_id'=>$user->role_id
                     ];
                     $data['user'] =  $userData;
                     // $data['employeeInfo'] =  $employeeInfo;
