@@ -27,7 +27,7 @@ class UserSeeder extends Seeder
         ]);
         $role2 = Role::create([
             'id' => '2',
-            'name' => 'Store',
+            'name' => 'Cafe',
             'guard_name' => 'api'
         ]);
         $role3 = Role::create([
@@ -53,12 +53,12 @@ class UserSeeder extends Seeder
         $adminRole = Role::where('id','1')->first();
         $adminUser->assignRole($adminRole);
 
-        /*-----------Create Store-------------*/
+        /*-----------Create Cafe-------------*/
         $storeUser = new User();
         $storeUser->id                      = '2';
         $storeUser->role_id                 = '2';
-        $storeUser->name                    = 'Store';
-        $storeUser->email                   = 'store@gmail.com';
+        $storeUser->name                    = 'Cafe';
+        $storeUser->email                   = 'cafe@gmail.com';
         $storeUser->password                = \Hash::make(12345678);
         $storeUser->save();
 

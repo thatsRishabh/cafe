@@ -45,8 +45,15 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+
     public function CafeSetting()
     {
         return $this->belongsTo(CafeSetting::class, , 'cafe_id', 'id');
     }
+
+    // public function roles()
+    // {
+    //     return $this->belongsTo(Recipe::class, 'recipe_id', 'id');
+    // }
+
 }

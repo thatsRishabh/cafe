@@ -57,3 +57,4 @@ Route::namespace('App\Http\Controllers\Api\Cafe')->group(function () {
         });
     });
 });
+
