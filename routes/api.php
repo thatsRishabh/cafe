@@ -17,9 +17,20 @@ use App\Http\Controllers\Api\Admin\StoreController;
 
 Route::namespace('App\Http\Controllers\Api\Common')->group(function () {
 
-    Route::controller(AuthController::class)->group(function () {
+    Route::controller(App\Http\Controllers\Api\Common\AuthController::class)->group(function () {
         Route::get('unauthorized', 'unauthorized')->name('unauthorized');
         Route::post('login', 'login')->name('login');
+        Route::post('forgot-password', 'forgotPassword')->name('forgot-password');
+        Route::post('update-password', 'updatePassword')->name('update-password');
+        Route::post('logout', 'logout')->name('logout')->middleware('auth:api');
+        Route::post('change-password', 'changePassword')->name('changePassword')->middleware('auth:api');
+    });
+    Route::post('user-login', [App\Http\Controllers\Api\Common\::class, 'login']);
+    Route::controller(App\Http\Controllers\Api\UserLoginController::class)->group(function () {
+        Route::get('unauthorized', 'unauthorized')->name('unauthorized');
+        // Route::post('user-login')->name('login');
+        Route::post('user-login', 'login')->name('user-login');
+        // Route::post('login', 'login')->name('login');
         Route::post('forgot-password', 'forgotPassword')->name('forgot-password');
         Route::post('update-password', 'updatePassword')->name('update-password');
         Route::post('logout', 'logout')->name('logout')->middleware('auth:api');

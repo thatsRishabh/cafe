@@ -40,6 +40,11 @@ class UserSeeder extends Seeder
             'name' => 'Customer',
             'guard_name' => 'api'
         ]);
+        $role5 = Role::create([
+            'id' => '5',
+            'name' => 'AdminEmployee',
+            'guard_name' => 'api'
+        ]);
 
         /*-----------Create Admin-------------*/
         $adminUser = new User();

@@ -9,7 +9,7 @@ trait CafeId {
     	if (auth()->guard('api')->check()) 
     	{
 	        // if user is Admin - Role Id 1 OT cafe_id=1
-	        if ((auth()->guard('api')->user()->cafe_id==1)) 
+	        if ((auth()->guard('api')->user()->role_id==1)) 
 	        {
 	        	//nothing heppen
 	        }
