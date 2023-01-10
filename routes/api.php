@@ -2,7 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\Api\Admin\StoreController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -14,35 +14,46 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-//     return $request->user();
-// });
+
+Route::namespace('App\Http\Controllers\Api\Common')->group(function () {
+
+    Route::controller(AuthController::class)->group(function () {
+        Route::get('unauthorized', 'unauthorized')->name('unauthorized');
+        Route::post('login', 'login')->name('login');
+        Route::post('forgot-password', 'forgotPassword')->name('forgot-password');
+        Route::post('update-password', 'updatePassword')->name('update-password');
+        Route::post('logout', 'logout')->name('logout')->middleware('auth:api');
+        Route::post('change-password', 'changePassword')->name('changePassword')->middleware('auth:api');
+    });
+
+    Route::group(['middleware' => 'auth:api'],function () {
+        Route::controller(FileUploadController::class)->group(function () {
+            Route::post('file-uploads', 'fileUploads')->name('file-uploads');
+            Route::post('file-upload', 'store')->name('file-upload');
+        });
+        
+    });
+});
 
 
-// User login
-Route::post('user-login', [App\Http\Controllers\Api\UserLoginController::class, 'login']);
+Route::namespace('App\Http\Controllers\Api\Admin')->group(function () {
+    Route::group(['middleware' => 'auth:api'],function () {
+        Route::group(['middleware' => 'admin'],function () {
 
+            Route::post('cafe',[CafeController::class, 'cafes'])->name('cafes');
+            Route::resource('cafe', CafeController::class)->only([
+                'store','destroy','show', 'update'
+            ]);
+        
+        });
+    });
+});
 
-// Users
-// Route::post('users', [App\Http\Controllers\Api\UserController::class, 'searchUser']); 
-// Route::resource('user', App\Http\Controllers\Api\UserController::class)->only(['store','destroy','show']);
-// Route::post('user-update/{id?}', [App\Http\Controllers\Api\UserController::class, 'update']); 
+Route::namespace('App\Http\Controllers\Api\Cafe')->group(function () {
+    Route::group(['middleware' => 'auth:api'],function () {
+        Route::group(['middleware' => 'cafe'],function () {
 
-//  // change-password
-// Route::post('change-password', [App\Http\Controllers\UserLoginController::class, 'changePassword']);
-Route::middleware('auth:api')->group(function () {
-    // User logout 
-    Route::post('user-logout', [App\Http\Controllers\Api\UserLoginController::class, 'logout']);
-
-    // change-password
-    Route::post('change-password', [App\Http\Controllers\UserLoginController::class, 'changePassword']);
-
-    // forget password
-    Route::post('forget-password', [App\Http\Controllers\UserLoginController::class, 'forgetPassword']);
-
-    // Users
-    Route::post('users', [App\Http\Controllers\Api\UserController::class, 'searchUser']); 
-    Route::resource('user', App\Http\Controllers\Api\UserController::class)->only(['store','destroy','show']);
-    Route::post('user-update/{id?}', [App\Http\Controllers\Api\UserController::class, 'update']); 
-
+        
+        });
+    });
 });

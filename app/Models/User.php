@@ -10,6 +10,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 use App\Traits\CafeId;
+use App\Models\CafeSetting;
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable,HasRoles,CafeId;
@@ -43,4 +44,9 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function CafeSetting()
+    {
+        return $this->belongsTo(CafeSetting::class, , 'cafe_id', 'id');
+    }
 }
