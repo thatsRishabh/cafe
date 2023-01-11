@@ -56,6 +56,7 @@ class AuthController extends Controller
                     
                     $data['token'] = $user->createToken('authToken')->accessToken;
                     $data['email'] = $request->email;
+                    $data['id'] = $user->id;
                     $permissionData[] =[
                         'action'=>"dashboard",
                         'name'=>"dashboard-view",
