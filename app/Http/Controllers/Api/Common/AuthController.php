@@ -12,18 +12,18 @@ use Carbon\Carbon;
 use DB;
 use Exception;
 use Mail;
-
+// use App\Models\Role;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class AuthController extends Controller
 {
     public function login(Request $request)
     {
        
-        
-
        
         try {
             $user = User::where('email',$request->email)->first();
@@ -57,11 +57,13 @@ class AuthController extends Controller
                     $data['token'] = $user->createToken('authToken')->accessToken;
                     $data['email'] = $request->email;
                     $data['id'] = $user->id;
-                    $permissionData[] =[
-                        'action'=>"dashboard",
-                        'name'=>"dashboard-view",
-                    ];
-                    $data['permissions'] =  $permissionData;
+                    // $permissionData[] =[
+                    //     'action'=>"dashboard",
+                    //     'name'=>"dashboard-view",
+                    // ];
+                    // $data['permissions'] =  $permissionData;
+                    $role   = Role::where('id', $user->role_id)->first();
+                    $data['permissions']  = $role->permissions()->select('id','se_name')->get();
                     $userData =[
                         // 'role'=>"admin"$user
                         'role_id'=>$user->role_id
@@ -89,7 +91,7 @@ class AuthController extends Controller
             
          } catch (\Throwable $e) {
                 Log::error($e);
-                return prepareResult(false,'Error while featching Records' ,[], 500); 
+                return prepareResult(false,$e->getMessage() ,[], 500); 
             }
    }
 
