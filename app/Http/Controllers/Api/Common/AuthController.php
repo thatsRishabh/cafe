@@ -8,207 +8,331 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Carbon\Carbon;
-use Auth;
+// use Auth;
 use DB;
 use Exception;
 use Mail;
+
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
+
 class AuthController extends Controller
 {
     public function login(Request $request)
     {
-        $validation = \Validator::make($request->all(),[ 
-            'email'     => 'required',
-            'password'  => 'required',
-        ]);
+       
+        
 
-        if ($validation->fails()) {
-            return response()->json(prepareResult(true, $validation->messages(), trans('translate.validation_failed')), config('httpcodes.bad_request'));
-        }
-
+       
         try {
-            $email = $request->email;
-            $user = User::select('*')->where('email', $email)->withoutGlobalScope('store_id')->first();
-            if (!$user)  {
-                return response()->json(prepareResult(true, [], trans('translate.user_not_exist')), config('httpcodes.not_found'));
-            }
+            $user = User::where('email',$request->email)->first();
+            // $employeeInfo = Employee::where('email',$request->email)->first();
 
-            if(in_array($user->status, [0,3])) {
-                return response()->json(prepareResult(true, [], trans('translate.account_is_inactive')), config('httpcodes.unauthorized'));
-            }
+            if (!empty($user)) {
 
-            if(Hash::check($request->password, $user->password)) {
-                $accessToken = $user->createToken('authToken')->accessToken;
-                $user['access_token'] = $accessToken;
-                //$user['permissions'] = $user->permissions()->select('id','name')->orderBy('permission_id', 'ASC')->get();
-                return response()->json(prepareResult(false, $user, trans('translate.request_successfully_submitted')),config('httpcodes.success'));
-            } else {
-                return response()->json(prepareResult(true, [], trans('translate.invalid_username_and_password')),config('httpcodes.unauthorized'));
+                $userRoleID = User::where('email',$request->email)->get('role_id')->first();
+
+                $validation = Validator::make($request->all(),  [
+                   
+                    'email'                      => 'required|email',
+                    'password'                  => 'required',
+                    // 'entry_mode'                  => ($request->entry_mode =="web-0.0.1" && $userRoleID->role_id =="1 ") || ($request->entry_mode =="mobile" && ($userRoleID->role_id =="1" ||$userRoleID->role_id =="2") )  ? 'required' : 'declined:false', 
+        
+                   
+                ],
+                [
+                    'entry_mode.declined' => 'Login not allowed to this user'
+                ]);
+        
+                if ($validation->fails()) {
+                    return  prepareResult(false,'validation failed' ,[], 500);
+                }
+                
+                if (Hash::check($request->password, $user->password)) {
+
+                    $data = [];
+
+                    
+                    $data['token'] = $user->createToken('authToken')->accessToken;
+                    $data['email'] = $request->email;
+                    $permissionData[] =[
+                        'action'=>"dashboard",
+                        'name'=>"dashboard-view",
+                    ];
+                    $data['permissions'] =  $permissionData;
+                    $userData =[
+                        // 'role'=>"admin"$user
+                        'role_id'=>$user->role_id
+                    ];
+                    $data['user'] =  $userData;
+                    // $data['employeeInfo'] =  $employeeInfo;
+                    // $token = $user->createToken('authToken')->accessToken;
+                   
+                    // $token = auth()->user()->createToken('authToken')->accessToken;
+
+                    // $info = "Hello world";
+                    // return "Hello world";
+                    // return prepareResult(true,'logged in successfully' ,$data, 200);
+                    // } else {
+                    //     return prepareResult(false,'wrong email or password' ,[], 500);
+                    return prepareResult(true,'logged in successfully' ,$data, 200);
+
+                    } else {
+                        // return response(prepareResult(false, [], trans('message_wrong_password')), 500,  ['Result'=>'message_wrong_password']);
+                        prepareResult(false,'wrong email or password' ,[], 500);
+                } 
+             } else {
+                return prepareResult(false,'user not found' ,[], 500);    
             }
-        } catch (\Throwable $e) {
-            \Log::error($e);
-            return response()->json(prepareResult(true, $e->getMessage(), trans('translate.something_went_wrong')), config('httpcodes.internal_server_error'));
-        }
-    }
-    public function logout(Request $request)
+            
+         } catch (\Throwable $e) {
+                Log::error($e);
+                return prepareResult(false,'Error while featching Records' ,[], 500); 
+            }
+   }
+
+   public function logout(Request $request)
+   {
+    if (Auth::check()) 
     {
-        if (Auth::check()) 
+        try
         {
-            try
-            {
-                $token = Auth::user()->token();
-                $token->revoke();
-                auth('api')->user()->tokens->each(function ($token, $key) {
-                    $token->delete();
-                });
-                return response()->json(prepareResult(false, [], trans('translate.logout_message')), config('httpcodes.success'));
-            }
-            catch (\Throwable $e) {
-                \Log::error($e);
-                return response()->json(prepareResult(true, $e->getMessage(), trans('translate.something_went_wrong')), config('httpcodes.internal_server_error'));
-            }
+            $token = Auth::user()->token();
+            $token->revoke();
+            auth('api')->user()->tokens->each(function ($token, $key) {
+                $token->delete();
+            });
+            return prepareResult(true,'logged out successfully' ,[], 200); 
         }
-        return response()->json(prepareResult(true, [], trans('translate.something_went_wrong')), config('httpcodes.internal_server_error'));
-    }
-    public function forgotPassword(Request $request)
-    {
-        $validation = \Validator::make($request->all(),[ 
-            'email'     => 'required|email'
-        ]);
-
-        if ($validation->fails()) {
-            return response()->json(prepareResult(true, $validation->messages(), trans('translate.validation_failed')), config('httpcodes.bad_request'));
-        }
-
-        try {
-            $user = User::where('email',$request->email)->withoutGlobalScope('store_id')->first();
-            if (!$user) {
-                return response()->json(prepareResult(true, [], trans('translate.user_not_exist')), config('httpcodes.not_found'));
-            }
-
-            if(in_array($user->status, [0,3])) {
-                return response()->json(prepareResult(true, [], trans('translate.account_is_inactive')), config('httpcodes.unauthorized'));
-            }
-
-            //Delete if entry exists
-            DB::table('password_resets')->where('email', $request->email)->delete();
-
-            $token = Str::random(64);
-            DB::table('password_resets')->insert([
-              'email' => $request->email, 
-              'token' => $token, 
-              'created_at' => Carbon::now()
-            ]);
-
-            ////////notification and mail//////////
-            $variable_data = [
-                '{{name}}' => $user->name,
-                '{{link}}' => env('FRONT_URL').'/reset-password/'.$token
-            ];
-            //notification('forgot-password', $user, $variable_data);
-            /////////////////////////////////////
-
-            return response()->json(prepareResult(false, $request->email, trans('translate.password_reset_link_send_to_your_mail')),config('httpcodes.success'));
-
-        } catch (\Throwable $e) {
-            \Log::error($e);
-            return response()->json(prepareResult(true, $e->getMessage(), trans('translate.something_went_wrong')), config('httpcodes.internal_server_error'));
+        catch (\Throwable $e) {
+            Log::error($e);
+            return prepareResult(false,'internal_server_error' ,[], 500);
         }
     }
 
-    public function updatePassword(Request $request)
-    {
-        $validation = \Validator::make($request->all(),[ 
-            'password'  => 'required|string|min:6',
-            'token'     => 'required'
-        ]);
+    //    $user = getUser();
+    //    if (!is_object($user)) {
+    //        return prepareResult(false,'user not found' ,[], 500); 
+    //    }
+    //    if(Auth::check()) {
+    //            $tokenId = $request->bearerToken();
+    //            Auth::user()->token()->revoke();
+                
+               
+               // $tokenRepository = app(TokenRepository::class);
+               // $refreshTokenRepository = app(RefreshTokenRepository::class);
+               
+               // // Revoke an access token...
+               // $tokenRepository->revokeAccessToken($tokenId);
+               
+               // // Revoke all of the token's refresh tokens...
+               // $refreshTokenRepository->revokeRefreshTokensByAccessTokenId($tokenId);
 
-        if ($validation->fails()) {
-            return response()->json(prepareResult(true, $validation->messages(), trans('translate.validation_failed')), config('httpcodes.bad_request'));
-        }
+    //        return prepareResult(true,'logged out successfully' ,[], 200); 
+    //    }else{
+    //        return prepareResult(false,'internal_server_error' ,[], 500);     
+    //    }
+    //    // return  $request->bearerToken();
+    //    return $user;
 
-        try {
-            $tokenExist = DB::table('password_resets')
-                ->where('token', $request->token)
-                ->first();
-            if (!$tokenExist) {
-                return response()->json(prepareResult(true, [], trans('translate.token_expired_or_not_found')), config('httpcodes.unauthorized'));
-            }
+   }
 
-            $user = User::where('email',$tokenExist->email)->withoutGlobalScope('store_id')->first();
-            if (!$user) {
-                return response()->json(prepareResult(true, [], trans('translate.user_not_exist')), config('httpcodes.not_found'));
-            }
+    // public function login(Request $request)
+    // {
+    //     $validation = \Validator::make($request->all(),[ 
+    //         'email'     => 'required',
+    //         'password'  => 'required',
+    //     ]);
 
-            if(in_array($user->status, [0,3])) {
-                return response()->json(prepareResult(true, [], trans('translate.account_is_inactive')), config('httpcodes.unauthorized'));
-            }
+    //     if ($validation->fails()) {
+    //         return response()->json(prepareResult(true, $validation->messages(), trans('translate.validation_failed')), config('httpcodes.bad_request'));
+    //     }
 
-            $user = User::where('email', $tokenExist->email)
-                    ->withoutGlobalScope('store_id')
-                    ->update(['password' => Hash::make($request->password)]);
+    //     try {
+    //         $email = $request->email;
+    //         $user = User::select('*')->where('email', $email)->withoutGlobalScope('store_id')->first();
+    //         if (!$user)  {
+    //             return response()->json(prepareResult(true, [], trans('translate.user_not_exist')), config('httpcodes.not_found'));
+    //         }
+
+    //         if(in_array($user->status, [0,3])) {
+    //             return response()->json(prepareResult(true, [], trans('translate.account_is_inactive')), config('httpcodes.unauthorized'));
+    //         }
+
+    //         if(Hash::check($request->password, $user->password)) {
+    //             $accessToken = $user->createToken('authToken')->accessToken;
+    //             $user['access_token'] = $accessToken;
+    //             //$user['permissions'] = $user->permissions()->select('id','name')->orderBy('permission_id', 'ASC')->get();
+    //             return response()->json(prepareResult(false, $user, trans('translate.request_successfully_submitted')),config('httpcodes.success'));
+    //         } else {
+    //             return response()->json(prepareResult(true, [], trans('translate.invalid_username_and_password')),config('httpcodes.unauthorized'));
+    //         }
+    //     } catch (\Throwable $e) {
+    //         \Log::error($e);
+    //         return response()->json(prepareResult(true, $e->getMessage(), trans('translate.something_went_wrong')), config('httpcodes.internal_server_error'));
+    //     }
+    // }
+    // public function logout(Request $request)
+    // {
+    //     if (Auth::check()) 
+    //     {
+    //         try
+    //         {
+    //             $token = Auth::user()->token();
+    //             $token->revoke();
+    //             auth('api')->user()->tokens->each(function ($token, $key) {
+    //                 $token->delete();
+    //             });
+    //             return response()->json(prepareResult(false, [], trans('translate.logout_message')), config('httpcodes.success'));
+    //         }
+    //         catch (\Throwable $e) {
+    //             \Log::error($e);
+    //             return response()->json(prepareResult(true, $e->getMessage(), trans('translate.something_went_wrong')), config('httpcodes.internal_server_error'));
+    //         }
+    //     }
+    //     return response()->json(prepareResult(true, [], trans('translate.something_went_wrong')), config('httpcodes.internal_server_error'));
+    // }
+    // public function forgotPassword(Request $request)
+    // {
+    //     $validation = \Validator::make($request->all(),[ 
+    //         'email'     => 'required|email'
+    //     ]);
+
+    //     if ($validation->fails()) {
+    //         return response()->json(prepareResult(true, $validation->messages(), trans('translate.validation_failed')), config('httpcodes.bad_request'));
+    //     }
+
+    //     try {
+    //         $user = User::where('email',$request->email)->withoutGlobalScope('store_id')->first();
+    //         if (!$user) {
+    //             return response()->json(prepareResult(true, [], trans('translate.user_not_exist')), config('httpcodes.not_found'));
+    //         }
+
+    //         if(in_array($user->status, [0,3])) {
+    //             return response()->json(prepareResult(true, [], trans('translate.account_is_inactive')), config('httpcodes.unauthorized'));
+    //         }
+
+    //         //Delete if entry exists
+    //         DB::table('password_resets')->where('email', $request->email)->delete();
+
+    //         $token = Str::random(64);
+    //         DB::table('password_resets')->insert([
+    //           'email' => $request->email, 
+    //           'token' => $token, 
+    //           'created_at' => Carbon::now()
+    //         ]);
+
+    //         ////////notification and mail//////////
+    //         $variable_data = [
+    //             '{{name}}' => $user->name,
+    //             '{{link}}' => env('FRONT_URL').'/reset-password/'.$token
+    //         ];
+    //         //notification('forgot-password', $user, $variable_data);
+    //         /////////////////////////////////////
+
+    //         return response()->json(prepareResult(false, $request->email, trans('translate.password_reset_link_send_to_your_mail')),config('httpcodes.success'));
+
+    //     } catch (\Throwable $e) {
+    //         \Log::error($e);
+    //         return response()->json(prepareResult(true, $e->getMessage(), trans('translate.something_went_wrong')), config('httpcodes.internal_server_error'));
+    //     }
+    // }
+
+    // public function updatePassword(Request $request)
+    // {
+    //     $validation = \Validator::make($request->all(),[ 
+    //         'password'  => 'required|string|min:6',
+    //         'token'     => 'required'
+    //     ]);
+
+    //     if ($validation->fails()) {
+    //         return response()->json(prepareResult(true, $validation->messages(), trans('translate.validation_failed')), config('httpcodes.bad_request'));
+    //     }
+
+    //     try {
+    //         $tokenExist = DB::table('password_resets')
+    //             ->where('token', $request->token)
+    //             ->first();
+    //         if (!$tokenExist) {
+    //             return response()->json(prepareResult(true, [], trans('translate.token_expired_or_not_found')), config('httpcodes.unauthorized'));
+    //         }
+
+    //         $user = User::where('email',$tokenExist->email)->withoutGlobalScope('store_id')->first();
+    //         if (!$user) {
+    //             return response()->json(prepareResult(true, [], trans('translate.user_not_exist')), config('httpcodes.not_found'));
+    //         }
+
+    //         if(in_array($user->status, [0,3])) {
+    //             return response()->json(prepareResult(true, [], trans('translate.account_is_inactive')), config('httpcodes.unauthorized'));
+    //         }
+
+    //         $user = User::where('email', $tokenExist->email)
+    //                 ->withoutGlobalScope('store_id')
+    //                 ->update(['password' => Hash::make($request->password)]);
  
-            DB::table('password_resets')->where(['email'=> $tokenExist->email])->delete();
+    //         DB::table('password_resets')->where(['email'=> $tokenExist->email])->delete();
 
-            ////////notification and mail//////////
-            $variable_data = [
-                '{{name}}' => $user->name
-            ];
-           // notification('password-changed', $user, $variable_data);
-            /////////////////////////////////////
+    //         ////////notification and mail//////////
+    //         $variable_data = [
+    //             '{{name}}' => $user->name
+    //         ];
+    //        // notification('password-changed', $user, $variable_data);
+    //         /////////////////////////////////////
 
 
-            return response()->json(prepareResult(false, $tokenExist->email, trans('translate.password_changed')),config('httpcodes.success'));
+    //         return response()->json(prepareResult(false, $tokenExist->email, trans('translate.password_changed')),config('httpcodes.success'));
 
-        } catch (\Throwable $e) {
-            \Log::error($e);
-            return response()->json(prepareResult(true, $e->getMessage(), trans('translate.something_went_wrong')), config('httpcodes.internal_server_error'));
-        }
-    }
+    //     } catch (\Throwable $e) {
+    //         \Log::error($e);
+    //         return response()->json(prepareResult(true, $e->getMessage(), trans('translate.something_went_wrong')), config('httpcodes.internal_server_error'));
+    //     }
+    // }
 
-    public function changePassword(Request $request)
-    {
-        $validation = \Validator::make($request->all(),[ 
-            'old_password'  => 'required|string|min:6',
-            'password'      => 'required|string|min:6'
-        ]);
+    // public function changePassword(Request $request)
+    // {
+    //     $validation = \Validator::make($request->all(),[ 
+    //         'old_password'  => 'required|string|min:6',
+    //         'password'      => 'required|string|min:6'
+    //     ]);
 
-        if ($validation->fails()) {
-            return response()->json(prepareResult(true, $validation->messages(), trans('translate.validation_failed')), config('httpcodes.bad_request'));
-        }
+    //     if ($validation->fails()) {
+    //         return response()->json(prepareResult(true, $validation->messages(), trans('translate.validation_failed')), config('httpcodes.bad_request'));
+    //     }
 
-        try {
+    //     try {
             
-            $user = User::where('email', Auth::user()->email)->withoutGlobalScope('store_id')->first();
+    //         $user = User::where('email', Auth::user()->email)->withoutGlobalScope('store_id')->first();
             
-            if(in_array($user->status, [0,3])) {
-                return response()->json(prepareResult(true, [], trans('translate.account_is_inactive')), config('httpcodes.unauthorized'));
-            }
-            if(Hash::check($request->old_password, $user->password)) {
-                $user = User::where('email', Auth::user()->email)
-                    ->withoutGlobalScope('store_id')
-                    ->update(['password' => Hash::make($request->password)]);
+    //         if(in_array($user->status, [0,3])) {
+    //             return response()->json(prepareResult(true, [], trans('translate.account_is_inactive')), config('httpcodes.unauthorized'));
+    //         }
+    //         if(Hash::check($request->old_password, $user->password)) {
+    //             $user = User::where('email', Auth::user()->email)
+    //                 ->withoutGlobalScope('store_id')
+    //                 ->update(['password' => Hash::make($request->password)]);
 
-                ////////notification and mail//////////
-                $variable_data = [
-                    '{{name}}' => $user->name
-                ];
-                //notification('password-changed', $user, $variable_data);
-                /////////////////////////////////////
-            }
-            else
-            {
-                return response()->json(prepareResult(true, [], trans('translate.old_password_not_matched')),config('httpcodes.unauthorized'));
-            }
+    //             ////////notification and mail//////////
+    //             $variable_data = [
+    //                 '{{name}}' => $user->name
+    //             ];
+    //             //notification('password-changed', $user, $variable_data);
+    //             /////////////////////////////////////
+    //         }
+    //         else
+    //         {
+    //             return response()->json(prepareResult(true, [], trans('translate.old_password_not_matched')),config('httpcodes.unauthorized'));
+    //         }
             
-            return response()->json(prepareResult(false, $request->email, trans('translate.password_changed')),config('httpcodes.success'));
+    //         return response()->json(prepareResult(false, $request->email, trans('translate.password_changed')),config('httpcodes.success'));
 
-        } catch (\Throwable $e) {
-            \Log::error($e);
-            return response()->json(prepareResult(true, $e->getMessage(), trans('translate.something_went_wrong')), config('httpcodes.internal_server_error'));
-        }
-    }
-    public function unauthorized(Request $request)
-    {
-        return response()->json(prepareResult(true, 'Unauthorized. Please login', trans('translate.something_went_wrong')), config('httpcodes.unauthorized'));
-    }
+    //     } catch (\Throwable $e) {
+    //         \Log::error($e);
+    //         return response()->json(prepareResult(true, $e->getMessage(), trans('translate.something_went_wrong')), config('httpcodes.internal_server_error'));
+    //     }
+    // }
+    // public function unauthorized(Request $request)
+    // {
+    //     return response()->json(prepareResult(true, 'Unauthorized. Please login', trans('translate.something_went_wrong')), config('httpcodes.unauthorized'));
+    // }
 }

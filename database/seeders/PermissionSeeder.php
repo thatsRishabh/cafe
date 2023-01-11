@@ -22,11 +22,17 @@ class PermissionSeeder extends Seeder
         app()['cache']->forget('spatie.permission.cache');
         // create roles and assign existing permissions
 
-    	Permission::create(['name' => 'storeSetting-read', 'guard_name' => 'api','se_name'=>'storeSetting-read','belongs_to'=>'1']);
-    	Permission::create(['name' => 'storeSetting-add', 'guard_name' => 'api','se_name'=>'storeSetting-create','belongs_to'=>'1']);
-    	Permission::create(['name' => 'storeSetting-edit', 'guard_name' => 'api','se_name'=>'storeSetting-edit','belongs_to'=>'1']);
-    	Permission::create(['name' => 'storeSetting-delete', 'guard_name' => 'api','se_name'=>'storeSetting-delete','belongs_to'=>'1']);
-    	Permission::create(['name' => 'storeSetting-browse', 'guard_name' => 'api','se_name'=>'storeSetting-browse','belongs_to'=>'1']);
+    	Permission::create(['name' => 'cafe-read', 'guard_name' => 'api','se_name'=>'cafe-read','belongs_to'=>'1']);
+    	Permission::create(['name' => 'cafe-add', 'guard_name' => 'api','se_name'=>'cafe-create','belongs_to'=>'1']);
+    	Permission::create(['name' => 'cafe-edit', 'guard_name' => 'api','se_name'=>'cafe-edit','belongs_to'=>'1']);
+    	Permission::create(['name' => 'cafe-delete', 'guard_name' => 'api','se_name'=>'cafe-delete','belongs_to'=>'1']);
+    	Permission::create(['name' => 'cafe-browse', 'guard_name' => 'api','se_name'=>'cafe-browse','belongs_to'=>'1']);
+
+        Permission::create(['name' => 'employee-read', 'guard_name' => 'api','se_name'=>'employee-read','belongs_to'=>'4']);
+    	Permission::create(['name' => 'employee-add', 'guard_name' => 'api','se_name'=>'employee-create','belongs_to'=>'4']);
+    	Permission::create(['name' => 'employee-edit', 'guard_name' => 'api','se_name'=>'employee-edit','belongs_to'=>'4']);
+    	Permission::create(['name' => 'employee-delete', 'guard_name' => 'api','se_name'=>'employee-delete','belongs_to'=>'4']);
+    	Permission::create(['name' => 'employee-browse', 'guard_name' => 'api','se_name'=>'employee-browse','belongs_to'=>'4']);
 
 
     	// Permission::create(['name' => 'role-browse', 'guard_name' => 'api','group_name'=>'role','se_name'=>'role-browse','belongs_to'=>'3']);

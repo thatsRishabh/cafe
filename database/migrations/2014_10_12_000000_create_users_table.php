@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreign('cafe_id')->references('id')->on('users')->onDelete('cascade');
             $table->unsignedBigInteger('parent_id')->nullable();
             $table->foreign('parent_id')->references('id')->on('users')->onDelete('cascade');
+            $table->boolean('is_parent')->nullable();
             $table->string('name');
             // $table->string('email')->unique();
             $table->string('email')->nullable();

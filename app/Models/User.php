@@ -48,7 +48,7 @@ class User extends Authenticatable
 
     public function CafeSetting()
     {
-        return $this->belongsTo(CafeSetting::class, , 'cafe_id', 'id');
+        return $this->belongsTo(CafeSetting::class, 'id', 'cafe_id');
     }
 
     // public function roles()
