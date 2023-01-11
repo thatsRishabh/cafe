@@ -6,7 +6,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
-// use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Permission;
 // use Spatie\Permission\PermissionRegistrar;
 
 class UserSeeder extends Seeder
@@ -59,16 +59,16 @@ class UserSeeder extends Seeder
         $adminUser->assignRole($adminRole);
 
         /*-----------Create Cafe-------------*/
-        $storeUser = new User();
-        $storeUser->id                      = '2';
-        $storeUser->role_id                 = '2';
-        $storeUser->name                    = 'Cafe';
-        $storeUser->email                   = 'cafe@gmail.com';
-        $storeUser->password                = \Hash::make(12345678);
-        $storeUser->save();
+        $cafeUser = new User();
+        $cafeUser->id                      = '2';
+        $cafeUser->role_id                 = '2';
+        $cafeUser->name                    = 'Cafe';
+        $cafeUser->email                   = 'cafe@gmail.com';
+        $cafeUser->password                = \Hash::make(12345678);
+        $cafeUser->save();
 
-        $storeRole = Role::where('id','2')->first();
-        $storeUser->assignRole($storeRole);
+        $cafeRole = Role::where('id','2')->first();
+        $cafeUser->assignRole($cafeRole);
 
         /*-----------Create Employee-------------*/
         $employeeUser = new User();
@@ -93,5 +93,19 @@ class UserSeeder extends Seeder
 
         $customerRole = Role::where('id','4')->first();
         $customerUser->assignRole($customerRole);
+
+        /*-----------Assigne Permission------------------*/
+        $adminPermissions = Permission::select('id','name')->whereIn('belongs_to',['1','4'])->get();
+        foreach ($adminPermissions as $key => $permission) {
+            $addedPermission = $permission->name;
+            $adminRole->givePermissionTo($addedPermission);
+        }
+
+        $cafePermissions = Permission::select('id','name')->whereIn('belongs_to',['2','4'])->get();
+        foreach ($cafePermissions as $key => $permission) {
+            $addedPermission = $permission->name;
+            $cafeRole->givePermissionTo($addedPermission);
+
+        }
     }
 }

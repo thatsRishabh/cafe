@@ -22,8 +22,6 @@ class AuthController extends Controller
     public function login(Request $request)
     {
        
-        
-
        
         try {
             $user = User::where('email',$request->email)->first();
@@ -56,11 +54,8 @@ class AuthController extends Controller
                     
                     $data['token'] = $user->createToken('authToken')->accessToken;
                     $data['email'] = $request->email;
-                    $permissionData[] =[
-                        'action'=>"dashboard",
-                        'name'=>"dashboard-view",
-                    ];
-                    $data['permissions'] =  $permissionData;
+                    $role   = Role::where('name', $user->role_id)->first();
+                    $data['permissions']  = $role->permissions()->select('id','name as action','group_name as subject','se_name')->get();
                     $userData =[
                         // 'role'=>"admin"$user
                         'role_id'=>$user->role_id
