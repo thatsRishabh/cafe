@@ -97,13 +97,12 @@ class EmployeeController extends Controller
          {
              return prepareResult(false,'file_not_allowed' ,[], 500);
          } 
-        }
-           
+        }       
 
-                 $user = new User;
+                $user = new User;
                 //  $user->role_id = $request->role_id;
                 $user->role_id = 3;
-                 $user->cafe_id =  $request->cafe_id;
+                 //$user->cafe_id =  $request->cafe_id;
                  $user->name = $request->name;
                  $user->email  = $request->email;
                 //  $user->password = bcrypt($request->password);
@@ -186,7 +185,6 @@ class EmployeeController extends Controller
              $user = User::find($id);
             //  $user->role_id = $request->role_id;
             $user->role_id = 3;
-             $user->cafe_id =  $request->cafe_id;
              $user->name = $request->name;
              $user->email  = $request->email;
             //  $user->password = bcrypt($request->password);
