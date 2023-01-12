@@ -16,6 +16,7 @@ return new class extends Migration
         Schema::table('permissions', function (Blueprint $table) {
             //
             $table->string('se_name')->unique();
+            $table->string('group_name')->after('guard_name');
             $table->tinyInteger('belongs_to')->default(1)->comment('1:Admin,2:cafe,3:employee,4:customer');
         });
     }

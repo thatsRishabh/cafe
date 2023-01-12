@@ -63,7 +63,7 @@ class AuthController extends Controller
                     // ];
                     // $data['permissions'] =  $permissionData;
                     $role   = Role::where('id', $user->role_id)->first();
-                    $data['permissions']  = $role->permissions()->select('id','se_name')->get();
+                    $data['permissions']  = $role->permissions()->select('id','se_name', 'group_name','belongs_to')->get();
                     $userData =[
                         // 'role'=>"admin"$user
                         'role_id'=>$user->role_id
