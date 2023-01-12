@@ -59,7 +59,7 @@ Route::namespace('App\Http\Controllers\Api\Common')->group(function () {
 
 Route::namespace('App\Http\Controllers\Api\Admin')->group(function () {
     Route::group(['middleware' => 'auth:api'],function () {
-        Route::group(['middleware' => 'admin'],function () 
+        Route::group(['middleware' => 'admin'],function () {
         
             Route::controller(CafeController::class)->group(function () {
                 Route::post('cafes', 'searchCafe');

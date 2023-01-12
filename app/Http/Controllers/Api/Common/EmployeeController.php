@@ -99,7 +99,6 @@ class EmployeeController extends Controller
          } 
         }
            
-
                  $user = new User;
                 //  $user->role_id = $request->role_id;
                 $user->role_id = 3;

@@ -103,53 +103,43 @@ class CafeController extends Controller
          {
              return prepareResult(false,'file_not_allowed' ,[], 500);
          } 
-            $user = new User;
-                //  $user->role_id = $request->role_id;
-            $user->role_id = 2;
-            $user->name = $request->name;
-            $user->email  = $request->email;
-     
-                //  $user->password = bcrypt($request->password);
-            $user->password =Hash::make($request->password);
-            $user->mobile = $request->mobile;
-            $user->is_parent = 1;
-            $user->address = $request->address;
-                //  $user->created_by = auth()->id();
-            $user->save();
-            $updateCafeId = User::where('id',$user->id)->update(['cafe_id'=> $user->id]);
+          $user = new User;
+              //  $user->role_id = $request->role_id;
+          $user->role_id = 2;
+          $user->name = $request->name;
+          $user->email  = $request->email;
+    
+              //  $user->password = bcrypt($request->password);
+          $user->password =Hash::make($request->password);
+          $user->mobile = $request->mobile;
+          $user->is_parent = 1;
+          $user->address = $request->address;
+              //  $user->created_by = auth()->id();
+          $user->save();
+          $updateCafeId = User::where('id',$user->id)->update(['cafe_id'=> $user->id]);
                 
-                 //Create Store Setting
-                 $CafeSetting = new CafeSetting();
-                 $CafeSetting->cafe_id =  $user->id;
-                 $CafeSetting->name  = $request->name;
-                 $CafeSetting->description  = $request->description;
-                //  if(!empty($request->logo))
-                //  {
-                //      $CafeSetting->logo = $request->logo;
-                //  }
-                 $CafeSetting->website     = $request->website;
-                 $CafeSetting->address     = $request->address;
-                 $CafeSetting->contact_person_email = $request->contact_person_email; 
-                 $CafeSetting->contact_person_name = $request->contact_person_name;
-                 $CafeSetting->contact_person_phone = $request->contact_person_phone;
-                 if(!empty($request->logo))
-                  {
-                  $file=$request->logo;
-                  $filename=time().'.'.$file->getClientOriginalExtension();
-                  // $info->image=env('CDN_DOC_URL').$request->image->move('assets',$filename);
-                  $CafeSetting->logo=env('CDN_DOC_URL').$request->logo->move('assets\user_photos',$filename);
-                  }
-                 $CafeSetting->save();
-     
-                //  //Role and permission sync
-                //  $role = Role::where('name', 'cafe')->first();
-                //  $permissions = $role->permissions->pluck('name');
-                 
-                //  $user->assignRole($role->name);
-                //  foreach ($permissions as $key => $permission) {
-                //      $user->givePermissionTo($permission);
-                //  }
-
+          //Create Store Setting
+          $CafeSetting = new CafeSetting();
+          $CafeSetting->cafe_id =  $user->id;
+          $CafeSetting->name  = $request->name;
+          $CafeSetting->description  = $request->description;
+          //  if(!empty($request->logo))
+          //  {
+          //      $CafeSetting->logo = $request->logo;
+          //  }
+          $CafeSetting->website     = $request->website;
+          $CafeSetting->address     = $request->address;
+          $CafeSetting->contact_person_email = $request->contact_person_email; 
+          $CafeSetting->contact_person_name = $request->contact_person_name;
+          $CafeSetting->contact_person_phone = $request->contact_person_phone;
+             if(!empty($request->logo))
+              {
+              $file=$request->logo;
+              $filename=time().'.'.$file->getClientOriginalExtension();
+              // $info->image=env('CDN_DOC_URL').$request->image->move('assets',$filename);
+              $CafeSetting->logo=env('CDN_DOC_URL').$request->logo->move('assets\user_photos',$filename);
+              }
+          $CafeSetting->save();
            
 
             DB::commit();
@@ -216,27 +206,27 @@ class CafeController extends Controller
             //  $user->created_by = auth()->id();
              $user->save();
 
-                $CafeSetting = CafeSetting::where('cafe_id', $user->id)->first();
-                 $CafeSetting->cafe_id =  $user->id;
-                 $CafeSetting->name  = $request->name;
-                 $CafeSetting->description  = $request->description;
-                //  if(!empty($request->logo))
-                //  {
-                //      $CafeSetting->logo = $request->logo;
-                //  }
-                 $CafeSetting->website     = $request->website;
-                 $CafeSetting->address     = $request->address;
-                 $CafeSetting->contact_person_email = $request->contact_person_email; 
-                 $CafeSetting->contact_person_name = $request->contact_person_name;
-                 $CafeSetting->contact_person_phone = $request->contact_person_phone;
-                 if(!empty($request->logo))
-                  {
-                  $file=$request->logo;
-                  $filename=time().'.'.$file->getClientOriginalExtension();
-                  // $info->image=env('CDN_DOC_URL').$request->image->move('assets',$filename);
-                  $CafeSetting->logo=env('CDN_DOC_URL').$request->logo->move('assets\user_photos',$filename);
-                  }
-                 $CafeSetting->save();
+             $CafeSetting = CafeSetting::where('cafe_id', $user->id)->first();
+             $CafeSetting->cafe_id =  $user->id;
+              $CafeSetting->name  = $request->name;
+              $CafeSetting->description  = $request->description;
+             //  if(!empty($request->logo))
+             //  {
+             //      $CafeSetting->logo = $request->logo;
+             //  }
+              $CafeSetting->website     = $request->website;
+              $CafeSetting->address     = $request->address;
+              $CafeSetting->contact_person_email = $request->contact_person_email; 
+              $CafeSetting->contact_person_name = $request->contact_person_name;
+              $CafeSetting->contact_person_phone = $request->contact_person_phone;
+              if(!empty($request->logo))
+               {
+               $file=$request->logo;
+               $filename=time().'.'.$file->getClientOriginalExtension();
+               // $info->image=env('CDN_DOC_URL').$request->image->move('assets',$filename);
+               $CafeSetting->logo=env('CDN_DOC_URL').$request->logo->move('assets\user_photos',$filename);
+              }
+              $CafeSetting->save();
 
          
    
