@@ -119,5 +119,19 @@ class UserSeeder extends Seeder
             $cafeRole->givePermissionTo($addedPermission);
 
         }
+
+        $employeePermissions = Permission::select('id','name')->whereIn('belongs_to',['2','4'])->get();
+        foreach ($employeePermissions as $key => $permission) {
+            $addedPermission = $permission->name;
+            $employeeRole->givePermissionTo($addedPermission);
+
+        }
+
+        $adminEmployeePermissions = Permission::select('id','name')->whereIn('belongs_to',['2','4'])->get();
+        foreach ($adminEmployeePermissions as $key => $permission) {
+            $addedPermission = $permission->name;
+            $cafeRole->givePermissionTo($addedPermission);
+
+        }
     }
 }

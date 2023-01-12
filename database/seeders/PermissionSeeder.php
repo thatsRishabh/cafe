@@ -36,6 +36,14 @@ class PermissionSeeder extends Seeder
     	Permission::create(['name' => 'employee-browse', 'guard_name' => 'api','group_name'=>'employee','se_name'=>'employee-browse','belongs_to'=>'4']);
 
 
+            // 10 is for common for all, admin, cafe, employee, adminEmployee
+            Permission::create(['name' => 'customer-read', 'guard_name' => 'api','group_name'=>'customer','se_name'=>'customer-read','belongs_to'=>'10']);
+            Permission::create(['name' => 'customer-add', 'guard_name' => 'api','group_name'=>'customer','se_name'=>'customer-create','belongs_to'=>'10']);
+            Permission::create(['name' => 'customer-edit', 'guard_name' => 'api','group_name'=>'customer','se_name'=>'customer-edit','belongs_to'=>'10']);
+            Permission::create(['name' => 'customer-delete', 'guard_name' => 'api','group_name'=>'customer','se_name'=>'customer-delete','belongs_to'=>'10']);
+            Permission::create(['name' => 'customer-browse', 'guard_name' => 'api','group_name'=>'customer','se_name'=>'customer-browse','belongs_to'=>'10']);
+
+
     	// Permission::create(['name' => 'role-browse', 'guard_name' => 'api','group_name'=>'role','se_name'=>'role-browse','belongs_to'=>'3']);
     	// Permission::create(['name' => 'role-read', 'guard_name' => 'api','group_name'=>'role','se_name'=>'role-read','belongs_to'=>'3']);
     	// Permission::create(['name' => 'role-add', 'guard_name' => 'api','group_name'=>'role','se_name'=>'role-add','belongs_to'=>'3']);

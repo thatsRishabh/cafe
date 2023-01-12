@@ -84,6 +84,7 @@ class CafeController extends Controller
             // 'account_balance'             => 'required|numeric',
             // 'password'              => 'required|confirmed|min:6|max:25',
             'password'              => 'required|min:6|max:25',
+            // 'image' => 'mimes:jpeg,jpg,png,gif|required|max:10000'
             // 'password_confirmation' => 'required'
            
         ]);
@@ -102,20 +103,20 @@ class CafeController extends Controller
          {
              return prepareResult(false,'file_not_allowed' ,[], 500);
          } 
-           
-                 $user = new User;
+            $user = new User;
                 //  $user->role_id = $request->role_id;
-                $user->role_id = 2;
-                 $user->name = $request->name;
-                 $user->email  = $request->email;
+            $user->role_id = 2;
+            $user->name = $request->name;
+            $user->email  = $request->email;
      
                 //  $user->password = bcrypt($request->password);
-                 $user->password =Hash::make($request->password);
-                 $user->mobile = $request->mobile;
-                 $user->is_parent = 1;
-                 $user->address = $request->address;
+            $user->password =Hash::make($request->password);
+            $user->mobile = $request->mobile;
+            $user->is_parent = 1;
+            $user->address = $request->address;
                 //  $user->created_by = auth()->id();
-                 $user->save();
+            $user->save();
+            $updateCafeId = User::where('id',$user->id)->update(['cafe_id'=> $user->id]);
                 
                  //Create Store Setting
                  $CafeSetting = new CafeSetting();
