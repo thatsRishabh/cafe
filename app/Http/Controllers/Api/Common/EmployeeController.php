@@ -22,7 +22,6 @@ class EmployeeController extends Controller
                     ->where('role_id', 3)
                     ->orderBy('id', 'desc');
 
-                    
             if(!empty($request->id))
             {
                 $query->where('id', $request->id);
