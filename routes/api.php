@@ -53,6 +53,22 @@ Route::namespace('App\Http\Controllers\Api\Common')->group(function () {
             Route::resource('customer', CustomerController::class)->only([
                 'store','destroy','show', 'update' ]);
         });
+
+        Route::controller(CategoryController::class)->group(function () {
+            Route::post('categorys', 'searchCategory');
+            Route::post('subcategorys', 'searchSubcategory');
+            Route::post('category-update/{id?}', 'update');
+            Route::resource('category', CategoryController::class)->only([
+                'store','destroy','show' ]);
+        });
+
+        Route::controller(ProductMenuController::class)->group(function () {
+            Route::post('product-menus', 'searchProductMenu');
+            Route::post('product-menus-list', 'productMenuList');
+            Route::post('product-menu-update/{id?}', 'update');
+            Route::resource('product-menu', ProductMenuController::class)->only([
+                'store','destroy','show' ]);
+        });
     });
 });
 

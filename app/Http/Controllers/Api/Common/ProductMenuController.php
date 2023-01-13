@@ -17,50 +17,56 @@ class ProductMenuController extends Controller
     {
         try {
 
-        $query = Category::select('*')
-                        // ->whereNull('parent_id')
-                        // ->with('subCategory')
-                        ->orderBy('id', 'desc');
-                        //  ->orderBy('name', 'asc');
-                if(!empty($request->id))
-                {
-                    $query->where('id', $request->id);
-                }
-                if(!empty($request->name))
-                {
-                    $query->where('name', $request->name);
-                }
-                if(!empty($request->category))
-                {
-                    $query->where('category', $request->category);
-                }
-                if(!empty($request->parent_id))
-                {
-                    $query->where('id', $request->parent_id);
-                }
-    
-    
-                if(!empty($request->per_page_record))
-                {
-                    $perPage = $request->per_page_record;
-                    $page = $request->input('page', 1);
-                    $total = $query->count();
-                    $result = $query->offset(($page - 1) * $perPage)->limit($perPage)->get();
-    
-                    $pagination =  [
-                        'data' => $result,
-                        'total' => $total,
-                        'current_page' => $page,
-                        'per_page' => $perPage,
-                        'last_page' => ceil($total / $perPage)
-                    ];
-                    $query = $pagination;
-                }
-                else
-                {
-                    $query = $query->get();
-                }
+               $query = Category::select('*')->with('productMenu')
+                    ->orderBy('id', 'desc');
+                    
+            if(!empty($request->id))
+            {
+                $query->where('id', $request->id);
+            }
+            if(!empty($request->name))
+            {
+                // $query->where('name', $request->name);
+                $query->where('name', 'LIKE', '%'.$request->name.'%');
+            }
+            // if(!empty($request->price))
+            // {
+            //     $query->where('product_menus.price', $request->price);
+            // }
+            // if(!empty($request->category_id))
+            // {
+            //     $query->where('product_menus.category_id', $request->category_id);
+            // }
+            // if(!empty($request->subcategory_id))
+            // {
+            //     $query->where('product_menus.subcategory_id', $request->subcategory_id);
+            // }
+            // if(!empty($request->product))
+            // {
+            //     $query->where('product', 'LIKE', '%'.$request->product.'%');
+            // }
 
+
+            if(!empty($request->per_page_record))
+            {
+                $perPage = $request->per_page_record;
+                $page = $request->input('page', 1);
+                $total = $query->count();
+                $result = $query->offset(($page - 1) * $perPage)->limit($perPage)->get();
+
+                $pagination =  [
+                    'data' => $result,
+                    'total' => $total,
+                    'current_page' => $page,
+                    'per_page' => $perPage,
+                    'last_page' => ceil($total / $perPage)
+                ];
+                $query = $pagination;
+            }
+            else
+            {
+                $query = $query->get();
+            }
             return prepareResult(true,'Record Fatched Successfully' ,$query, 200);
             
         } 
@@ -70,8 +76,53 @@ class ProductMenuController extends Controller
         }
     }
 
+     public function productMenuList(Request $request)
+    {
+        try {
+            $query = ProductMenu::select('*')
+                ->orderBy('id', 'desc');
+            if(!empty($request->id))
+            {
+                $query->where('id', $request->id);
+            }
+            if(!empty($request->category_id))
+            {
+                $query->where('category_id', $request->category_id);
+            }
+
+
+            if(!empty($request->per_page_record))
+            {
+                $perPage = $request->per_page_record;
+                $page = $request->input('page', 1);
+                $total = $query->count();
+                $result = $query->offset(($page - 1) * $perPage)->limit($perPage)->get();
+
+                $pagination =  [
+                    'data' => $result,
+                    'total' => $total,
+                    'current_page' => $page,
+                    'per_page' => $perPage,
+                    'last_page' => ceil($total / $perPage)
+                ];
+                $query = $pagination;
+            }
+            else
+            {
+                $query = $query->get();
+            }
+
+            return prepareResult(true,'Record Fatched Successfully' ,$query, 200);
+        } 
+        catch (\Throwable $e) {
+            Log::error($e);
+            return prepareResult(false,'Error while fatching Records' ,$e->getMessage(), 500);
+        }
+    }
+
     public function store(Request $request)
     {
+        
         DB::beginTransaction();
         try {
             $validation = Validator::make($request->all(), [
@@ -122,6 +173,7 @@ class ProductMenuController extends Controller
                    $addProduct->description =  $products['description'];
                    $addProduct->price =  $products['price'];
                    $addProduct->order_duration =  $products['order_duration'];
+                   $addProduct->priority_rank =  $products['priority_rank'];
                    $addProduct->category_id =  $products['category_id'];
                        
                     if(!empty($products['image']))
@@ -203,7 +255,8 @@ class ProductMenuController extends Controller
                 $info->name = $request->name;
                 $info->order_duration = $request->order_duration;
                 $info->description = $request->description;
-                // $info->image_url = $request->image_url;
+                
+                $info->priority_rank = $request->priority_rank;
                 $info->category_id = $request->category_id;
                 // $info->subcategory_id = $request->subcategory_id;
                 $info->price = $request->price;
@@ -226,7 +279,7 @@ class ProductMenuController extends Controller
     {
         try {
             
-            $info = Category::find($id);
+            $info = ProductMenu::find($id);
             if($info)
             {
                 return prepareResult(true,'Record Fatched Successfully' ,$info, 200); 
@@ -242,7 +295,7 @@ class ProductMenuController extends Controller
     {
         try {
             
-            $info = Category::find($id);
+            $info = ProductMenu::find($id);
             if($info)
             {
                 $result=$info->delete();

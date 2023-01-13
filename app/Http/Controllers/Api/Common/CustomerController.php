@@ -5,23 +5,25 @@ namespace App\Http\Controllers\Api\Common;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
 
-class EmployeeController extends Controller
+class CustomerController extends Controller
 {
     //
-    public function searchEmployee(Request $request)
+
+    //
+    public function searchCustomer(Request $request)
     {
         try {
             $query = User::select('*')
-                    ->where('role_id', 3)
+                    ->where('role_id', 4)
                     ->orderBy('id', 'desc');
 
+                    
             if(!empty($request->id))
             {
                 $query->where('id', $request->id);
@@ -73,11 +75,10 @@ class EmployeeController extends Controller
         $validation = Validator::make($request->all(),  [
             'name'                      => 'required',
             'mobile'                      => 'required|numeric|digits_between:10,10',
-            'email'                      => 'required|email|unique:App\Models\User,email',
+            // 'email'                      => 'required|email|unique:App\Models\User,email',
             // 'gender'                   => 'required',
-            // 'account_balance'             => 'required|numeric',
+            // 'cafe_id'             => 'required|numeric',
             // 'password'              => 'required|confirmed|min:6|max:25',
-            'password'              => 'required|min:6|max:25',
             // 'password_confirmation' => 'required'
            
         ]);
@@ -86,46 +87,16 @@ class EmployeeController extends Controller
             return prepareResult(false,'validation_failed' ,$validation->errors(), 500);
            
         }  
-        if(!empty($request->image))
-        {
-         // file upload format check
-        //  $formatCheck = ['doc','docx','png','jpeg','jpg','pdf','svg','mp4','tif','tiff','bmp','gif','eps','raw','jfif','webp','pem','csv'];
-        $formatCheck = ['png','jpeg','jpg','bmp','webp'];
-         $extension = strtolower($request->image->getClientOriginalExtension());
- 
-         if(!in_array($extension, $formatCheck))
-         {
-             return prepareResult(false,'file_not_allowed' ,[], 500);
-         } 
-        }       
-
-                $user = new User;
+                 $user = new User;
                 //  $user->role_id = $request->role_id;
-                $user->role_id = 3;
-                 //$user->cafe_id =  $request->cafe_id;
+                $user->role_id = 4;
+                //  $user->cafe_id =  $request->cafe_id;
                  $user->name = $request->name;
                  $user->email  = $request->email;
-                //  $user->password = bcrypt($request->password);
-                 $user->password =Hash::make($request->password);
                  $user->mobile = $request->mobile;
-                 $user->designation = $request->designation;
-                 $user->document_type = $request->document_type;
-                 $user->document_number = $request->document_number;
-                 $user->joining_date = $request->joining_date;
-                 $user->birth_date = $request->birth_date;
                  $user->gender = $request->gender;
-                 $user->salary = $request->salary;
-                 $user->salary_balance = $request->salary_balance;
-            
                  $user->address = $request->address;
-                
-                 if(!empty($request->image))
-                  {
-                  $file=$request->image;
-                  $filename=time().'.'.$file->getClientOriginalExtension();
-                  // $info->image=env('CDN_DOC_URL').$request->image->move('assets',$filename);
-                  $user->image=env('CDN_DOC_URL').$request->image->move('assets\user_photos',$filename);
-                  }
+                 $user->account_balance = $request->account_balance;
                  $user->save();
      
            
@@ -154,7 +125,8 @@ class EmployeeController extends Controller
         $validation = Validator::make($request->all(), [
             'name'                      => 'required',
             'mobile'                      => 'required|numeric|digits_between:10,10',
-            'email'     => 'email|required|unique:users,email,'.$id,
+            // 'cafe_id'             => 'required|numeric',
+            // 'email'     => 'email|required|unique:users,email,'.$id,
             // 'email'                      => 'required|email|unique:App\Models\User,email',
             // 'gender'                   => 'required',
             // 'email'                      => $emailCheck->email == $request->email ? 'required' : 'required|email|unique:App\Models\User,email',
@@ -169,48 +141,19 @@ class EmployeeController extends Controller
             return prepareResult(false,'validation_failed' ,$validation->errors(), 500);
            
         }       
-        if(!empty($request->image))
-        {
-         // file upload format check
-        //  $formatCheck = ['doc','docx','png','jpeg','jpg','pdf','svg','mp4','tif','tiff','bmp','gif','eps','raw','jfif','webp','pem','csv'];
-        $formatCheck = ['png','jpeg','jpg','bmp','webp'];
-         $extension = strtolower($request->image->getClientOriginalExtension());
- 
-         if(!in_array($extension, $formatCheck))
-         {
-             return prepareResult(false,'file_not_allowed' ,[], 500);
-         } 
-        }
+  
 
-             $user = User::find($id);
-            //  $user->role_id = $request->role_id;
-            $user->role_id = 3;
-             $user->name = $request->name;
-             $user->email  = $request->email;
-            //  $user->password = bcrypt($request->password);
-             $user->password =Hash::make($request->password);
-             $user->mobile = $request->mobile;
-             $user->designation = $request->designation;
-             $user->document_type = $request->document_type;
-             $user->document_number = $request->document_number;
-             $user->joining_date = $request->joining_date;
-             $user->birth_date = $request->birth_date;
-             $user->gender = $request->gender;
-             $user->salary = $request->salary;
-             $user->salary_balance = $request->salary_balance;
-        
-             $user->address = $request->address;
-            
-             if(!empty($request->image))
-              {
-              $file=$request->image;
-              $filename=time().'.'.$file->getClientOriginalExtension();
-              // $info->image=env('CDN_DOC_URL').$request->image->move('assets',$filename);
-              $user->image=env('CDN_DOC_URL').$request->image->move('assets\user_photos',$filename);
-              }
-             $user->save();
-
-         
+                $user = User::find($id);
+                // $user->role_id = $request->role_id;
+                $user->role_id = 4;
+                //  $user->cafe_id =  $request->cafe_id;
+                 $user->name = $request->name;
+                 $user->email  = $request->email;
+                 $user->mobile = $request->mobile;
+                 $user->gender = $request->gender;
+                 $user->address = $request->address;
+                 $user->account_balance = $request->account_balance;
+                 $user->save();
    
         DB::commit();
         return prepareResult(true,'Your data has been Updated successfully' ,$user, 200);

@@ -1,15 +1,15 @@
 <?php
+
 namespace App\Traits;
 use Illuminate\Database\Eloquent\Builder;
-
 trait CafeId {
 
-	protected static function bootStoreId()
+	protected static function bootCafeId()
     {
     	if (auth()->guard('api')->check()) 
     	{
-	        // if user is Admin - Role Id 1 OT cafe_id=1
-	        if ((auth()->guard('api')->user()->role_id==1)) 
+	        // if user is admin - role_id 1 
+	        if ((auth()->guard('api')->user()->cafe_id==1)) 
 	        {
 	        	//nothing heppen
 	        }

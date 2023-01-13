@@ -23,6 +23,9 @@ return new class extends Migration
             $table->string('name');
             // $table->string('email')->unique();
             $table->string('email')->nullable();
+            $table->integer('subscription_charge')->nullable();
+            $table->date('subscription_startDate')->nullable();
+            $table->date('subscription_endDate')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->nullable();
             $table->integer('role_id')->comment('1 for admin, 2 for store, 3 for employee, 4 for customer')->nullable();

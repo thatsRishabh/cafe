@@ -50,6 +50,7 @@ class UserSeeder extends Seeder
         $adminUser = new User();
         $adminUser->id                      = '1';
         $adminUser->role_id                 = '1';
+        $adminUser->cafe_id                 = '1';
         $adminUser->name                    = 'Admin';
         $adminUser->email                   = 'admin@gmail.com';
         $adminUser->password                = \Hash::make(12345678);

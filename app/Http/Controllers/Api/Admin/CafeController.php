@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 
 use App\Models\User;
 use App\Models\CafeSetting;
+use App\Models\Unit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -83,8 +84,8 @@ class CafeController extends Controller
             // 'gender'                   => 'required',
             // 'account_balance'             => 'required|numeric',
             // 'password'              => 'required|confirmed|min:6|max:25',
-            'password'              => 'required|min:6|max:25',
-            // 'image' => 'mimes:jpeg,jpg,png,gif|required|max:10000'
+            'password'                   => 'required|min:6|max:25',
+            'logo'                       => 'mimes:jpeg,jpg,png,gif|max:10000'
             // 'password_confirmation' => 'required'
            
         ]);
@@ -93,16 +94,6 @@ class CafeController extends Controller
             return prepareResult(false,'validation_failed' ,$validation->errors(), 500);
            
         }       
-         // file upload format check
-
-        //  $formatCheck = ['doc','docx','png','jpeg','jpg','pdf','svg','mp4','tif','tiff','bmp','gif','eps','raw','jfif','webp','pem','csv'];
-        $formatCheck = ['png','jpeg','jpg','bmp','webp'];
-         $extension = strtolower($request->logo->getClientOriginalExtension());
- 
-         if(!in_array($extension, $formatCheck))
-         {
-             return prepareResult(false,'file_not_allowed' ,[], 500);
-         } 
           $user = new User;
               //  $user->role_id = $request->role_id;
           $user->role_id = 2;
@@ -114,6 +105,9 @@ class CafeController extends Controller
           $user->mobile = $request->mobile;
           $user->is_parent = 1;
           $user->address = $request->address;
+          $user->subscription_charge = $request->subscription_charge;
+          $user->subscription_startDate = $request->subscription_startDate;
+          $user->subscription_endDate = $request->subscription_endDate;
               //  $user->created_by = auth()->id();
           $user->save();
           $updateCafeId = User::where('id',$user->id)->update(['cafe_id'=> $user->id]);
@@ -123,10 +117,6 @@ class CafeController extends Controller
           $CafeSetting->cafe_id =  $user->id;
           $CafeSetting->name  = $request->name;
           $CafeSetting->description  = $request->description;
-          //  if(!empty($request->logo))
-          //  {
-          //      $CafeSetting->logo = $request->logo;
-          //  }
           $CafeSetting->website     = $request->website;
           $CafeSetting->address     = $request->address;
           $CafeSetting->contact_person_email = $request->contact_person_email; 
@@ -140,7 +130,19 @@ class CafeController extends Controller
               $CafeSetting->logo=env('CDN_DOC_URL').$request->logo->move('assets\user_photos',$filename);
               }
           $CafeSetting->save();
-           
+
+          //----------------Units--------------------------//
+          $units = Unit::where('cafe_id','1')->get();
+          foreach($units as $key => $unit){
+            $info = new Unit;
+            $info->cafe_id =  $user->id;
+            $info->name = $unit['name'];
+            $info->abbreiation = $unit['abbreiation'];
+            $info->minvalue = $unit['minvalue'];
+            $info->save();
+
+          }
+          
 
             DB::commit();
             return prepareResult(true,'Your data has been saved successfully' , $user, 200);

@@ -13,18 +13,32 @@ use App\Traits\CafeId;
 use App\Models\CafeSetting;
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable,HasRoles,CafeId;
+   use HasApiTokens, HasFactory, Notifiable,HasRoles,CafeId;
 
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
+    protected $guard_name = 'api';
     protected $fillable = [
         'name',
         'email',
         'password',
         'cafe_id',
+        'parent_id',
+        'mobile',
+        'designation',
+        'document_type',
+        'document_number',
+        'address',
+        'joining_date',
+        'birth_date',
+        'gender',
+        'salary',
+        'salary_balance',
+        'image',
+        'account_balance',
     ];
 
     /**
