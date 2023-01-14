@@ -49,7 +49,6 @@ Route::namespace('App\Http\Controllers\Api\Common')->group(function () {
 
         Route::controller(CustomerController::class)->group(function () {
             Route::post('customers', 'searchCustomer');
-            // Route::post('customer-update/{id?}', 'update');
             Route::resource('customer', CustomerController::class)->only([
                 'store','destroy','show', 'update' ]);
         });
@@ -69,6 +68,71 @@ Route::namespace('App\Http\Controllers\Api\Common')->group(function () {
             Route::resource('product-menu', ProductMenuController::class)->only([
                 'store','destroy','show' ]);
         });
+ // Unit
+        Route::controller(UnitController::class)->group(function () {
+            Route::post('units', 'searchUnit');
+            Route::resource('unit', UnitController::class)->only([
+                'store','destroy','show', 'update' ]);
+        });
+ // product-info
+        Route::controller(ProductInfoController::class)->group(function () {
+            Route::post('product-infos', 'searchProductInfo');
+            // Route::post('customer-update/{id?}', 'update');
+            Route::resource('product-info', ProductInfoController::class)->only([
+                'store','destroy','show', 'update' ]);
+        });
+
+ // ProductStockManage
+        Route::controller(ProductStockManageController::class)->group(function () {
+            Route::post('product-stock-manages', 'searchProductStockManage');
+            // Route::post('customer-update/{id?}', 'update');
+            Route::resource('product-stock-manage', ProductStockManageController::class)->only([
+                'store','destroy','show', 'update' ]);
+        });
+
+   // recipe
+            Route::controller(RecipeController::class)->group(function () {
+                Route::post('recipes', 'searchRecipe');
+                Route::resource('recipe', RecipeController::class)->only([
+                    'store','destroy','show', 'update' ]);
+            });
+  // Order
+            Route::controller(OrderController::class)->group(function () {
+                Route::post('orders', 'searchOrder');
+                Route::get('print-order/{id?}', 'printOrder'); 
+                Route::resource('order', OrderController::class)->only([
+                    'store','destroy','show', 'update' ]);
+            });
+    // expense
+            Route::controller(ExpenseController::class)->group(function () {
+                Route::post('expenses', 'searchExpense');
+                Route::resource('expense', ExpenseController::class)->only([
+                    'store','destroy','show', 'update' ]);
+            });
+            
+        // SalaryManagement
+        Route::controller(SalaryManagementController::class)->group(function () {
+            Route::post('salary-managements', 'searchSalary');
+            Route::resource('salary-management', SalaryManagementController::class)->only([
+                'store','destroy','show', 'update' ]);
+        });      
+// EmployeeAttendence
+        Route::controller(EmployeeAttendenceController::class)->group(function () {
+            Route::post('employee-attendences', 'searchEmployeeAttendence');
+            Route::resource('employee-attendence', EmployeeAttendenceController::class)->only([
+                'store','destroy','show', 'update' ]);
+            Route::get('employee-id', 'employeeID'); 
+            Route::post('monthly-attendence', 'monthlyAttendence'); 
+            Route::post('attendences-date-wise', 'dateWiseSearch'); 
+        });
+ // CustomerAccountManage
+      
+        Route::controller(CustomerAccountManageController::class)->group(function () {
+            Route::post('customer-account-manages', 'searchCustomerAccount');
+            Route::resource('customer-account-manage', CustomerAccountManageController::class)->only([
+                'store','destroy','show', 'update' ]);
+        });
+        
     });
 });
 

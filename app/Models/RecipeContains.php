@@ -8,7 +8,7 @@ use App\Models\Recipe;
 use App\Traits\CafeId;
 class RecipeContains extends Model
 {
-    use HasFactory,Recipe;
+    use HasFactory,CafeId;
 
     protected $fillable=[
         'name',
