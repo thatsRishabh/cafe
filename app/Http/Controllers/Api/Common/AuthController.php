@@ -64,25 +64,23 @@ class AuthController extends Controller
                     // $data['permissions'] =  $permissionData;
                     $role   = Role::where('id', $user->role_id)->first();
                     $data['permissions']  = $role->permissions()->select('id','se_name', 'group_name','belongs_to')->get();
+                    // $userData =[
+                    //     // 'role'=>"admin"$user
+                    //     'role_id'=>$user->role_id
+                    // ];
+                    // $data['user'] =  $userData;
                     $userData =[
                         // 'role'=>"admin"$user
-                        'role_id'=>$user->role_id
-                    ];
-                    $data['user'] =  $userData;
-                    // $data['employeeInfo'] =  $employeeInfo;
-                    // $token = $user->createToken('authToken')->accessToken;
-                   
-                    // $token = auth()->user()->createToken('authToken')->accessToken;
+                        'name'=>$user->name,
+                        'logo'=>$user->image,
 
-                    // $info = "Hello world";
-                    // return "Hello world";
-                    // return prepareResult(true,'logged in successfully' ,$data, 200);
-                    // } else {
-                    //     return prepareResult(false,'wrong email or password' ,[], 500);
+                    ];
+                    $data['userData'] =  $userData;
+                   
                     return prepareResult(true,'logged in successfully' ,$data, 200);
 
                     } else {
-                        // return response(prepareResult(false, [], trans('message_wrong_password')), 500,  ['Result'=>'message_wrong_password']);
+                       
                         prepareResult(false,'wrong email or password' ,[], 500);
                 } 
              } else {

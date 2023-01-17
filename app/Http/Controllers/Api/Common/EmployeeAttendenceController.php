@@ -220,7 +220,7 @@ class EmployeeAttendenceController extends Controller
 
             $data = [];
             
-            $data['employee_attendence']= User::select('id as employee_id')->get();
+            $data['employee_attendence']= User::select('id as employee_id')->where('role_id', 3)->get();
            
         //    $data['employeeSalary'] = $employeeData->salary;
 

@@ -28,13 +28,17 @@ class CustomerController extends Controller
             {
                 $query->where('id', $request->id);
             }
+            // if(!empty($request->name))
+            // {
+            //     $query->where('name', $request->name);
+            // }
+            if(!empty($request->mobile))
+            {
+                $query->where('mobile', 'LIKE', '%'.$request->mobile.'%');
+            }
             if(!empty($request->name))
             {
-                $query->where('name', $request->name);
-            }
-            if(!empty($request->designation))
-            {
-                $query->where('category', 'LIKE', '%'.$request->category.'%');
+                $query->where('name', 'LIKE', '%'.$request->name.'%');
             }
 
 

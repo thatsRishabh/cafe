@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Controllers\Api\Admin;
-
 use App\Http\Controllers\Controller;
 
 use App\Models\User;
@@ -35,7 +34,15 @@ class CafeController extends Controller
             }
             if(!empty($request->name))
             {
-                $query->where('name', $request->name);
+                $query->where('name', 'LIKE', '%'.$request->name.'%');
+            }
+            if(!empty($request->mobile))
+            {
+                $query->where('mobile', 'LIKE', '%'.$request->mobile.'%');
+            }
+            if(!empty($request->email))
+            {
+                $query->where('email', 'LIKE', '%'.$request->email.'%');
             }
             if(!empty($request->designation))
             {
@@ -108,7 +115,14 @@ class CafeController extends Controller
           $user->subscription_charge = $request->subscription_charge;
           $user->subscription_startDate = $request->subscription_startDate;
           $user->subscription_endDate = $request->subscription_endDate;
-              //  $user->created_by = auth()->id();
+            //   //  $user->created_by = auth()->id();
+            //   if(!empty($request->logo))
+            //   {
+            //   $file=$request->logo;
+            //   $filename=time().'.'.$file->getClientOriginalExtension();
+            //   // $info->image=env('CDN_DOC_URL').$request->image->move('assets',$filename);
+            //   $user->image=env('CDN_DOC_URL').$request->logo->move('assets\user_photos',$filename);
+            //   }
           $user->save();
           $updateCafeId = User::where('id',$user->id)->update(['cafe_id'=> $user->id]);
                 
@@ -122,15 +136,20 @@ class CafeController extends Controller
           $CafeSetting->contact_person_email = $request->contact_person_email; 
           $CafeSetting->contact_person_name = $request->contact_person_name;
           $CafeSetting->contact_person_phone = $request->contact_person_phone;
-             if(!empty($request->logo))
-              {
-              $file=$request->logo;
-              $filename=time().'.'.$file->getClientOriginalExtension();
-              // $info->image=env('CDN_DOC_URL').$request->image->move('assets',$filename);
-              $CafeSetting->logo=env('CDN_DOC_URL').$request->logo->move('assets\user_photos',$filename);
-              }
+         if(!empty($request->logo))
+          {
+          $file=$request->logo;
+           $filename=time().'.'.$file->getClientOriginalExtension();
+           $CafeSetting->logo=env('CDN_DOC_URL').$request->logo->move('assets\user_photos',$filename);
+          }
           $CafeSetting->save();
 
+           //----------------saving image--------------------------//
+          $user = User::find($user->id);
+           $user->image =  $CafeSetting->logo;
+           $user->save();
+
+        //    below Unit sometime does not work because some deletes unit from admin
           //----------------Units--------------------------//
           $units = Unit::where('cafe_id','1')->get();
           foreach($units as $key => $unit){

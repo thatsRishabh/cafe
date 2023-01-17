@@ -125,14 +125,21 @@ Route::namespace('App\Http\Controllers\Api\Common')->group(function () {
             Route::post('monthly-attendence', 'monthlyAttendence'); 
             Route::post('attendences-date-wise', 'dateWiseSearch'); 
         });
+
  // CustomerAccountManage
-      
         Route::controller(CustomerAccountManageController::class)->group(function () {
             Route::post('customer-account-manages', 'searchCustomerAccount');
             Route::resource('customer-account-manage', CustomerAccountManageController::class)->only([
                 'store','destroy','show', 'update' ]);
         });
-        
+
+ // dashboard        
+            Route::controller(DashboardController::class)->group(function () {
+                Route::post('dashboard', 'dashboard');
+                Route::post('category-wise-list', 'orderList'); 
+                Route::post('dashboard-graph', 'dashboardGraph'); 
+                Route::post('dashboard-graph-list', 'dashboardGraphByName'); 
+            });
     });
 });
 

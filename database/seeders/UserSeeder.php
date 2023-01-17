@@ -75,6 +75,7 @@ class UserSeeder extends Seeder
         $employeeUser = new User();
         $employeeUser->id                      = '3';
         $employeeUser->role_id                 = '3';
+        $adminUser->cafe_id                     = '1';
         $employeeUser->name                    = 'Employee';
         $employeeUser->email                   = 'employee@gmail.com';
         $employeeUser->password                = \Hash::make(12345678);
@@ -84,21 +85,22 @@ class UserSeeder extends Seeder
         $employeeUser->assignRole($employeeRole);
 
         /*-----------Create Customer-------------*/
-        $customerUser = new User();
-        $customerUser->id                      = '4';
-        $customerUser->role_id                 = '4';
-        $customerUser->name                    = 'Customer';
-        $customerUser->email                   = 'customer@gmail.com';
-        $customerUser->password                = \Hash::make(12345678);
-        $customerUser->save();
+        // $customerUser = new User();
+        // $customerUser->id                      = '4';
+        // $customerUser->role_id                 = '4';
+        // $customerUser->name                    = 'Customer';
+        // $customerUser->email                   = 'customer@gmail.com';
+        // $customerUser->password                = \Hash::make(12345678);
+        // $customerUser->save();
 
-        $customerRole = Role::where('id','4')->first();
-        $customerUser->assignRole($customerRole);
+        // $customerRole = Role::where('id','4')->first();
+        // $customerUser->assignRole($customerRole);
 
            /*-----------Create AdminEmployee-------------*/
            $adminEmployeeUser = new User();
            $adminEmployeeUser->id                      = '5';
            $adminEmployeeUser->role_id                 = '5';
+           $adminUser->cafe_id                          = '1';
            $adminEmployeeUser->name                    = 'AdminEmployee';
            $adminEmployeeUser->email                   = 'adminemployee@gmail.com';
            $adminEmployeeUser->password                = \Hash::make(12345678);

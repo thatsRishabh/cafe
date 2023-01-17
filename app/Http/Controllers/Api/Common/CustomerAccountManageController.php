@@ -19,14 +19,21 @@ class CustomerAccountManageController extends Controller
     {
         try {
             $query = CustomerAccountManage::select('*')
-                    // ->join('customers', 'customer_account_manages.customer_id', '=', 'customers.id')customerName
-                    ->with('customerName:id,name,cafe_id')
-                    // ->select('customer_account_manages.*','customers.name as customers_name')
-                            ->orderBy('id', 'desc');
-        
+                    ->with('customerName:id,name,role_id')
+                    ->orderBy('id', 'desc');
+                   
+
+                    // below query is to search inside join function 
+                    $name = $request->name;
+                    if(!empty($request->name))
+                    {
+                        $query->whereHas('customerName',function ($query) use ($name) {
+                            $query->Where('name', 'LIKE', "%{$name}%");
+                        });    
+                    }        
                     if(!empty($request->id))
                     {
-                        $query->where('customer_account_manages.id', $request->id);
+                        $query->where('id', $request->id);
                     }
                     if(!empty($request->transaction_type))
                     {
@@ -34,37 +41,22 @@ class CustomerAccountManageController extends Controller
                     }
                     if(!empty($request->customer_id))
                     {
-                        $query->where('customers.id', $request->customer_id);
+                        $query->where('customer_id', $request->customer_id);
                     }
                     if(!empty($request->account_status))
                     {
                         $query->where('account_status', $request->account_status);
                     }
-                    if(!empty($request->name))
-                    {
-                        // $query->where('name', $request->name);
-                        $query->where('customers.name', 'LIKE', '%'.$request->name.'%');
-                    }
-        
                     // date wise filter from here
                      if(!empty($request->from_date) && !empty($request->end_date))
                     {
-                        $query->whereDate('customer_account_manages.created_at', '>=', $request->from_date)->whereDate('customer_account_manages.created_at', '<=', $request->end_date);
+                        $query->whereDate('created_at', '>=', $request->from_date)->whereDate('created_at', '<=', $request->end_date);
                     }
         
                     if(!empty($request->from_date) && !empty($request->end_date) && !empty($request->customer_id))
                     {
-                        $query->where('customer_id', $request->customer_id)->whereDate('customer_account_manages.created_at', '>=', $request->from_date)->whereDate('customer_account_manages.created_at', '<=', $request->end_date);
+                        $query->where('customer_id', $request->customer_id)->whereDate('created_at', '>=', $request->from_date)->whereDate('created_at', '<=', $request->end_date);
                     }
-        
-                    // elseif(!empty($request->from_date) && empty($request->end_date))
-                    // {
-                    //     $query->where('customer_id', $request->customer_id)->whereDate('customer_account_manages.created_at', '>=', $request->from_date);
-                    // }
-                    // elseif(empty($request->from_date) && !empty($request->end_date))
-                    // {
-                    //     $query->where('customer_id', $request->customer_id)->whereDate('customer_account_manages.created_at', '<=', $request->end_date);
-                    // }
         
                     if(!empty($request->per_page_record))
                     {

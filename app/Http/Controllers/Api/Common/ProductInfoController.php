@@ -16,11 +16,15 @@ class ProductInfoController extends Controller
     public function searchProductInfo(Request $request)
     {
         try {
-            $query = DB::table('product_infos')
-                        ->join('units', 'product_infos.unit_id', '=', 'units.id')
-                        ->select('product_infos.*', 'units.name as units_name', 'units.minvalue as units_minvalue')
-                        ->orderBy('product_infos.id', 'desc');
-                      // in above we have to specify that it has to sort according to ID of which table, product_infos or Unit
+            // $query = DB::table('product_infos')
+            //             ->join('units', 'product_infos.unit_id', '=', 'units.id')
+            //             ->select('product_infos.*', 'units.name as units_name', 'units.minvalue as units_minvalue')
+            //             ->orderBy('product_infos.id', 'desc');
+            //           // in above we have to specify that it has to sort according to ID of which table, product_infos or Unit
+
+            $query = ProductInfo::select('*')
+                            ->with('unitName:id,name,minvalue')
+                            ->orderBy('id', 'desc');
             
                         if(!empty($request->id))
                         {
