@@ -79,8 +79,14 @@ class ProductMenuController extends Controller
      public function productMenuList(Request $request)
     {
         try {
-            $query = ProductMenu::select('*')
-                ->orderBy('id', 'desc');
+            // $query = ProductMenu::select('*')
+                if(!empty($request->priority_rank)){
+                    $query = ProductMenu::select('*') ->orderBy('priority_rank', 'asc');
+                }else{ 
+                    $query = ProductMenu::select('*')->orderBy('id', 'desc');
+                }
+               
+
             if(!empty($request->id))
             {
                 $query->where('id', $request->id);
@@ -132,15 +138,6 @@ class ProductMenuController extends Controller
         try {
             $validation = Validator::make($request->all(), [
             // {($request->parent_id) ? $request->parent_id :null}
-            
-            // 'name'                    => 'required',
-            // // 'description'                => ($request->parent_id) ? ' ': 'required',
-            // 'description'                => 'required',
-            // 'category_id'                   => 'required|numeric',
-            // // 'subcategory_id'                => 'required|numeric',
-            // // 'category_id'                   => ($request->parent_id) ? ' ': 'required',
-            // // 'subcategory_id'                => ($request->parent_id) ? ' ': 'required',
-            // 'price'                      => 'required|numeric',
     //    'price'                      => ($productMenuData->price <= $request->price) ? 'required|declined:false' : 'required',
            
             "product_list.*.name"  => "required", 
@@ -178,7 +175,7 @@ class ProductMenuController extends Controller
                    $addProduct->description =  $products['description'];
                    $addProduct->price =  $products['price'];
                    $addProduct->order_duration =  $products['order_duration'];
-                   $addProduct->priority_rank =  $products['priority_rank'];
+                   $addProduct->priority_rank =  $products['priority_rank'] ? $products['priority_rank'] : "10000" ;
                    $addProduct->category_id =  $products['category_id'];
                        
                     if(!empty($products['image']))

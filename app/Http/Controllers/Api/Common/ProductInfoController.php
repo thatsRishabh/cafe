@@ -75,8 +75,10 @@ class ProductInfoController extends Controller
     {
         DB::beginTransaction();
         try {
+            $nameCheck = ProductInfo::where('name', $request->name)->first();
             $validation = Validator::make($request->all(), [
-                            'name'                       => 'required|unique:App\Models\ProductInfo,name',
+                            'name'                      => $nameCheck ? 'required|declined:false' : 'required',
+                            // 'name'                       => 'required|unique:App\Models\ProductInfo,name',
                             'description'                => 'required',
                             'unit_id'                    => 'required|numeric',
                             // 'minimum_qty'              => 'required|numeric',
@@ -84,6 +86,9 @@ class ProductInfoController extends Controller
                             'price'                      => 'required|numeric',
                             
                            
+                        ],
+                        [
+                            'name.declined' =>          'Name already exists',
                         ]);
 
         if ($validation->fails()) {

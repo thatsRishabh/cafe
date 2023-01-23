@@ -179,7 +179,7 @@ use Illuminate\Support\Facades\Auth;
 		// }
 
 	
-		function getLast30TotalSale($day, $startDate , $endDate, $subcategory)
+		function getLast30TotalSale($day, $startDate , $endDate, $subcategory, $cafe_id)
 		{
 			if(!empty($day))
             {
@@ -208,11 +208,19 @@ use Illuminate\Support\Facades\Auth;
 				foreach ($daterange as $date) {
 					if(!empty( $subcategory)){
 						$orderid = Order::whereDate('created_at',$date->format('Y-m-d'))->where('order_status', 2)->select('id')->get();
-				$salesSum = OrderContain::where('product_menu_id',$subcategory)->whereDate('created_at',$date->format('Y-m-d'))->whereIn('order_id',$orderid)->sum('netPrice'); 
+						if(!empty($cafe_id)){
+							$salesSum = OrderContain::where('cafe_id',$cafe_id)->where('product_menu_id',$subcategory)->whereDate('created_at',$date->format('Y-m-d'))->whereIn('order_id',$orderid)->sum('netPrice'); 
+						}else{
+							$salesSum = OrderContain::where('product_menu_id',$subcategory)->whereDate('created_at',$date->format('Y-m-d'))->whereIn('order_id',$orderid)->sum('netPrice'); 
+						}
 					}
 					else{
 						$orderid = Order::whereDate('created_at',$date->format('Y-m-d'))->where('order_status', 2)->select('id')->get();
-						$salesSum = OrderContain::whereDate('created_at',$date->format('Y-m-d'))->whereIn('order_id',$orderid)->sum('netPrice');
+						if(!empty($cafe_id)){
+							$salesSum = OrderContain::where('cafe_id',$cafe_id)->whereDate('created_at',$date->format('Y-m-d'))->whereIn('order_id',$orderid)->sum('netPrice');
+						}else{
+							$salesSum = OrderContain::whereDate('created_at',$date->format('Y-m-d'))->whereIn('order_id',$orderid)->sum('netPrice');
+						}			
 					}
 					$totalSale[] = $salesSum;
 				}
@@ -237,11 +245,21 @@ use Illuminate\Support\Facades\Auth;
 				foreach ($rangArray as $date) {
 					if(!empty( $subcategory)){
 						$orderid = Order::whereDate('created_at',$date)->where('order_status', 2)->select('id')->get();
-					$salesSum = OrderContain::where('product_menu_id',$subcategory)->whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('netPrice');
+						if(!empty($cafe_id)){
+							$salesSum = OrderContain::where('cafe_id',$cafe_id)->where('product_menu_id',$subcategory)->whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('netPrice');
+						}else{
+							$salesSum = OrderContain::where('product_menu_id',$subcategory)->whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('netPrice');
+						}	
+					
 					}
 					else{
 						$orderid = Order::whereDate('created_at',$date)->where('order_status', 2)->select('id')->get();
-						$salesSum = OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('netPrice');
+						if(!empty($cafe_id)){
+							$salesSum = OrderContain::where('cafe_id',$cafe_id)->whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('netPrice');
+						}else{
+							$salesSum = OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('netPrice');
+						}	
+						
 					}
 					$totalSale[] = $salesSum;
 				}
@@ -254,7 +272,7 @@ use Illuminate\Support\Facades\Auth;
 			return $totalSale;
 		}
 
-		function getLast30TotalOnlineSale($day, $startDate , $endDate, $subcategory)
+		function getLast30TotalOnlineSale($day, $startDate , $endDate, $subcategory, $cafe_id)
 		{
 			if(!empty($day))
             {
@@ -283,11 +301,21 @@ use Illuminate\Support\Facades\Auth;
 				foreach ($daterange as $date) {
 					if(!empty( $subcategory)){
 						$orderid = Order::whereDate('created_at',$date->format('Y-m-d'))->where('order_status', 2)->where('mode_of_transaction', 2)->select('id')->get();
-				$salesSum = OrderContain::where('product_menu_id',$subcategory)->whereDate('created_at',$date->format('Y-m-d'))->whereIn('order_id',$orderid)->sum('netPrice'); 
+						if(!empty($cafe_id)){
+							$salesSum = OrderContain::where('cafe_id',$cafe_id)->where('product_menu_id',$subcategory)->whereDate('created_at',$date->format('Y-m-d'))->whereIn('order_id',$orderid)->sum('netPrice'); 
+						}else{
+							$salesSum = OrderContain::where('product_menu_id',$subcategory)->whereDate('created_at',$date->format('Y-m-d'))->whereIn('order_id',$orderid)->sum('netPrice'); 
+						}	
+				
 					}
 					else{
 						$orderid = Order::whereDate('created_at',$date->format('Y-m-d'))->where('order_status', 2)->where('mode_of_transaction', 2)->select('id')->get();
-						$salesSum = OrderContain::whereDate('created_at',$date->format('Y-m-d'))->whereIn('order_id',$orderid)->sum('netPrice');
+						if(!empty($cafe_id)){
+							$salesSum = OrderContain::where('cafe_id',$cafe_id)->whereDate('created_at',$date->format('Y-m-d'))->whereIn('order_id',$orderid)->sum('netPrice');
+						}else{
+							$salesSum = OrderContain::whereDate('created_at',$date->format('Y-m-d'))->whereIn('order_id',$orderid)->sum('netPrice');
+						}	
+						
 					}
 					$totalSale[] = $salesSum;
 				}
@@ -312,11 +340,21 @@ use Illuminate\Support\Facades\Auth;
 				foreach ($rangArray as $date) {
 					if(!empty( $subcategory)){
 						$orderid = Order::whereDate('created_at',$date)->where('order_status', 2)->where('mode_of_transaction', 2)->select('id')->get();
-					$salesSum = OrderContain::where('product_menu_id',$subcategory)->whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('netPrice');
+						if(!empty($cafe_id)){
+							$salesSum = OrderContain::where('cafe_id',$cafe_id)->where('product_menu_id',$subcategory)->whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('netPrice');
+						}else{
+							$salesSum = OrderContain::where('product_menu_id',$subcategory)->whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('netPrice');
+						}	
+					
 					}
 					else{
 						$orderid = Order::whereDate('created_at',$date)->where('order_status', 2)->where('mode_of_transaction', 2)->select('id')->get();
-						$salesSum = OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('netPrice');
+						if(!empty($cafe_id)){
+							$salesSum = OrderContain::where('cafe_id',$cafe_id)->whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('netPrice');
+						}else{
+							$salesSum = OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('netPrice');
+						}	
+						
 					}
 					$totalSale[] = $salesSum;
 				}
@@ -329,7 +367,7 @@ use Illuminate\Support\Facades\Auth;
 			return $totalSale;
 		}
 
-		function getLast30TotalCashSale($day, $startDate , $endDate, $subcategory)
+		function getLast30TotalCashSale($day, $startDate , $endDate, $subcategory, $cafe_id)
 		{
 			if(!empty($day))
             {
@@ -358,11 +396,22 @@ use Illuminate\Support\Facades\Auth;
 				foreach ($daterange as $date) {
 					if(!empty( $subcategory)){
 						$orderid = Order::whereDate('created_at',$date->format('Y-m-d'))->where('order_status', 2)->where('mode_of_transaction', 1)->select('id')->get();
-				$salesSum = OrderContain::where('product_menu_id',$subcategory)->whereDate('created_at',$date->format('Y-m-d'))->whereIn('order_id',$orderid)->sum('netPrice'); 
+						if(!empty($cafe_id)){
+							$salesSum = OrderContain::where('cafe_id',$cafe_id)->where('product_menu_id',$subcategory)->whereDate('created_at',$date->format('Y-m-d'))->whereIn('order_id',$orderid)->sum('netPrice'); 
+						}else{
+							$salesSum = OrderContain::where('product_menu_id',$subcategory)->whereDate('created_at',$date->format('Y-m-d'))->whereIn('order_id',$orderid)->sum('netPrice'); 
+						}	
+
+				
 					}
 					else{
 						$orderid = Order::whereDate('created_at',$date->format('Y-m-d'))->where('order_status', 2)->where('mode_of_transaction', 1)->select('id')->get();
-						$salesSum = OrderContain::whereDate('created_at',$date->format('Y-m-d'))->whereIn('order_id',$orderid)->sum('netPrice');
+						if(!empty($cafe_id)){
+							$salesSum = OrderContain::where('cafe_id',$cafe_id)->whereDate('created_at',$date->format('Y-m-d'))->whereIn('order_id',$orderid)->sum('netPrice');
+						}else{
+							$salesSum = OrderContain::whereDate('created_at',$date->format('Y-m-d'))->whereIn('order_id',$orderid)->sum('netPrice');
+						}	
+						
 					}
 					$totalSale[] = $salesSum;
 				}
@@ -387,11 +436,21 @@ use Illuminate\Support\Facades\Auth;
 				foreach ($rangArray as $date) {
 					if(!empty( $subcategory)){
 						$orderid = Order::whereDate('created_at',$date)->where('order_status', 2)->where('mode_of_transaction', 1)->select('id')->get();
-					$salesSum = OrderContain::where('product_menu_id',$subcategory)->whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('netPrice');
+						if(!empty($cafe_id)){
+							$salesSum = OrderContain::where('cafe_id',$cafe_id)->where('product_menu_id',$subcategory)->whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('netPrice');
+						}else{
+							$salesSum = OrderContain::where('product_menu_id',$subcategory)->whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('netPrice');
+						}	
+					
 					}
 					else{
 						$orderid = Order::whereDate('created_at',$date)->where('order_status', 2)->where('mode_of_transaction', 1)->select('id')->get();
-						$salesSum = OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('netPrice');
+						if(!empty($cafe_id)){
+							$salesSum = OrderContain::where('cafe_id',$cafe_id)->whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('netPrice');
+						}else{
+							$salesSum = OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('netPrice');
+						}	
+						
 					}
 					$totalSale[] = $salesSum;
 				}
@@ -404,7 +463,7 @@ use Illuminate\Support\Facades\Auth;
 			return $totalSale;
 		}
 
-		function getLast30TotalRecurringSale($day, $startDate , $endDate, $subcategory)
+		function getLast30TotalRecurringSale($day, $startDate , $endDate, $subcategory, $cafe_id)
 		{
 			if(!empty($day))
             {
@@ -433,11 +492,20 @@ use Illuminate\Support\Facades\Auth;
 				foreach ($daterange as $date) {
 					if(!empty( $subcategory)){
 						$orderid = Order::whereDate('created_at',$date->format('Y-m-d'))->where('order_status', 2)->where('mode_of_transaction', 3)->select('id')->get();
-				$salesSum = OrderContain::where('product_menu_id',$subcategory)->whereDate('created_at',$date->format('Y-m-d'))->whereIn('order_id',$orderid)->sum('netPrice'); 
+						if(!empty($cafe_id)){
+							$salesSum = OrderContain::where('cafe_id',$cafe_id)->where('product_menu_id',$subcategory)->whereDate('created_at',$date->format('Y-m-d'))->whereIn('order_id',$orderid)->sum('netPrice'); 
+						}else{
+							$salesSum = OrderContain::where('product_menu_id',$subcategory)->whereDate('created_at',$date->format('Y-m-d'))->whereIn('order_id',$orderid)->sum('netPrice'); 
+						}	
 					}
 					else{
 						$orderid = Order::whereDate('created_at',$date->format('Y-m-d'))->where('order_status', 2)->where('mode_of_transaction', 3)->select('id')->get();
-						$salesSum = OrderContain::whereDate('created_at',$date->format('Y-m-d'))->whereIn('order_id',$orderid)->sum('netPrice');
+						if(!empty($cafe_id)){
+							$salesSum = OrderContain::where('cafe_id',$cafe_id)->whereDate('created_at',$date->format('Y-m-d'))->whereIn('order_id',$orderid)->sum('netPrice');
+						}else{
+							$salesSum = OrderContain::whereDate('created_at',$date->format('Y-m-d'))->whereIn('order_id',$orderid)->sum('netPrice');
+						}	
+						
 					}
 					$totalSale[] = $salesSum;
 				}
@@ -462,11 +530,20 @@ use Illuminate\Support\Facades\Auth;
 				foreach ($rangArray as $date) {
 					if(!empty( $subcategory)){
 						$orderid = Order::whereDate('created_at',$date)->where('order_status', 2)->where('mode_of_transaction', 3)->select('id')->get();
-					$salesSum = OrderContain::where('product_menu_id',$subcategory)->whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('netPrice');
+						if(!empty($cafe_id)){
+							$salesSum = OrderContain::where('cafe_id',$cafe_id)->where('product_menu_id',$subcategory)->whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('netPrice');
+						}else{
+							$salesSum = OrderContain::where('product_menu_id',$subcategory)->whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('netPrice');
+						}				
 					}
 					else{
 						$orderid = Order::whereDate('created_at',$date)->where('order_status', 2)->where('mode_of_transaction', 3)->select('id')->get();
-						$salesSum = OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('netPrice');
+						if(!empty($cafe_id)){
+							$salesSum = OrderContain::where('cafe_id',$cafe_id)->whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('netPrice');
+						}else{
+							$salesSum = OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('netPrice');
+						}	
+						
 					}
 					$totalSale[] = $salesSum;
 				}
@@ -514,7 +591,7 @@ use Illuminate\Support\Facades\Auth;
 	// 		return $totalCustomer;
 	// 	}
 
-	function getLast30TotalProduct($day, $startDate , $endDate, $subcategory)
+	function getLast30TotalProduct($day, $startDate , $endDate, $subcategory, $cafe_id)
 		{
 			if(!empty($day))
             {
@@ -542,12 +619,21 @@ use Illuminate\Support\Facades\Auth;
 				foreach ($daterange as $date) {
 				if(!empty( $subcategory)){
 					$orderid = Order::whereDate('created_at',$date->format('Y-m-d'))->where('order_status', 2)->select('id')->get();
-
-				$productSum = OrderContain::where('product_menu_id',$subcategory)->whereDate('created_at',$date->format('Y-m-d'))->whereIn('order_id',$orderid)->sum('quantity'); 
+					if(!empty($cafe_id)){
+						$productSum = OrderContain::where('product_menu_id',$subcategory)->where('cafe_id',$cafe_id)->whereDate('created_at',$date->format('Y-m-d'))->whereIn('order_id',$orderid)->sum('quantity'); 
+					}else{
+						$productSum = OrderContain::where('product_menu_id',$subcategory)->whereDate('created_at',$date->format('Y-m-d'))->whereIn('order_id',$orderid)->sum('quantity'); 
+					}	
+				
 				}
 				else{
 					$orderid = Order::whereDate('created_at',$date->format('Y-m-d'))->where('order_status', 2)->select('id')->get();
-					$productSum = OrderContain::whereDate('created_at',$date->format('Y-m-d'))->whereIn('order_id',$orderid)->sum('quantity');
+					if(!empty($cafe_id)){
+						$productSum = OrderContain::where('cafe_id',$cafe_id)->whereDate('created_at',$date->format('Y-m-d'))->whereIn('order_id',$orderid)->sum('quantity');
+					}else{
+						$productSum = OrderContain::whereDate('created_at',$date->format('Y-m-d'))->whereIn('order_id',$orderid)->sum('quantity');
+					}	
+					
 					// $productSum = OrderContain::whereDate('created_at',$date->format('Y-m-d'))->sum('quantity'); 
 
 				}
@@ -575,12 +661,24 @@ use Illuminate\Support\Facades\Auth;
 				foreach ($rangArray as $date) {
 					if(!empty( $subcategory)){
 						$orderid = Order::whereDate('created_at',$date)->where('order_status', 2)->select('id')->get();
-					$productSum = OrderContain::where('product_menu_id',$subcategory)->whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('quantity'); 
+						if(!empty($cafe_id)){
+							$productSum = OrderContain::where('cafe_id',$cafe_id)->where('product_menu_id',$subcategory)->whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('quantity'); 
+						}else{
+							$productSum = OrderContain::where('product_menu_id',$subcategory)->whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('quantity'); 
+						}						
 				}
 				else{
 
 					$orderid = Order::whereDate('created_at',$date)->where('order_status', 2)->select('id')->get();
-					$productSum = OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('quantity');
+					if(!empty( $subcategory)){
+						$orderid = Order::whereDate('created_at',$date)->where('order_status', 2)->select('id')->get();
+						if(!empty($cafe_id)){
+							$productSum = OrderContain::where('cafe_id',$cafe_id)->whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('quantity');
+						}else{
+							$productSum = OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('quantity');
+						}						
+				}
+					
 					// $productSum = OrderContain::whereDate('created_at',$date)->sum('quantity'); 
 				}
 					$totalProduct[] = $productSum;
@@ -593,7 +691,7 @@ use Illuminate\Support\Facades\Auth;
 			return $totalProduct;
 		}
 
-	function getLast30TotalExpense($day, $startDate , $endDate)
+	function getLast30TotalExpense($day, $startDate , $endDate, $cafe_id)
 		{
 			if(!empty($day))
             {
@@ -621,9 +719,11 @@ use Illuminate\Support\Facades\Auth;
 					
 					$totalExpense =[];
 					foreach ($daterange as $date) {
-						
-						$expenseSum = Expense::whereDate('expense_date',$date->format('Y-m-d'))->sum('totalExpense'); 
-						
+						if(!empty($cafe_id)){
+							$expenseSum = Expense::where('cafe_id',$cafe_id)->whereDate('expense_date',$date->format('Y-m-d'))->sum('totalExpense'); 
+						}else{
+							$expenseSum = Expense::whereDate('expense_date',$date->format('Y-m-d'))->sum('totalExpense'); 
+						}			
 						$totalExpense[] = $expenseSum;
 					}
 
@@ -645,9 +745,11 @@ use Illuminate\Support\Facades\Auth;
   			
 				$totalExpense =[];
 				foreach ($rangArray as $date) {
-					
-					$expenseSum = Expense::whereDate('expense_date',$date)->sum('totalExpense'); 
-					
+					if(!empty($cafe_id)){
+						$expenseSum = Expense::where('cafe_id',$cafe_id)->whereDate('expense_date',$date)->sum('totalExpense'); 
+					}else{
+						$expenseSum = Expense::whereDate('expense_date',$date)->sum('totalExpense'); 
+					}			
 					$totalExpense[] = $expenseSum;
 				}
 		
@@ -771,7 +873,7 @@ use Illuminate\Support\Facades\Auth;
 			return $categorySearch;
 		}
 
-	function getDetails($startDate , $endDate, $category)
+	function getDetails($startDate , $endDate, $category, $cafe_id)
 	{
 		if(!empty($startDate))
 		{
@@ -781,6 +883,18 @@ use Illuminate\Support\Facades\Auth;
 				$date = Carbon::createFromFormat('Y-m-d', $endDate);
 				// $daysToAdd = 1;
 				$date = $date->addDays(1);
+				if(!empty($cafe_id)){
+					$a = 	DB::table('order_contains as w')
+				->join("product_menus", "w.product_menu_id", "=", "product_menus.id")
+				->where('w.category_id', $category)
+				->where('w.cafe_id', $cafe_id)
+				->whereBetween('w.created_at', [$startDate, date_format($date, "Y-m-d")])
+				// ->whereBetween('w.created_at', ["2022-07-26", "2022-08-26"])
+				->select(array(DB::Raw('sum(w.quantity) as total_quantity'), DB::Raw('sum(w.netPrice) as total_netPrice'), DB::Raw('DATE(w.created_at) date'), 'w.product_menu_id', 'product_menus.name'))
+				->groupBy(['date', 'w.product_menu_id', 'product_menus.name'])
+				->orderBy('w.created_at', 'desc')
+				->get();
+				}else{
 				$a = 	DB::table('order_contains as w')
 				->join("product_menus", "w.product_menu_id", "=", "product_menus.id")
 				->where('w.category_id', $category)
@@ -790,22 +904,42 @@ use Illuminate\Support\Facades\Auth;
 				->groupBy(['date', 'w.product_menu_id', 'product_menus.name'])
 				->orderBy('w.created_at', 'desc')
 				->get();
+				}
 				$orderDetails = $a;
 				return  $orderDetails;
 			}else{
 				$date = Carbon::createFromFormat('Y-m-d', $endDate);
 				// $daysToAdd = 1;
 				$date = $date->addDays(1);
-				$a = 	DB::table('order_contains as w')
-				->join("product_menus", "w.product_menu_id", "=", "product_menus.id")
-				// ->where('w.category_id', $category)
-				->whereBetween('w.category_id', [1, 1000])
-				->whereBetween('w.created_at', [$startDate, date_format($date, "Y-m-d")])
-				// ->whereBetween('w.created_at', ["2022-07-26", "2022-08-26"])
-				->select(array(DB::Raw('sum(w.quantity) as total_quantity'), DB::Raw('sum(w.netPrice) as total_netPrice'), DB::Raw('DATE(w.created_at) date'), 'w.product_menu_id', 'product_menus.name'))
-				->groupBy(['date', 'w.product_menu_id', 'product_menus.name'])
-				->orderBy('w.created_at', 'desc')
-				->get();
+				if(!empty($cafe_id)){
+					$a = 	DB::table('order_contains as w')
+					->join("product_menus", "w.product_menu_id", "=", "product_menus.id")
+					// ->where('w.category_id', $category)
+					->where('w.cafe_id', $cafe_id)
+					->whereBetween('w.category_id', [1, 1000])
+					->whereBetween('w.created_at', [$startDate, date_format($date, "Y-m-d")])
+					// ->whereBetween('w.created_at', ["2022-07-26", "2022-08-26"])
+					->select(array(DB::Raw('sum(w.quantity) as total_quantity'), DB::Raw('sum(w.netPrice) as total_netPrice'), DB::Raw('DATE(w.created_at) date'), 'w.product_menu_id', 'product_menus.name'))
+					->groupBy(['date', 'w.product_menu_id', 'product_menus.name'])
+					->orderBy('w.created_at', 'desc')
+					->get();
+				}else{
+					$a = 	DB::table('order_contains as w')
+					->join("product_menus", "w.product_menu_id", "=", "product_menus.id")
+					// ->where('w.category_id', $category)
+					// ->where('w.cafe_id', $cafe_id)
+					// if(!empty($cafe_id)){
+					// 	$a->where('w.cafe_id', $cafe_id);
+					// }
+					->whereBetween('w.category_id', [1, 1000])
+					->whereBetween('w.created_at', [$startDate, date_format($date, "Y-m-d")])
+					// ->whereBetween('w.created_at', ["2022-07-26", "2022-08-26"])
+					->select(array(DB::Raw('sum(w.quantity) as total_quantity'), DB::Raw('sum(w.netPrice) as total_netPrice'), DB::Raw('DATE(w.created_at) date'), 'w.product_menu_id', 'product_menus.name'))
+					->groupBy(['date', 'w.product_menu_id', 'product_menus.name'])
+					->orderBy('w.created_at', 'desc')
+					->get();	
+				}
+				
 				$orderDetails = $a;
 				return  $orderDetails;
 
@@ -821,14 +955,31 @@ use Illuminate\Support\Facades\Auth;
 			$enddate = Carbon::createFromFormat('Y-m-d', $startDate);
             $daysToAdd = -30;
             $enddate = $enddate->addDays($daysToAdd);
-			$a = 	DB::table('order_contains as w')
-			->join("product_menus", "w.product_menu_id", "=", "product_menus.id")
-			->where('w.category_id', $category)
-			->whereBetween('w.created_at', [date_format($enddate, "Y-m-d"), date_format($toDay, "Y-m-d")])
-			->select(array(DB::Raw('sum(w.quantity) as total_quantity'), DB::Raw('sum(w.netPrice) as total_netPrice'), DB::Raw('DATE(w.created_at) date'), 'w.product_menu_id', 'product_menus.name'))
-			->groupBy(['date', 'w.product_menu_id', 'product_menus.name'])
-            ->orderBy('w.created_at', 'desc')
-            ->get();
+			if(!empty($cafe_id)){
+				$a = 	DB::table('order_contains as w')
+				->join("product_menus", "w.product_menu_id", "=", "product_menus.id")
+				->where('w.category_id', $category)
+				->where('w.cafe_id', $cafe_id)
+				 ->whereBetween('w.created_at', [date_format($enddate, "Y-m-d"), date_format($toDay, "Y-m-d")])
+				->select(array(DB::Raw('sum(w.quantity) as total_quantity'), DB::Raw('sum(w.netPrice) as total_netPrice'), DB::Raw('DATE(w.created_at) date'), 'w.product_menu_id', 'product_menus.name'))
+				->groupBy(['date', 'w.product_menu_id', 'product_menus.name'])
+				->orderBy('w.created_at', 'desc')
+				->get();
+			}else{
+				$a = 	DB::table('order_contains as w')
+				->join("product_menus", "w.product_menu_id", "=", "product_menus.id")
+				->where('w.category_id', $category)
+				// ->where('w.cafe_id', $cafe_id)
+				// if(!empty($cafe_id)){
+				// 	$a->where('w.cafe_id', $cafe_id);
+				// }
+				 ->whereBetween('w.created_at', [date_format($enddate, "Y-m-d"), date_format($toDay, "Y-m-d")])
+				->select(array(DB::Raw('sum(w.quantity) as total_quantity'), DB::Raw('sum(w.netPrice) as total_netPrice'), DB::Raw('DATE(w.created_at) date'), 'w.product_menu_id', 'product_menus.name'))
+				->groupBy(['date', 'w.product_menu_id', 'product_menus.name'])
+				->orderBy('w.created_at', 'desc')
+				->get();
+			}
+		
 			$orderDetails = $a;
 			return  $orderDetails;
 		}
@@ -842,88 +993,108 @@ use Illuminate\Support\Facades\Auth;
 			$enddate = Carbon::createFromFormat('Y-m-d', $startDate);
             $daysToAdd = -30;
             $enddate = $enddate->addDays($daysToAdd);
-			$a = 	DB::table('order_contains as w')
-			->join("product_menus", "w.product_menu_id", "=", "product_menus.id")
-			->whereBetween('w.category_id', [1, 1000])
-			->whereBetween('w.created_at', [date_format($enddate, "Y-m-d"), date_format($toDay, "Y-m-d")])
-			->select(array(DB::Raw('sum(w.quantity) as total_quantity'), DB::Raw('sum(w.netPrice) as total_netPrice'), DB::Raw('DATE(w.created_at) date'), 'w.product_menu_id', 'product_menus.name'))
-			->groupBy(['date', 'w.product_menu_id', 'product_menus.name'])
-            ->orderBy('w.created_at', 'desc')
-            ->get();
+			if(!empty($cafe_id)){
+				$a = 	DB::table('order_contains as w')
+				->join("product_menus", "w.product_menu_id", "=", "product_menus.id")
+				->where('w.cafe_id', $cafe_id)
+				// if(!empty($cafe_id)){
+				// 	$a->where('w.cafe_id', $cafe_id);
+				// }
+				->whereBetween('w.category_id', [1, 1000])
+				->whereBetween('w.created_at', [date_format($enddate, "Y-m-d"), date_format($toDay, "Y-m-d")])
+				->select(array(DB::Raw('sum(w.quantity) as total_quantity'), DB::Raw('sum(w.netPrice) as total_netPrice'), DB::Raw('DATE(w.created_at) date'), 'w.product_menu_id', 'product_menus.name'))
+				->groupBy(['date', 'w.product_menu_id', 'product_menus.name'])
+				->orderBy('w.created_at', 'desc')
+				->get();
+			}else{
+				$a = 	DB::table('order_contains as w')
+				->join("product_menus", "w.product_menu_id", "=", "product_menus.id")
+				// ->where('w.cafe_id', $cafe_id)
+				// if(!empty($cafe_id)){
+				// 	$a->where('w.cafe_id', $cafe_id);
+				// }
+				->whereBetween('w.category_id', [1, 1000])
+				->whereBetween('w.created_at', [date_format($enddate, "Y-m-d"), date_format($toDay, "Y-m-d")])
+				->select(array(DB::Raw('sum(w.quantity) as total_quantity'), DB::Raw('sum(w.netPrice) as total_netPrice'), DB::Raw('DATE(w.created_at) date'), 'w.product_menu_id', 'product_menus.name'))
+				->groupBy(['date', 'w.product_menu_id', 'product_menus.name'])
+				->orderBy('w.created_at', 'desc')
+				->get();
+			}
+			
 			$orderDetails = $a;
 			return  $orderDetails;
 			
 		}
 
-		
+	
 	}
-	function getLast30TotalSales($day, $startDate , $endDate)
-		{
-			if(!empty($day))
-            {
+	// function getLast30TotalSales($day, $startDate , $endDate)
+	// 	{
+	// 		if(!empty($day))
+    //         {
 
-						$today     = new \DateTime();
-					// // $begin     = $today->sub(new \DateInterval('P30D'));
+	// 					$today     = new \DateTime();
+	// 				// // $begin     = $today->sub(new \DateInterval('P30D'));
 
-					if(($day == 1 ))
-					{
-						$begin = $today->sub(new \DateInterval('P0D'));
-					}
-					elseif (($day == 7)) 
-					{
-						$begin= $today->sub(new \DateInterval('P7D'));
-					}
-					elseif (($day == 30 )) 
-					{
-						$begin= $today->sub(new \DateInterval('P30D'));
-					}
+	// 				if(($day == 1 ))
+	// 				{
+	// 					$begin = $today->sub(new \DateInterval('P0D'));
+	// 				}
+	// 				elseif (($day == 7)) 
+	// 				{
+	// 					$begin= $today->sub(new \DateInterval('P7D'));
+	// 				}
+	// 				elseif (($day == 30 )) 
+	// 				{
+	// 					$begin= $today->sub(new \DateInterval('P30D'));
+	// 				}
 
-					$end       = new \DateTime();
-					$end       = $end->modify('+1 day');
-					$interval  = new \DateInterval('P1D');
-					$daterange = new \DatePeriod($begin, $interval, $end);
+	// 				$end       = new \DateTime();
+	// 				$end       = $end->modify('+1 day');
+	// 				$interval  = new \DateInterval('P1D');
+	// 				$daterange = new \DatePeriod($begin, $interval, $end);
 					
-					$totalRevenue =[];
-					foreach ($daterange as $date) {
+	// 				$totalRevenue =[];
+	// 				foreach ($daterange as $date) {
 						
-						$salesSum = Order::whereDate('created_at',$date->format('Y-m-d'))->sum('netAmount'); 
+	// 					$salesSum = Order::whereDate('created_at',$date->format('Y-m-d'))->sum('netAmount'); 
 						
-						$totalSale[] = $salesSum;
-					}
+	// 					$totalSale[] = $salesSum;
+	// 				}
 
-			}
+	// 		}
 
-			if(!empty( $startDate))
-            {
+	// 		if(!empty( $startDate))
+    //         {
 
-				$rangArray = []; 
-				$startDate = strtotime($startDate);
-				$endDate = strtotime($endDate);
+	// 			$rangArray = []; 
+	// 			$startDate = strtotime($startDate);
+	// 			$endDate = strtotime($endDate);
 					
-					for ($currentDate = $startDate; $currentDate <= $endDate; 
-													$currentDate += (86400)) {
+	// 				for ($currentDate = $startDate; $currentDate <= $endDate; 
+	// 												$currentDate += (86400)) {
 															
-						$date = date('Y-m-d', $currentDate);
-						$rangArray[] = $date;
-					}
+	// 					$date = date('Y-m-d', $currentDate);
+	// 					$rangArray[] = $date;
+	// 				}
   			
-				$totalRevenue =[];
-				foreach ($rangArray as $date) {
+	// 			$totalRevenue =[];
+	// 			foreach ($rangArray as $date) {
 					
-					$salesSum = Order::whereDate('created_at',$date)->sum('netAmount'); 
+	// 				$salesSum = Order::whereDate('created_at',$date)->sum('netAmount'); 
 					
-					$totalSale[] = $salesSum;
-				}
+	// 				$totalSale[] = $salesSum;
+	// 			}
 		
-			}
+	// 		}
 			
 		
 
-			// $data = implode(', ', $totalRevenue);
-			return $totalSale;
-		}
+	// 		// $data = implode(', ', $totalRevenue);
+	// 		return $totalSale;
+	// 	}
 
-		function getLast30details($day, $startDate , $endDate)
+		function getLast30details($day, $startDate , $endDate, $cafe_id)
 		{
 			if(!empty($day))
             {
@@ -956,14 +1127,24 @@ use Illuminate\Support\Facades\Auth;
 					$orderidCash = Order::whereDate('created_at',$date)->where('order_status', 2)->where('mode_of_transaction', 1)->select('id')->get();
 					$orderidOnline = Order::whereDate('created_at',$date)->where('order_status', 2)->where('mode_of_transaction', 2)->select('id')->get();
 					$orderidrecurring = Order::whereDate('created_at',$date)->where('order_status', 2)->where('mode_of_transaction', 3)->select('id')->get();
-
 					$orders['date']= $date;
-					$orders['sales_online']= OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderidOnline)->sum('netPrice');
+					if(!empty($cafe_id)){
+						$orders['sales_online']= OrderContain::where('cafe_id',$cafe_id)->whereDate('created_at',$date)->whereIn('order_id',$orderidOnline)->sum('netPrice');
+					$orders['sales_cash']= OrderContain::where('cafe_id',$cafe_id)->whereDate('created_at',$date)->whereIn('order_id',$orderidCash)->sum('netPrice');
+					$orders['sales_recurring']= OrderContain::where('cafe_id',$cafe_id)->whereDate('created_at',$date)->whereIn('order_id',$orderidrecurring)->sum('netPrice');
+					$orders['sales']= OrderContain::where('cafe_id',$cafe_id)->whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('netPrice');
+					$orders['product'] = OrderContain::where('cafe_id',$cafe_id)->whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('quantity'); 
+					$orders['expense']= Expense::where('cafe_id',$cafe_id)->whereDate('expense_date',$date)->sum('totalExpense');
+					}else{
+						$orders['sales_online']= OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderidOnline)->sum('netPrice');
 					$orders['sales_cash']= OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderidCash)->sum('netPrice');
 					$orders['sales_recurring']= OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderidrecurring)->sum('netPrice');
 					$orders['sales']= OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('netPrice');
 					$orders['product'] = OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('quantity'); 
 					$orders['expense']= Expense::whereDate('expense_date',$date)->sum('totalExpense');
+					}	
+				
+					
 					$orderDetails[] = $orders;
 					
 				}
@@ -992,14 +1173,24 @@ use Illuminate\Support\Facades\Auth;
 					$orderidCash = Order::whereDate('created_at',$date)->where('order_status', 2)->where('mode_of_transaction', 1)->select('id')->get();
 					$orderidOnline = Order::whereDate('created_at',$date)->where('order_status', 2)->where('mode_of_transaction', 2)->select('id')->get();
 					$orderidrecurring = Order::whereDate('created_at',$date)->where('order_status', 2)->where('mode_of_transaction', 3)->select('id')->get();
-
 					$orders['date']= $date;
+					if(!empty($cafe_id)){
+						$orders['sales_online']= OrderContain::where('cafe_id',$cafe_id)->whereDate('created_at',$date)->whereIn('order_id',$orderidOnline)->sum('netPrice');
+					$orders['sales_cash']= OrderContain::where('cafe_id',$cafe_id)->whereDate('created_at',$date)->whereIn('order_id',$orderidCash)->sum('netPrice');
+					$orders['sales_recurring']= OrderContain::where('cafe_id',$cafe_id)->whereDate('created_at',$date)->whereIn('order_id',$orderidrecurring)->sum('netPrice');
+					$orders['sales']= OrderContain::where('cafe_id',$cafe_id)->whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('netPrice');
+					$orders['product'] = OrderContain::where('cafe_id',$cafe_id)->whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('quantity'); 
+					$orders['expense']= Expense::where('cafe_id',$cafe_id)->whereDate('expense_date',$date)->sum('totalExpense');
+					}else{
 					$orders['sales_online']= OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderidOnline)->sum('netPrice');
 					$orders['sales_cash']= OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderidCash)->sum('netPrice');
 					$orders['sales_recurring']= OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderidrecurring)->sum('netPrice');
 					$orders['sales']= OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('netPrice');
 					$orders['product'] = OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('quantity'); 
 					$orders['expense']= Expense::whereDate('expense_date',$date)->sum('totalExpense');
+					}			
+
+					
 					$orderDetails[] = $orders;
 					
 				}
@@ -1035,14 +1226,26 @@ use Illuminate\Support\Facades\Auth;
 					$orderidCash = Order::whereDate('created_at',$date)->where('order_status', 2)->where('mode_of_transaction', 1)->select('id')->get();
 					$orderidOnline = Order::whereDate('created_at',$date)->where('order_status', 2)->where('mode_of_transaction', 2)->select('id')->get();
 					$orderidrecurring = Order::whereDate('created_at',$date)->where('order_status', 2)->where('mode_of_transaction', 3)->select('id')->get();
-
 					$orders['date']= $date;
-					$orders['sales_online']= OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderidOnline)->sum('netPrice');
+
+					if(!empty($cafe_id)){
+						$orders['sales_online']= OrderContain::where('cafe_id',$cafe_id)->whereDate('created_at',$date)->whereIn('order_id',$orderidOnline)->sum('netPrice');
+					$orders['sales_cash']= OrderContain::where('cafe_id',$cafe_id)->whereDate('created_at',$date)->whereIn('order_id',$orderidCash)->sum('netPrice');
+					$orders['sales_recurring']= OrderContain::where('cafe_id',$cafe_id)->whereDate('created_at',$date)->whereIn('order_id',$orderidrecurring)->sum('netPrice');
+					$orders['sales']= OrderContain::where('cafe_id',$cafe_id)->whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('netPrice');
+					$orders['product'] = OrderContain::where('cafe_id',$cafe_id)->whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('quantity'); 
+					$orders['revenue']= OrderContain::where('cafe_id',$cafe_id)->whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('netPrice');
+
+					}else{
+						$orders['sales_online']= OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderidOnline)->sum('netPrice');
 					$orders['sales_cash']= OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderidCash)->sum('netPrice');
 					$orders['sales_recurring']= OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderidrecurring)->sum('netPrice');
 					$orders['sales']= OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('netPrice');
 					$orders['product'] = OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('quantity'); 
 					$orders['revenue']= OrderContain::whereDate('created_at',$date)->whereIn('order_id',$orderid)->sum('netPrice');
+
+					}		
+
 					$orderDetails[] = $orders;
 					
 				}

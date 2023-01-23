@@ -35,16 +35,24 @@ class RecipeController extends Controller
                     {
                         $query->where('id', $request->id);
                     }
-                    if(!empty($request->name))
-                    {
-                        // $query->where('name', $request->name);
-                        $query->where('name', 'LIKE', '%'.$request->name.'%');
-                    }
-                    if(!empty($request->product_menu_name))
-                    {
-                        // $query->where('product_menus.name', $request->product_menu_name);
-                        $query->where('product_menus.name', 'LIKE', '%'.$request->product_menu_name.'%');
-                    }
+                     // below query is to search inside join function 
+                     $name = $request->name;
+                     if(!empty($request->name))
+                     {
+                         $query->whereHas('productMenu',function ($query) use ($name) {
+                             $query->Where('name', 'LIKE', "%{$name}%");
+                         });    
+                     }     
+                    // if(!empty($request->name))
+                    // {
+                    //     // $query->where('name', $request->name);
+                    //     $query->where('name', 'LIKE', '%'.$request->name.'%');
+                    // }
+                    // if(!empty($request->product_menu_name))
+                    // {
+                    //     // $query->where('product_menus.name', $request->product_menu_name);
+                    //     $query->where('product_menus.name', 'LIKE', '%'.$request->product_menu_name.'%');
+                    // }
                     if(!empty($request->recipe_status))
                     {
                         $query->where('recipe_status', $request->recipe_status);

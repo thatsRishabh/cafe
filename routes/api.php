@@ -29,6 +29,7 @@ Route::namespace('App\Http\Controllers\Api\Common')->group(function () {
 
         Route::post('user-login', 'login');
          Route::post('user-logout', 'logout')->middleware('auth:api');
+         Route::post('change-password', 'changePassword')->middleware('auth:api');
     });
 
     // Route::post('user-login', [App\Http\Controllers\Api\Common\UserLoginController::class, 'login']);
@@ -136,7 +137,7 @@ Route::namespace('App\Http\Controllers\Api\Common')->group(function () {
  // dashboard        
             Route::controller(DashboardController::class)->group(function () {
                 Route::post('dashboard', 'dashboard');
-                Route::post('category-wise-list', 'orderList'); 
+                Route::post('category-wise-list', 'categoryWiseList'); 
                 Route::post('dashboard-graph', 'dashboardGraph'); 
                 Route::post('dashboard-graph-list', 'dashboardGraphByName'); 
             });

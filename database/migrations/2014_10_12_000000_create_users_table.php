@@ -26,6 +26,8 @@ return new class extends Migration
             $table->integer('subscription_charge')->nullable();
             $table->date('subscription_startDate')->nullable();
             $table->date('subscription_endDate')->nullable();
+            $table->boolean('subscription_type')->comment('1 for monthly, 2 for annual')->nullable();
+            $table->boolean('subscription_status')->comment('1 for Active, 2 for Inactive')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->nullable();
             $table->integer('role_id')->comment('1 for admin, 2 for store, 3 for employee, 4 for customer')->nullable();

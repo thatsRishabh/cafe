@@ -36,6 +36,10 @@ class CustomerController extends Controller
             {
                 $query->where('mobile', 'LIKE', '%'.$request->mobile.'%');
             }
+            if(!empty($request->email))
+            {
+                $query->where('email', 'LIKE', '%'.$request->email.'%');
+            }
             if(!empty($request->name))
             {
                 $query->where('name', 'LIKE', '%'.$request->name.'%');

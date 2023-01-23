@@ -24,7 +24,7 @@ class OrderController extends Controller
         try {
 
          $query = Order::select('*')
-                    ->with('orderContains')
+                    ->with('orderContains','cafeDetails','cafeDetail:cafe_id,email,mobile')
                     ->orderBy('id', 'desc');
 
             if(!empty($request->id))
@@ -46,15 +46,15 @@ class OrderController extends Controller
             // }
            
             // date wise filter with order status
-            if(!empty($request->end_date))
+            if(!empty($request->end_date) && !empty($request->order_status))
             {
                 $query->where('order_status', $request->order_status)->whereDate('updated_at', '=', $request->end_date);
             }
 
            // date wise filter from here
-            if(!empty($request->from_date) && !empty($request->last_date))
+            if(!empty($request->from_date) && !empty($request->end_date))
             {
-                $query->whereDate('created_at', '>=', $request->from_date)->whereDate('created_at', '<=', $request->last_date);
+                $query->whereDate('created_at', '>=', $request->from_date)->whereDate('created_at', '<=', $request->end_date);
             }
 
             if(!empty($request->per_page_record))
@@ -92,12 +92,8 @@ class OrderController extends Controller
         DB::beginTransaction();
         try {
                   $validation = Validator::make($request->all(), [
-            // 'table_number'                    => 'required|numeric',
-            // 'cartTotalQuantity'                => 'required|numeric',
-            'order_status'                   => 'nullable|numeric',
-            // 'cartTotalAmount'                => 'required|numeric',
-            // 'taxes'                      => 'nullable|numeric',
-            // 'netAmount'                      => 'nullable|numeric',
+                 'order_status'                   => 'nullable|numeric',
+          
            
         ]);
         if ($validation->fails()) {
@@ -198,11 +194,8 @@ class OrderController extends Controller
         try {
             $validation = Validator::make($request->all(), [
                         'table_number'                    => 'required|numeric',
-                        // 'cartTotalQuantity'                => 'required|numeric',
                         'order_status'                   => 'nullable|numeric',
-                        // 'cartTotalAmount'                => 'required|numeric',
                         'taxes'                      => 'nullable|numeric',
-                        // 'netAmount'                      => 'nullable|numeric',
                        
                     ]);
            if ($validation->fails()) {

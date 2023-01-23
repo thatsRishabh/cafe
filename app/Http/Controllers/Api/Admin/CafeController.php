@@ -115,6 +115,8 @@ class CafeController extends Controller
           $user->subscription_charge = $request->subscription_charge;
           $user->subscription_startDate = $request->subscription_startDate;
           $user->subscription_endDate = $request->subscription_endDate;
+          $user->subscription_type = $request->subscription_type;
+          $user->subscription_status = $request->subscription_status;
             //   //  $user->created_by = auth()->id();
             //   if(!empty($request->logo))
             //   {
@@ -145,11 +147,11 @@ class CafeController extends Controller
           $CafeSetting->save();
 
            //----------------saving image--------------------------//
-          $user = User::find($user->id);
+           $user = User::find($user->id);
            $user->image =  $CafeSetting->logo;
            $user->save();
 
-        //    below Unit sometime does not work because some deletes unit from admin
+        //    below Unit sometime does not work because someone deletes unit from admin
           //----------------Units--------------------------//
           $units = Unit::where('cafe_id','1')->get();
           foreach($units as $key => $unit){
@@ -187,7 +189,8 @@ class CafeController extends Controller
         $validation = Validator::make($request->all(), [
             'name'                      => 'required',
             'mobile'                      => 'required|numeric|digits_between:10,10',
-            'email'     => 'email|required|unique:users,email,'.$id,
+            'email'                       => 'email|required|unique:users,email,'.$id,
+            'logo'                       => 'mimes:jpeg,jpg,png,gif|max:10000'
             // 'email'                      => 'required|email|unique:App\Models\User,email',
             // 'gender'                   => 'required',
             // 'email'                      => $emailCheck->email == $request->email ? 'required' : 'required|email|unique:App\Models\User,email',
@@ -195,6 +198,7 @@ class CafeController extends Controller
             // 'password'              => 'required|confirmed|min:6|max:25',
             // 'password'              => 'required|min:6|max:25',
             // 'password_confirmation' => 'required'
+
            
         ]);
 
@@ -202,16 +206,16 @@ class CafeController extends Controller
             return prepareResult(false,'validation_failed' ,$validation->errors(), 500);
            
         }       
-         // file upload format check
+        //  // file upload format check
 
-        //  $formatCheck = ['doc','docx','png','jpeg','jpg','pdf','svg','mp4','tif','tiff','bmp','gif','eps','raw','jfif','webp','pem','csv'];
-        $formatCheck = ['png','jpeg','jpg','bmp','webp'];
-         $extension = strtolower($request->logo->getClientOriginalExtension());
+        // //  $formatCheck = ['doc','docx','png','jpeg','jpg','pdf','svg','mp4','tif','tiff','bmp','gif','eps','raw','jfif','webp','pem','csv'];
+        // $formatCheck = ['png','jpeg','jpg','bmp','webp'];
+        //  $extension = strtolower($request->logo->getClientOriginalExtension());
  
-         if(!in_array($extension, $formatCheck))
-         {
-             return prepareResult(false,'file_not_allowed' ,[], 500);
-         } 
+        //  if(!in_array($extension, $formatCheck))
+        //  {
+        //      return prepareResult(false,'file_not_allowed' ,[], 500);
+        //  } 
 
              $user = User::find($id);
             //  $user->role_id = $request->role_id;
@@ -224,6 +228,11 @@ class CafeController extends Controller
              $user->mobile = $request->mobile;
              $user->is_parent = 1;
              $user->address = $request->address;
+             $user->subscription_charge = $request->subscription_charge;
+             $user->subscription_startDate = $request->subscription_startDate;
+             $user->subscription_endDate = $request->subscription_endDate;
+             $user->subscription_type = $request->subscription_type;
+             $user->subscription_status = $request->subscription_status;
             //  $user->created_by = auth()->id();
              $user->save();
 

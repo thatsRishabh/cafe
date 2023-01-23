@@ -122,13 +122,18 @@ class CategoryController extends Controller
 
     public function store(Request $request)
     {
+        $nameCheck = Category::where('name', $request->name)->first();
+
         DB::beginTransaction();
         try {
         $validation = Validator::make($request->all(),  [
-            'name'                       => 'required|unique:App\Models\Category,name', 
-            'image' => 'mimes:jpeg,jpg,png,gif|max:10000'
+            // 'name'                       => 'required|unique:App\Models\Category,name', 
+            'image'                  => 'mimes:jpeg,jpg,png,gif|max:10000',
+            'name'                      => $nameCheck ? 'required|declined:false' : 'required',
             // 'password_confirmation' => 'required'
-           
+        ],
+        [
+            'name.declined' => 'Name already exists',
         ]);
 
         if ($validation->fails()) {
@@ -173,10 +178,12 @@ class CategoryController extends Controller
     {
         DB::beginTransaction();
         try {
+        $nameCheck = Category::where('id',  $id)->get('name')->first();
 
         $validation = Validator::make($request->all(), [
             // 'name'                       => 'required|unique:App\Models\Category,name'.$id, 
-            'image'                         => 'mimes:jpeg,jpg,png,gif|max:10000'
+            'image'                         => 'mimes:jpeg,jpg,png,gif|max:10000',
+            'name'                      => $nameCheck ->name == $request->name ? 'required' : 'required|unique:App\Models\Category,name',
            
         ]);
 
