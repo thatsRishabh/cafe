@@ -151,6 +151,8 @@ Route::namespace('App\Http\Controllers\Api\Admin')->group(function () {
         
             Route::controller(CafeController::class)->group(function () {
                 Route::post('cafes', 'searchCafe');
+                Route::post('cafe-subscription', 'cafeSubscription');
+                Route::put('cafe-subscription-update/{id?}', 'cafeSubscriptionUpdate');
                 Route::post('cafe-update/{id?}', 'update');
                 Route::resource('cafe', CafeController::class)->only([
                     'store','destroy','show' ]);

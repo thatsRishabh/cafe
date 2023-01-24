@@ -25,6 +25,8 @@ class CafeController extends Controller
             $query = User::select('*')
                     ->where('role_id', 2)
                     ->with('CafeSetting')
+                    ->with('cafeSubscription:id,subscription_type,subscription_charge,subscription_startDate,subscription_endDate,subscription_id')
+                    // ->with('cafeSubscription')
                     ->orderBy('id', 'desc');
 
                     
@@ -35,6 +37,10 @@ class CafeController extends Controller
             if(!empty($request->name))
             {
                 $query->where('name', 'LIKE', '%'.$request->name.'%');
+            }
+            if(!empty($request->cafe_id))
+            {
+                $query->where('cafe_id', $request->cafe_id);
             }
             if(!empty($request->mobile))
             {
@@ -88,8 +94,9 @@ class CafeController extends Controller
             'name'                      => 'required',
             'mobile'                      => 'required|numeric|digits_between:10,10',
             'email'                      => 'required|email|unique:App\Models\User,email',
-            // 'gender'                   => 'required',
-            // 'account_balance'             => 'required|numeric',
+            'contact_person_email'                   => 'required',
+            'contact_person_name'                      => 'required',
+            'contact_person_phone'                      => 'required',
             // 'password'              => 'required|confirmed|min:6|max:25',
             'password'                   => 'required|min:6|max:25',
             'logo'                       => 'mimes:jpeg,jpg,png,gif|max:10000'
@@ -112,10 +119,10 @@ class CafeController extends Controller
           $user->mobile = $request->mobile;
           $user->is_parent = 1;
           $user->address = $request->address;
-          $user->subscription_charge = $request->subscription_charge;
-          $user->subscription_startDate = $request->subscription_startDate;
-          $user->subscription_endDate = $request->subscription_endDate;
-          $user->subscription_type = $request->subscription_type;
+        //   $user->subscription_charge = $request->subscription_charge;
+        //   $user->subscription_startDate = $request->subscription_startDate;
+        //   $user->subscription_endDate = $request->subscription_endDate;
+        //   $user->subscription_type = $request->subscription_type;
           $user->subscription_status = $request->subscription_status;
             //   //  $user->created_by = auth()->id();
             //   if(!empty($request->logo))
@@ -135,6 +142,10 @@ class CafeController extends Controller
           $CafeSetting->description  = $request->description;
           $CafeSetting->website     = $request->website;
           $CafeSetting->address     = $request->address;
+          $CafeSetting->subscription_charge = $request->subscription_charge;
+          $CafeSetting->subscription_startDate = $request->subscription_startDate;
+          $CafeSetting->subscription_endDate = $request->subscription_endDate;
+          $CafeSetting->subscription_type = $request->subscription_type;
           $CafeSetting->contact_person_email = $request->contact_person_email; 
           $CafeSetting->contact_person_name = $request->contact_person_name;
           $CafeSetting->contact_person_phone = $request->contact_person_phone;
@@ -190,7 +201,10 @@ class CafeController extends Controller
             'name'                      => 'required',
             'mobile'                      => 'required|numeric|digits_between:10,10',
             'email'                       => 'email|required|unique:users,email,'.$id,
-            'logo'                       => 'mimes:jpeg,jpg,png,gif|max:10000'
+            'contact_person_email'                   => 'required',
+            'contact_person_name'                      => 'required',
+            'contact_person_phone'                      => 'required',
+            // 'logo'                       => 'mimes:jpeg,jpg,png,gif|max:10000'
             // 'email'                      => 'required|email|unique:App\Models\User,email',
             // 'gender'                   => 'required',
             // 'email'                      => $emailCheck->email == $request->email ? 'required' : 'required|email|unique:App\Models\User,email',
@@ -228,10 +242,10 @@ class CafeController extends Controller
              $user->mobile = $request->mobile;
              $user->is_parent = 1;
              $user->address = $request->address;
-             $user->subscription_charge = $request->subscription_charge;
-             $user->subscription_startDate = $request->subscription_startDate;
-             $user->subscription_endDate = $request->subscription_endDate;
-             $user->subscription_type = $request->subscription_type;
+            //  $user->subscription_charge = $request->subscription_charge;
+            //  $user->subscription_startDate = $request->subscription_startDate;
+            //  $user->subscription_endDate = $request->subscription_endDate;
+            //  $user->subscription_type = $request->subscription_type;
              $user->subscription_status = $request->subscription_status;
             //  $user->created_by = auth()->id();
              $user->save();
@@ -246,16 +260,31 @@ class CafeController extends Controller
              //  }
               $CafeSetting->website     = $request->website;
               $CafeSetting->address     = $request->address;
+              $CafeSetting->subscription_charge = $request->subscription_charge;
+              $CafeSetting->subscription_startDate = $request->subscription_startDate;
+              $CafeSetting->subscription_endDate = $request->subscription_endDate;
+              $CafeSetting->subscription_type = $request->subscription_type;
               $CafeSetting->contact_person_email = $request->contact_person_email; 
               $CafeSetting->contact_person_name = $request->contact_person_name;
               $CafeSetting->contact_person_phone = $request->contact_person_phone;
-              if(!empty($request->logo))
-               {
-               $file=$request->logo;
-               $filename=time().'.'.$file->getClientOriginalExtension();
-               // $info->image=env('CDN_DOC_URL').$request->image->move('assets',$filename);
-               $CafeSetting->logo=env('CDN_DOC_URL').$request->logo->move('assets\user_photos',$filename);
-              }
+            //   if(!empty($request->logo))
+            //    {
+            //    $file=$request->logo;
+            //    $filename=time().'.'.$file->getClientOriginalExtension();
+            //    // $info->image=env('CDN_DOC_URL').$request->image->move('assets',$filename);
+            //    $CafeSetting->logo=env('CDN_DOC_URL').$request->logo->move('assets\user_photos',$filename);
+            //   }
+            if(!empty($request->logo))
+            {
+                if(gettype($request->logo) == "string"){
+                    $CafeSetting->logo = $request->logo;
+                }
+                else{
+                       $file=$request->logo;
+                        $filename=time().'.'.$file->getClientOriginalExtension();
+                        $CafeSetting->logo=env('CDN_DOC_URL').$request->logo->move('assets\user_photos',$filename);
+                }
+            }
               $CafeSetting->save();
 
          
@@ -270,6 +299,92 @@ class CafeController extends Controller
             
         }
     }
+
+    public function cafeSubscription(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+        $validation = Validator::make($request->all(),  [
+            'subscription_type'                      => 'required',
+           
+        ]);
+
+        if ($validation->fails()) {
+            return prepareResult(false,'validation_failed' ,$validation->errors(), 500);
+           
+        }       
+         
+                
+          //Create Store Setting
+          $CafeSetting = new CafeSetting();
+          $CafeSetting->subscription_id =  $request->cafe_id;
+          $CafeSetting->subscription_charge = $request->subscription_charge;
+          $CafeSetting->subscription_startDate = $request->subscription_startDate;
+          $CafeSetting->subscription_endDate = $request->subscription_endDate;
+          $CafeSetting->subscription_type = $request->subscription_type;
+          $CafeSetting->save();
+      
+
+            DB::commit();
+            return prepareResult(true,'Your data has been saved successfully' , $CafeSetting, 200);
+           
+        } catch (\Throwable $e) {
+            Log::error($e);
+            DB::rollback();
+            return prepareResult(false,'Your data has not been saved' ,$e->getMessage(), 500);
+            
+        }
+    }
+
+    public function cafeSubscriptionUpdate(Request $request, $id)
+    {
+        DB::beginTransaction();
+        try {
+            
+
+        $validation = Validator::make($request->all(), [
+            'subscription_type'                      => 'required',
+            // 'mobile'                      => 'required|numeric|digits_between:10,10',
+            // 'email'                       => 'email|required|unique:users,email,'.$id,
+            // 'logo'                       => 'mimes:jpeg,jpg,png,gif|max:10000'
+            // 'email'                      => 'required|email|unique:App\Models\User,email',
+            // 'gender'                   => 'required',
+            // 'email'                      => $emailCheck->email == $request->email ? 'required' : 'required|email|unique:App\Models\User,email',
+            // 'account_balance'             => 'required|numeric',
+            // 'password'              => 'required|confirmed|min:6|max:25',
+            // 'password'              => 'required|min:6|max:25',
+            // 'password_confirmation' => 'required'
+
+           
+        ]);
+
+        if ($validation->fails()) {
+            return prepareResult(false,'validation_failed' ,$validation->errors(), 500);
+           
+        }       
+      
+
+             $CafeSetting = CafeSetting::find($id);
+             $CafeSetting->subscription_id =  $request->cafe_id;
+             $CafeSetting->subscription_charge = $request->subscription_charge;
+             $CafeSetting->subscription_startDate = $request->subscription_startDate;
+             $CafeSetting->subscription_endDate = $request->subscription_endDate;
+             $CafeSetting->subscription_type = $request->subscription_type;
+              $CafeSetting->save();
+
+         
+   
+        DB::commit();
+        return prepareResult(true,'Your data has been Updated successfully' ,$CafeSetting, 200);
+           
+        } catch (\Throwable $e) {
+            Log::error($e);
+            DB::rollback();
+            return prepareResult(false,'Your data has not been Updated' ,$e->getMessage(), 500);
+            
+        }
+    }
+
 
     public function show($id)
     {

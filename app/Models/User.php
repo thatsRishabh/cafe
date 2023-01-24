@@ -66,6 +66,11 @@ class User extends Authenticatable
         return $this->belongsTo(CafeSetting::class, 'id', 'cafe_id');
     }
 
+    public function cafeSubscription()
+    {
+        return $this->hasMany(CafeSetting::class, 'subscription_id', 'cafe_id');
+    }
+
     // public function roles()
     // {
     //     return $this->belongsTo(Recipe::class, 'recipe_id', 'id');

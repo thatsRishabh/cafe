@@ -31,6 +31,14 @@ class ProductInfoController extends Controller
                             $query->where('product_infos.id',  $request->id);
                             // in above we are specifying that it has to match from Product_infos id
                         }
+                        if(!empty($request->unit_id))
+                        {
+                            $query->where('product_infos.unit_id',  $request->unit_id);
+                        }
+                        if(!empty($request->current_quanitity))
+                        {
+                            $query->where('product_infos.current_quanitity',  $request->current_quanitity);
+                        }
                         if(!empty($request->name))
                         {
                             $query->where('product_infos.name','LIKE', '%'.$request->name.'%');

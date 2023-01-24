@@ -22,7 +22,7 @@ class PermissionSeeder extends Seeder
         app()['cache']->forget('spatie.permission.cache');
         // create roles and assign existing permissions
 
-        // 1 for only admin
+        // 1 common for admin , adminEmployee
     	Permission::create(['name' => 'cafe-read', 'guard_name' => 'api','group_name'=>'cafe','se_name'=>'cafe-read','belongs_to'=>'1']);
     	Permission::create(['name' => 'cafe-add', 'guard_name' => 'api','group_name'=>'cafe','se_name'=>'cafe-create','belongs_to'=>'1']);
     	Permission::create(['name' => 'cafe-edit', 'guard_name' => 'api','group_name'=>'cafe','se_name'=>'cafe-edit','belongs_to'=>'1']);
@@ -42,7 +42,7 @@ class PermissionSeeder extends Seeder
          Permission::create(['name' => 'dashboard-delete', 'guard_name' => 'api','group_name'=>'dashboard','se_name'=>'dashboard-delete','belongs_to'=>'4']);
          Permission::create(['name' => 'dashboard-browse', 'guard_name' => 'api','group_name'=>'dashboard','se_name'=>'dashboard-browse','belongs_to'=>'4']);
 
-        // 10 is for common for all, admin, cafe, employee, adminEmployee
+        // 10 is for common for , cafe, employee, adminEmployee
         Permission::create(['name' => 'customer-read', 'guard_name' => 'api','group_name'=>'customer','se_name'=>'customer-read','belongs_to'=>'10']);
         Permission::create(['name' => 'customer-add', 'guard_name' => 'api','group_name'=>'customer','se_name'=>'customer-create','belongs_to'=>'10']);
         Permission::create(['name' => 'customer-edit', 'guard_name' => 'api','group_name'=>'customer','se_name'=>'customer-edit','belongs_to'=>'10']);

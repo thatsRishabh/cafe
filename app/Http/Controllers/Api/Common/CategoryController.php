@@ -203,17 +203,28 @@ class CategoryController extends Controller
         //  } 
 
                   $info = Category::find($id);
+                // if(!empty($request->image))
+                // {
+                //     if(gettype($request->image) == "string"){
+                //         $info->image = $request->image;
+                //     }
+                //     else{
+                //            $file=$request->image;
+                //             $filename=time().'.'.$file->getClientOriginalExtension();
+                //             $info->image=env('CDN_DOC_URL').$request->image->move('assets\category_photos',$filename);
+                //     }
+    
+                // }
                 if(!empty($request->image))
                 {
                     if(gettype($request->image) == "string"){
                         $info->image = $request->image;
                     }
                     else{
-                           $file=$request->image;
+                        $file=$request->image;
                             $filename=time().'.'.$file->getClientOriginalExtension();
                             $info->image=env('CDN_DOC_URL').$request->image->move('assets\category_photos',$filename);
                     }
-    
                 }
                 $info->name = $request->name;
                 $info->save();

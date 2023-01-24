@@ -40,7 +40,13 @@ class AuthController extends Controller
                 if ($validation->fails()) {
                     return  prepareResult(false,'validation failed' ,[], 500);
                 }
-                
+
+                //  user subscription status check
+                if($user->subscription_status == 2)
+                {
+                    return prepareResult(false,'Your subscription is inactive' ,[], 500);
+                } 
+
                 if (Hash::check($request->password, $user->password)) {
 
                     $data = [];

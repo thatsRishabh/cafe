@@ -19,17 +19,18 @@ class EmployeeController extends Controller
     {
         try {
             $query = User::select('*')
-                    ->where('role_id', 3)
+                    // ->where('role_id', 3)
+                    ->whereIn('role_id', [3, 5])
                     ->orderBy('id', 'desc');
 
             if(!empty($request->id))
             {
                 $query->where('id', $request->id);
             }
-            // if(!empty($request->name))
-            // {
-            //     $query->where('name', $request->name);
-            // }
+            if(!empty($request->role_id))
+            {
+                $query->where('role_id', $request->role_id);
+            }
             if(!empty($request->name))
             {
                 $query->where('name', 'LIKE', '%'.$request->name.'%');
@@ -115,8 +116,7 @@ class EmployeeController extends Controller
         }       
 
                 $user = new User;
-                //  $user->role_id = $request->role_id;
-                $user->role_id = 3;
+                 $user->role_id = $request->role_id;
                  //$user->cafe_id =  $request->cafe_id;
                  $user->name = $request->name;
                  $user->email  = $request->email;
@@ -184,22 +184,21 @@ class EmployeeController extends Controller
             return prepareResult(false,'validation_failed' ,$validation->errors(), 500);
            
         }       
-        if(!empty($request->image))
-        {
-         // file upload format check
-        //  $formatCheck = ['doc','docx','png','jpeg','jpg','pdf','svg','mp4','tif','tiff','bmp','gif','eps','raw','jfif','webp','pem','csv'];
-        $formatCheck = ['png','jpeg','jpg','bmp','webp'];
-         $extension = strtolower($request->image->getClientOriginalExtension());
+        // if(!empty($request->image))
+        // {
+        //  // file upload format check
+        // //  $formatCheck = ['doc','docx','png','jpeg','jpg','pdf','svg','mp4','tif','tiff','bmp','gif','eps','raw','jfif','webp','pem','csv'];
+        // $formatCheck = ['png','jpeg','jpg','bmp','webp'];
+        //  $extension = strtolower($request->image->getClientOriginalExtension());
  
-         if(!in_array($extension, $formatCheck))
-         {
-             return prepareResult(false,'file_not_allowed' ,[], 500);
-         } 
-        }
+        //  if(!in_array($extension, $formatCheck))
+        //  {
+        //      return prepareResult(false,'file_not_allowed' ,[], 500);
+        //  } 
+        // }
 
              $user = User::find($id);
-            //  $user->role_id = $request->role_id;
-            $user->role_id = 3;
+             $user->role_id = $request->role_id;
              $user->name = $request->name;
              $user->email  = $request->email;
             //  $user->password = bcrypt($request->password);
@@ -216,13 +215,24 @@ class EmployeeController extends Controller
         
              $user->address = $request->address;
             
-             if(!empty($request->image))
-              {
-              $file=$request->image;
-              $filename=time().'.'.$file->getClientOriginalExtension();
-              // $info->image=env('CDN_DOC_URL').$request->image->move('assets',$filename);
-              $user->image=env('CDN_DOC_URL').$request->image->move('assets\user_photos',$filename);
-              }
+            //  if(!empty($request->image))
+            //   {
+            //   $file=$request->image;
+            //   $filename=time().'.'.$file->getClientOriginalExtension();
+            //   // $info->image=env('CDN_DOC_URL').$request->image->move('assets',$filename);
+            //   $user->image=env('CDN_DOC_URL').$request->image->move('assets\user_photos',$filename);
+            //   }
+            if(!empty($request->image))
+            {
+                if(gettype($request->image) == "string"){
+                    $user->image = $request->image;
+                }
+                else{
+                       $file=$request->image;
+                        $filename=time().'.'.$file->getClientOriginalExtension();
+                        $user->image=env('CDN_DOC_URL').$request->image->move('assets\user_photos',$filename);
+                }
+            }
              $user->save();
 
          

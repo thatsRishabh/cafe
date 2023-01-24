@@ -110,7 +110,7 @@ class UserSeeder extends Seeder
         $adminEmployeeUser->assignRole($adminEmployeeRole);
 
         /*-----------Assigne Permission------------------*/
-        $adminPermissions = Permission::select('id','name')->whereIn('belongs_to',['1','4','10'])->get();
+        $adminPermissions = Permission::select('id','name')->whereIn('belongs_to',['1','4',])->get();
         foreach ($adminPermissions as $key => $permission) {
             $addedPermission = $permission->name;
             $adminRole->givePermissionTo($addedPermission);
@@ -130,7 +130,7 @@ class UserSeeder extends Seeder
 
         }
 
-        $adminEmployeePermissions = Permission::select('id','name')->whereIn('belongs_to',['3','5','10'])->get();
+        $adminEmployeePermissions = Permission::select('id','name')->whereIn('belongs_to',['1','3','5','10'])->get();
         foreach ($adminEmployeePermissions as $key => $permission) {
             $addedPermission = $permission->name;
             $adminEmployeeRole->givePermissionTo($addedPermission);
