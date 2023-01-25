@@ -202,7 +202,11 @@ class EmployeeController extends Controller
              $user->name = $request->name;
              $user->email  = $request->email;
             //  $user->password = bcrypt($request->password);
-             $user->password =Hash::make($request->password);
+            if(!empty($request->password))
+            {
+              $user->password =Hash::make($request->password);
+            }
+            //  $user->password =Hash::make($request->password);
              $user->mobile = $request->mobile;
              $user->designation = $request->designation;
              $user->document_type = $request->document_type;

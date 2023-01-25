@@ -71,6 +71,7 @@ class AuthController extends Controller
                         // 'role'=>"admin"$user
                         'name'=>$user->name,
                         'logo'=>$user->image,
+                        'role_id'=>$user->role_id,
 
                     ];
                     $data['userData'] =  $userData;

@@ -22,12 +22,19 @@ class PermissionSeeder extends Seeder
         app()['cache']->forget('spatie.permission.cache');
         // create roles and assign existing permissions
 
-        // 1 common for admin , adminEmployee
-    	Permission::create(['name' => 'cafe-read', 'guard_name' => 'api','group_name'=>'cafe','se_name'=>'cafe-read','belongs_to'=>'1']);
-    	Permission::create(['name' => 'cafe-add', 'guard_name' => 'api','group_name'=>'cafe','se_name'=>'cafe-create','belongs_to'=>'1']);
-    	Permission::create(['name' => 'cafe-edit', 'guard_name' => 'api','group_name'=>'cafe','se_name'=>'cafe-edit','belongs_to'=>'1']);
-    	Permission::create(['name' => 'cafe-delete', 'guard_name' => 'api','group_name'=>'cafe','se_name'=>'cafe-delete','belongs_to'=>'1']);
-    	Permission::create(['name' => 'cafe-browse', 'guard_name' => 'api','group_name'=>'cafe','se_name'=>'cafe-browse','belongs_to'=>'1']);
+         // 1 common for admin
+        Permission::create(['name' => 'adminEmployee-read', 'guard_name' => 'api','group_name'=>'adminEmployee','se_name'=>'adminEmployee-read','belongs_to'=>'1']);
+    	Permission::create(['name' => 'adminEmployee-add', 'guard_name' => 'api','group_name'=>'adminEmployee','se_name'=>'adminEmployee-create','belongs_to'=>'1']);
+    	Permission::create(['name' => 'adminEmployee-edit', 'guard_name' => 'api','group_name'=>'adminEmployee','se_name'=>'adminEmployee-edit','belongs_to'=>'1']);
+    	Permission::create(['name' => 'adminEmployee-delete', 'guard_name' => 'api','group_name'=>'adminEmployee','se_name'=>'adminEmployee-delete','belongs_to'=>'1']);
+    	Permission::create(['name' => 'adminEmployee-browse', 'guard_name' => 'api','group_name'=>'adminEmployee','se_name'=>'adminEmployee-browse','belongs_to'=>'1']);
+
+        // 6 common for admin , adminEmployee
+    	Permission::create(['name' => 'cafe-read', 'guard_name' => 'api','group_name'=>'cafe','se_name'=>'cafe-read','belongs_to'=>'6']);
+    	Permission::create(['name' => 'cafe-add', 'guard_name' => 'api','group_name'=>'cafe','se_name'=>'cafe-create','belongs_to'=>'6']);
+    	Permission::create(['name' => 'cafe-edit', 'guard_name' => 'api','group_name'=>'cafe','se_name'=>'cafe-edit','belongs_to'=>'6']);
+    	Permission::create(['name' => 'cafe-delete', 'guard_name' => 'api','group_name'=>'cafe','se_name'=>'cafe-delete','belongs_to'=>'6']);
+    	Permission::create(['name' => 'cafe-browse', 'guard_name' => 'api','group_name'=>'cafe','se_name'=>'cafe-browse','belongs_to'=>'6']);
 
         // 4 is for common of adimn and cafe 
         Permission::create(['name' => 'employee-read', 'guard_name' => 'api','group_name'=>'employee','se_name'=>'employee-read','belongs_to'=>'4']);

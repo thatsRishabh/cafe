@@ -238,7 +238,11 @@ class CafeController extends Controller
              $user->email  = $request->email;
  
             //  $user->password = bcrypt($request->password);
-             $user->password =Hash::make($request->password);
+            if(!empty($request->password))
+              {
+                $user->password =Hash::make($request->password);
+              }
+            //  $user->password =Hash::make($request->password);
              $user->mobile = $request->mobile;
              $user->is_parent = 1;
              $user->address = $request->address;

@@ -182,7 +182,7 @@ class CategoryController extends Controller
 
         $validation = Validator::make($request->all(), [
             // 'name'                       => 'required|unique:App\Models\Category,name'.$id, 
-            'image'                         => 'mimes:jpeg,jpg,png,gif|max:10000',
+            // 'image'                         => 'mimes:jpeg,jpg,png,gif|max:10000',
             'name'                      => $nameCheck ->name == $request->name ? 'required' : 'required|unique:App\Models\Category,name',
            
         ]);
