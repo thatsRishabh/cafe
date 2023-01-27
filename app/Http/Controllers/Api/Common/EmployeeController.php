@@ -88,8 +88,9 @@ class EmployeeController extends Controller
         try {
         $validation = Validator::make($request->all(),  [
             'name'                      => 'required',
-            'mobile'                      => 'required|numeric|digits_between:10,10',
+            'mobile'                      => 'required|numeric|digits_between:10,10|unique:App\Models\User,mobile',
             'email'                      => 'required|email|unique:App\Models\User,email',
+            'document_number'                      => 'required|unique:App\Models\User,document_number',
             // 'gender'                   => 'required',
             // 'account_balance'             => 'required|numeric',
             // 'password'              => 'required|confirmed|min:6|max:25',
@@ -141,6 +142,10 @@ class EmployeeController extends Controller
                   // $info->image=env('CDN_DOC_URL').$request->image->move('assets',$filename);
                   $user->image=env('CDN_DOC_URL').$request->image->move('assets\user_photos',$filename);
                   }
+                  if(empty($request->cafe_id))
+                  {
+                  $user->cafe_id =  1;
+                  }
                  $user->save();
      
            
@@ -168,8 +173,9 @@ class EmployeeController extends Controller
 
         $validation = Validator::make($request->all(), [
             'name'                      => 'required',
-            'mobile'                      => 'required|numeric|digits_between:10,10',
-            'email'     => 'email|required|unique:users,email,'.$id,
+            'mobile'                      => 'required|numeric|digits_between:10,10|unique:users,mobile,'.$id,
+            'email'                        => 'email|required|unique:users,email,'.$id,
+            'document_number'                      => 'required|unique:users,document_number,'.$id,
             // 'email'                      => 'required|email|unique:App\Models\User,email',
             // 'gender'                   => 'required',
             // 'email'                      => $emailCheck->email == $request->email ? 'required' : 'required|email|unique:App\Models\User,email',

@@ -36,25 +36,12 @@ class PermissionSeeder extends Seeder
     	Permission::create(['name' => 'cafe-delete', 'guard_name' => 'api','group_name'=>'cafe','se_name'=>'cafe-delete','belongs_to'=>'6']);
     	Permission::create(['name' => 'cafe-browse', 'guard_name' => 'api','group_name'=>'cafe','se_name'=>'cafe-browse','belongs_to'=>'6']);
 
-        // 4 is for common of adimn and cafe 
-        Permission::create(['name' => 'employee-read', 'guard_name' => 'api','group_name'=>'employee','se_name'=>'employee-read','belongs_to'=>'4']);
-    	Permission::create(['name' => 'employee-add', 'guard_name' => 'api','group_name'=>'employee','se_name'=>'employee-create','belongs_to'=>'4']);
-    	Permission::create(['name' => 'employee-edit', 'guard_name' => 'api','group_name'=>'employee','se_name'=>'employee-edit','belongs_to'=>'4']);
-    	Permission::create(['name' => 'employee-delete', 'guard_name' => 'api','group_name'=>'employee','se_name'=>'employee-delete','belongs_to'=>'4']);
-    	Permission::create(['name' => 'employee-browse', 'guard_name' => 'api','group_name'=>'employee','se_name'=>'employee-browse','belongs_to'=>'4']);
-
+        // 4 is for common of adimn and cafe ,adminEmployee
          Permission::create(['name' => 'dashboard-read', 'guard_name' => 'api','group_name'=>'dashboard','se_name'=>'dashboard-read','belongs_to'=>'4']);
          Permission::create(['name' => 'dashboard-add', 'guard_name' => 'api','group_name'=>'dashboard','se_name'=>'dashboard-create','belongs_to'=>'4']);
          Permission::create(['name' => 'dashboard-edit', 'guard_name' => 'api','group_name'=>'dashboard','se_name'=>'dashboard-edit','belongs_to'=>'4']);
          Permission::create(['name' => 'dashboard-delete', 'guard_name' => 'api','group_name'=>'dashboard','se_name'=>'dashboard-delete','belongs_to'=>'4']);
          Permission::create(['name' => 'dashboard-browse', 'guard_name' => 'api','group_name'=>'dashboard','se_name'=>'dashboard-browse','belongs_to'=>'4']);
-
-        // 10 is for common for , cafe, employee, adminEmployee
-        Permission::create(['name' => 'customer-read', 'guard_name' => 'api','group_name'=>'customer','se_name'=>'customer-read','belongs_to'=>'10']);
-        Permission::create(['name' => 'customer-add', 'guard_name' => 'api','group_name'=>'customer','se_name'=>'customer-create','belongs_to'=>'10']);
-        Permission::create(['name' => 'customer-edit', 'guard_name' => 'api','group_name'=>'customer','se_name'=>'customer-edit','belongs_to'=>'10']);
-        Permission::create(['name' => 'customer-delete', 'guard_name' => 'api','group_name'=>'customer','se_name'=>'customer-delete','belongs_to'=>'10']);
-        Permission::create(['name' => 'customer-browse', 'guard_name' => 'api','group_name'=>'customer','se_name'=>'customer-browse','belongs_to'=>'10']);
 
          // 2 is for cafe
          Permission::create(['name' => 'productInfo-read', 'guard_name' => 'api','group_name'=>'productInfo','se_name'=>'productInfo-read','belongs_to'=>'2']);
@@ -62,6 +49,12 @@ class PermissionSeeder extends Seeder
          Permission::create(['name' => 'productInfo-edit', 'guard_name' => 'api','group_name'=>'productInfo','se_name'=>'productInfo-edit','belongs_to'=>'2']);
          Permission::create(['name' => 'productInfo-delete', 'guard_name' => 'api','group_name'=>'productInfo','se_name'=>'productInfo-delete','belongs_to'=>'2']);
          Permission::create(['name' => 'productInfo-browse', 'guard_name' => 'api','group_name'=>'productInfo','se_name'=>'productInfo-browse','belongs_to'=>'2']);
+
+         Permission::create(['name' => 'employee-read', 'guard_name' => 'api','group_name'=>'employee','se_name'=>'employee-read','belongs_to'=>'2']);
+         Permission::create(['name' => 'employee-add', 'guard_name' => 'api','group_name'=>'employee','se_name'=>'employee-create','belongs_to'=>'2']);
+         Permission::create(['name' => 'employee-edit', 'guard_name' => 'api','group_name'=>'employee','se_name'=>'employee-edit','belongs_to'=>'2']);
+         Permission::create(['name' => 'employee-delete', 'guard_name' => 'api','group_name'=>'employee','se_name'=>'employee-delete','belongs_to'=>'2']);
+         Permission::create(['name' => 'employee-browse', 'guard_name' => 'api','group_name'=>'employee','se_name'=>'employee-browse','belongs_to'=>'2']);
 
          Permission::create(['name' => 'recipe-read', 'guard_name' => 'api','group_name'=>'recipe','se_name'=>'recipe-read','belongs_to'=>'2']);
          Permission::create(['name' => 'recipe-add', 'guard_name' => 'api','group_name'=>'recipe','se_name'=>'recipe-create','belongs_to'=>'2']);
@@ -105,6 +98,12 @@ class PermissionSeeder extends Seeder
         Permission::create(['name' => 'unit-edit', 'guard_name' => 'api','group_name'=>'unit','se_name'=>'unit-edit','belongs_to'=>'5']);
         Permission::create(['name' => 'unit-delete', 'guard_name' => 'api','group_name'=>'unit','se_name'=>'unit-delete','belongs_to'=>'5']);
         Permission::create(['name' => 'unit-browse', 'guard_name' => 'api','group_name'=>'unit','se_name'=>'unit-browse','belongs_to'=>'5']);
+
+        Permission::create(['name' => 'customer-read', 'guard_name' => 'api','group_name'=>'customer','se_name'=>'customer-read','belongs_to'=>'5']);
+        Permission::create(['name' => 'customer-add', 'guard_name' => 'api','group_name'=>'customer','se_name'=>'customer-create','belongs_to'=>'5']);
+        Permission::create(['name' => 'customer-edit', 'guard_name' => 'api','group_name'=>'customer','se_name'=>'customer-edit','belongs_to'=>'5']);
+        Permission::create(['name' => 'customer-delete', 'guard_name' => 'api','group_name'=>'customer','se_name'=>'customer-delete','belongs_to'=>'5']);
+        Permission::create(['name' => 'customer-browse', 'guard_name' => 'api','group_name'=>'customer','se_name'=>'customer-browse','belongs_to'=>'5']);
 
         Permission::create(['name' => 'category-read', 'guard_name' => 'api','group_name'=>'category','se_name'=>'category-read','belongs_to'=>'5']);
         Permission::create(['name' => 'category-add', 'guard_name' => 'api','group_name'=>'category','se_name'=>'category-create','belongs_to'=>'5']);

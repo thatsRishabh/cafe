@@ -21,20 +21,32 @@ class ProductStockManageController extends Controller
         try {
 
 
-            $query = DB::table('product_stock_manages')
-                    ->join('units', 'product_stock_manages.unit_id', '=', 'units.id')
-                    ->join('product_infos', 'product_stock_manages.product_id', '=', 'product_infos.id')
-                    ->select('product_stock_manages.*', 'product_infos.name as product_infos_name', 'units.name as units_name' ,'product_infos.current_quanitity as product_infos_old_quantity', 'units.minvalue as units_minvalue')
-                    ->orderBy('product_stock_manages.id', 'desc');
+            // $query = DB::table('product_stock_manages')
+            //         ->join('units', 'product_stock_manages.unit_id', '=', 'units.id')
+            //         ->join('product_infos', 'product_stock_manages.product_id', '=', 'product_infos.id')
+            //         ->select('product_stock_manages.*', 'product_infos.name as product_infos_name', 'units.name as units_name' ,'product_infos.current_quanitity as product_infos_old_quantity', 'units.minvalue as units_minvalue')
+            //         ->orderBy('product_stock_manages.id', 'desc');
+
+            $query = ProductStockManage::select('*')
+                    ->with('unitName:id,name,minvalue','productName:id,name')
+                    ->orderBy('id', 'desc');
         
                     if(!empty($request->id))
                     {
                         $query->where('product_stock_manages.id', $request->id);
                     }
+                    // below query is to search inside join function 
+                    $product_id = $request->product_id;
                     if(!empty($request->product_id))
                     {
-                        $query->where('product_stock_manages.product_id', $request->product_id);
-                    }
+                        $query->whereHas('productName',function ($query) use ($product_id) {
+                            $query->Where('product_id', 'LIKE', "%{$product_id}%");
+                        });    
+                    }        
+                    // if(!empty($request->product_id))
+                    // {
+                    //     $query->where('product_stock_manages.product_id', $request->product_id);
+                    // }
                     if(!empty($request->stock_operation))
                     {
                         $query->where('product_stock_manages.stock_operation', $request->stock_operation);

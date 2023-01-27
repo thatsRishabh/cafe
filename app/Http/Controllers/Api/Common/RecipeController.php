@@ -22,8 +22,8 @@ class RecipeController extends Controller
             $query = Recipe::select('*')
                     // ->join('product_menus', 'recipes.product_menu_id', '=', 'product_menus.id')
                     // ->select('recipes.*','product_menus.name as product_menu_name' )
-                            ->with('recipeMethods:recipe_id,name,quantity,unit_id,product_info_stock_id,unit_name,unit_minValue')
-                            ->with('productMenu:name,cafe_id,id')
+                            ->with('recipeMethods:recipe_id,name,quantity,unit_id,product_info_stock_id,unit_name,unit_minValue','productMenu:name,cafe_id,id')
+                            // ->with('productMenu:name,cafe_id,id')
                             ->orderBy('id', 'desc');
         
                 //   $query = RecipeContains::select('*')

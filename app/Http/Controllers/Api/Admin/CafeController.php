@@ -24,8 +24,8 @@ class CafeController extends Controller
         try {
             $query = User::select('*')
                     ->where('role_id', 2)
-                    ->with('CafeSetting')
-                    ->with('cafeSubscription:id,subscription_type,subscription_charge,subscription_startDate,subscription_endDate,subscription_id')
+                    // ->with('CafeSetting')
+                    ->with('cafeSubscription:id,subscription_type,subscription_charge,subscription_startDate,subscription_endDate,subscription_id','CafeSetting')
                     // ->with('cafeSubscription')
                     ->orderBy('id', 'desc');
 
