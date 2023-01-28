@@ -58,11 +58,12 @@ class UserSeeder extends Seeder
 
         $adminRole = Role::where('id','1')->first();
         $adminUser->assignRole($adminRole);
-
+        
         /*-----------Create Cafe-------------*/
         $cafeUser = new User();
         $cafeUser->id                      = '2';
         $cafeUser->role_id                 = '2';
+        $cafeUser->subscription_status     = '1';
         $cafeUser->name                    = 'Cafe';
         $cafeUser->email                   = 'cafe@gmail.com';
         $cafeUser->password                = \Hash::make(12345678);

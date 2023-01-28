@@ -142,7 +142,8 @@ class EmployeeController extends Controller
                   // $info->image=env('CDN_DOC_URL').$request->image->move('assets',$filename);
                   $user->image=env('CDN_DOC_URL').$request->image->move('assets\user_photos',$filename);
                   }
-                  if(empty($request->cafe_id))
+
+                  if($request->role_id == 5)
                   {
                   $user->cafe_id =  1;
                   }
@@ -243,6 +244,10 @@ class EmployeeController extends Controller
                         $user->image=env('CDN_DOC_URL').$request->image->move('assets\user_photos',$filename);
                 }
             }
+                 if($request->role_id == 5)
+                  {
+                  $user->cafe_id =  1;
+                  }
              $user->save();
 
          

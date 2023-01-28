@@ -266,25 +266,31 @@ class EmployeeAttendenceController extends Controller
             $data = [];
     
             // use of template literal while adding date
-            
-            // $data['total_days_present'] = AttendenceList::where('employee_id', $request->employee_id)->where('attendence',2)->whereDate('created_at', '>=', $request->year_month.'-01' )->whereDate('created_at', '<=', $request->year_month.'-31')->count();
+            $data['days_in_month'] = cal_days_in_month(CAL_GREGORIAN, substr($request->year_month, 5,6), substr($request->year_month, 0,4));
+            $data['year_month']=$request->year_month;
     
-            $data['total_days_present'] = AttendenceList::where('employee_id', $request->employee_id)->where('attendence',2)->whereDate('date', '>=', $request->year_month.'-01' )->whereDate('date', '<=', $request->year_month.'-31')->count();
-    
-            // $data['total_days_halfday'] = AttendenceList::where('employee_id', $request->employee_id)->where('attendence',3)->whereDate('created_at', '>=', $request->year_month.'-01' )->whereDate('created_at', '<=', $request->year_month.'-31')->count();
-    
+            $data['total_days_absent'] = AttendenceList::where('employee_id', $request->employee_id)->where('attendence',1)->whereDate('date', '>=', $request->year_month.'-01' )->whereDate('date', '<=', $request->year_month.'-31')->count();
+
             $data['total_days_halfday'] = AttendenceList::where('employee_id', $request->employee_id)->where('attendence',3)->whereDate('date', '>=', $request->year_month.'-01' )->whereDate('date', '<=', $request->year_month.'-31')->count();
+
+            // $data['total_days_present'] = AttendenceList::where('employee_id', $request->employee_id)->where('attendence',2)->whereDate('date', '>=', $request->year_month.'-01' )->whereDate('date', '<=', $request->year_month.'-31')->count();
+
+            $data['total_days_present'] =  $data['days_in_month'] - $data['total_days_absent'] -$data['total_days_halfday']/2;
+    
+    
+           
     
             // $data['total_days_absent'] = AttendenceList::where('employee_id', $request->employee_id)->where('attendence',1)->whereDate('created_at', '>=', $request->year_month.'-01' )->whereDate('created_at', '<=', $request->year_month.'-31')->count();
     
-            $data['total_days_absent'] = AttendenceList::where('employee_id', $request->employee_id)->where('attendence',1)->whereDate('date', '>=', $request->year_month.'-01' )->whereDate('date', '<=', $request->year_month.'-31')->count();
+            
     
-            $data['days_in_month'] = cal_days_in_month(CAL_GREGORIAN, substr($request->year_month, 5,6), substr($request->year_month, 0,4));
-            $data['year_month']=$request->year_month;
+           
            $employeeData = User::where('id', $request->employee_id)->get('salary')->first();
             $data['employeeSalary'] = $employeeData->salary;
             $data['currentMonthSalary'] = $data['employeeSalary'] - ( $data['total_days_absent']*$data['employeeSalary']/ $data['days_in_month']) - ( $data['total_days_halfday']*$data['employeeSalary']/ $data['days_in_month']/2);
             
+            // $data['currentMonthSalary'] = ( $data['total_days_present']*$data['employeeSalary']/ $data['days_in_month']) - ( $data['total_days_absent']*$data['employeeSalary']/ $data['days_in_month']) - ( $data['total_days_halfday']*$data['employeeSalary']/ $data['days_in_month']/2);
+
             $joining_date = User::where('id', $request->employee_id)->get('joining_date');
             $joining_dates = substr($joining_date, -13,-6);
         if(($request->year_month) > ($joining_dates))
