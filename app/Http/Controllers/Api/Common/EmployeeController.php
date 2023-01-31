@@ -91,6 +91,8 @@ class EmployeeController extends Controller
             'mobile'                      => 'required|numeric|digits_between:10,10|unique:App\Models\User,mobile',
             'email'                      => 'required|email|unique:App\Models\User,email',
             'document_number'                      => 'required|unique:App\Models\User,document_number',
+            // 'image'                       => 'mimes:jpeg,jpg,png,gif|max:10000',
+            'image'                       => $request->image ? 'mimes:jpeg,jpg,png,gif|max:10000' : '',
             // 'gender'                   => 'required',
             // 'account_balance'             => 'required|numeric',
             // 'password'              => 'required|confirmed|min:6|max:25',
@@ -103,21 +105,14 @@ class EmployeeController extends Controller
             return prepareResult(false,'validation_failed' ,$validation->errors(), 500);
            
         }  
-        if(!empty($request->image))
-        {
-         // file upload format check
-        //  $formatCheck = ['doc','docx','png','jpeg','jpg','pdf','svg','mp4','tif','tiff','bmp','gif','eps','raw','jfif','webp','pem','csv'];
-        $formatCheck = ['png','jpeg','jpg','bmp','webp'];
-         $extension = strtolower($request->image->getClientOriginalExtension());
- 
-         if(!in_array($extension, $formatCheck))
-         {
-             return prepareResult(false,'file_not_allowed' ,[], 500);
-         } 
-        }       
+       
 
                 $user = new User;
                  $user->role_id = $request->role_id;
+                 if($request->role_id == 5)
+                  {
+                  $user->cafe_id =  1;
+                  }
                  //$user->cafe_id =  $request->cafe_id;
                  $user->name = $request->name;
                  $user->email  = $request->email;
@@ -135,18 +130,20 @@ class EmployeeController extends Controller
             
                  $user->address = $request->address;
                 
-                 if(!empty($request->image))
-                  {
-                  $file=$request->image;
-                  $filename=time().'.'.$file->getClientOriginalExtension();
-                  // $info->image=env('CDN_DOC_URL').$request->image->move('assets',$filename);
-                  $user->image=env('CDN_DOC_URL').$request->image->move('assets\user_photos',$filename);
-                  }
-
-                  if($request->role_id == 5)
-                  {
-                  $user->cafe_id =  1;
-                  }
+                //  if(!empty($request->image))
+                //   {
+                //   $file=$request->image;
+                //   $filename=time().'.'.$file->getClientOriginalExtension();
+                //   // $info->image=env('CDN_DOC_URL').$request->image->move('assets',$filename);
+                //   $user->image=env('CDN_DOC_URL').$request->image->move('assets\user_photos',$filename);
+                //   }
+                if ($request->hasFile('image')) {
+                    $file = $request->file('image');
+                    $filename=time().'.'.$file->getClientOriginalExtension();
+                    if ($file->move('assets/user_photos', $filename)) {
+                        $user->image=env('CDN_DOC_URL').'assets/user_photos/'.$filename.'';
+                    }
+                   }
                  $user->save();
      
            
@@ -178,6 +175,7 @@ class EmployeeController extends Controller
             'email'                        => 'email|required|unique:users,email,'.$id,
             'document_number'                      => 'required|unique:users,document_number,'.$id,
             // 'email'                      => 'required|email|unique:App\Models\User,email',
+            // 'image'                       => $request->image ? 'mimes:jpeg,jpg,png,gif|max:10000' : '',
             // 'gender'                   => 'required',
             // 'email'                      => $emailCheck->email == $request->email ? 'required' : 'required|email|unique:App\Models\User,email',
             // 'account_balance'             => 'required|numeric',
@@ -191,21 +189,14 @@ class EmployeeController extends Controller
             return prepareResult(false,'validation_failed' ,$validation->errors(), 500);
            
         }       
-        // if(!empty($request->image))
-        // {
-        //  // file upload format check
-        // //  $formatCheck = ['doc','docx','png','jpeg','jpg','pdf','svg','mp4','tif','tiff','bmp','gif','eps','raw','jfif','webp','pem','csv'];
-        // $formatCheck = ['png','jpeg','jpg','bmp','webp'];
-        //  $extension = strtolower($request->image->getClientOriginalExtension());
- 
-        //  if(!in_array($extension, $formatCheck))
-        //  {
-        //      return prepareResult(false,'file_not_allowed' ,[], 500);
-        //  } 
-        // }
+
 
              $user = User::find($id);
              $user->role_id = $request->role_id;
+             if($request->role_id == 5)
+             {
+             $user->cafe_id =  1;
+             }
              $user->name = $request->name;
              $user->email  = $request->email;
             //  $user->password = bcrypt($request->password);
@@ -239,15 +230,15 @@ class EmployeeController extends Controller
                     $user->image = $request->image;
                 }
                 else{
-                       $file=$request->image;
+                    if ($request->hasFile('image')) {
+                        $file = $request->file('image');
                         $filename=time().'.'.$file->getClientOriginalExtension();
-                        $user->image=env('CDN_DOC_URL').$request->image->move('assets\user_photos',$filename);
+                        if ($file->move('assets/user_photos', $filename)) {
+                            $user->image=env('CDN_DOC_URL').'assets/user_photos/'.$filename.'';
+                        }
+                       }
                 }
             }
-                 if($request->role_id == 5)
-                  {
-                  $user->cafe_id =  1;
-                  }
              $user->save();
 
          

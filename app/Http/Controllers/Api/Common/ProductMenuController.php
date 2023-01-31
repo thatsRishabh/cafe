@@ -178,13 +178,20 @@ class ProductMenuController extends Controller
                    $addProduct->priority_rank =  $products['priority_rank'] ? $products['priority_rank'] : "10000" ;
                    $addProduct->category_id =  $products['category_id'];
                        
-                    if(!empty($products['image']))
+                    // if(!empty($products['image']))
+                    //     {
+                    //     $file=$products['image'];
+                    //     $filename=time().'.'.$file->getClientOriginalExtension();
+                    //     $addProduct->image =env('CDN_DOC_URL').$products['image']->move('assets\'product_photos',$filename);
+                    //     }
+
+                     if(!empty($products['image']))
                         {
                         $file=$products['image'];
                         $filename=time().'.'.$file->getClientOriginalExtension();
-                        $addProduct->image =env('CDN_DOC_URL').$products['image']->move('assets\'product_photos',$filename);
-                        }
-
+                        if ($file->move('assets/product_photos', $filename)) {
+                            $addProduct->image=env('CDN_DOC_URL').'assets/product_photos/'.$filename.'';
+                        }}
                    $addProduct->save();
                }
             DB::commit();
@@ -244,9 +251,16 @@ class ProductMenuController extends Controller
                         $info->image = $request->image;
                     }
                     else{
-                           $file=$request->image;
+                        //    $file=$request->image;
+                        //     $filename=time().'.'.$file->getClientOriginalExtension();
+                        //     $info->image=env('CDN_DOC_URL').$request->image->move('assets\'product_photos',$filename);
+                        if ($request->hasFile('image')) {
+                            $file = $request->file('image');
                             $filename=time().'.'.$file->getClientOriginalExtension();
-                            $info->image=env('CDN_DOC_URL').$request->image->move('assets\'product_photos',$filename);
+                            if ($file->move('assets/product_photos', $filename)) {
+                                $info->image=env('CDN_DOC_URL').'assets/product_photos/'.$filename.'';
+                            }
+                           }
                     }
     
                 //   $file=$request->image;

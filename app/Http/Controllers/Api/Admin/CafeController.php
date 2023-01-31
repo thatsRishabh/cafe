@@ -99,7 +99,8 @@ class CafeController extends Controller
             'contact_person_phone'                      => 'required',
             // 'password'              => 'required|confirmed|min:6|max:25',
             'password'                   => 'required|min:6|max:25',
-            'logo'                       => 'mimes:jpeg,jpg,png,gif|max:10000'
+            'logo'                       => $request->logo ? 'mimes:jpeg,jpg,png,gif|max:10000' : '',
+            // 'logo'                       => 'mimes:jpeg,jpg,png,gif|max:10000'
             // 'password_confirmation' => 'required'
            
         ]);
@@ -149,12 +150,19 @@ class CafeController extends Controller
           $CafeSetting->contact_person_email = $request->contact_person_email; 
           $CafeSetting->contact_person_name = $request->contact_person_name;
           $CafeSetting->contact_person_phone = $request->contact_person_phone;
-         if(!empty($request->logo))
-          {
-          $file=$request->logo;
-           $filename=time().'.'.$file->getClientOriginalExtension();
-           $CafeSetting->logo=env('CDN_DOC_URL').$request->logo->move('assets\user_photos',$filename);
-          }
+          if ($request->hasFile('logo')) {
+            $file = $request->file('logo');
+            $filename=time().'.'.$file->getClientOriginalExtension();
+            if ($file->move('assets/user_photos', $filename)) {
+                $CafeSetting->logo=env('CDN_DOC_URL').'assets/user_photos/'.$filename.'';
+            }
+           }
+        //  if(!empty($request->logo))
+        //   {
+        //   $file=$request->logo;
+        //    $filename=time().'.'.$file->getClientOriginalExtension();
+        //    $CafeSetting->logo=env('CDN_DOC_URL').$request->logo->move('assets/user_photos',$filename);
+        //   }
           $CafeSetting->save();
 
            //----------------saving image--------------------------//
@@ -220,16 +228,6 @@ class CafeController extends Controller
             return prepareResult(false,'validation_failed' ,$validation->errors(), 500);
            
         }       
-        //  // file upload format check
-
-        // //  $formatCheck = ['doc','docx','png','jpeg','jpg','pdf','svg','mp4','tif','tiff','bmp','gif','eps','raw','jfif','webp','pem','csv'];
-        // $formatCheck = ['png','jpeg','jpg','bmp','webp'];
-        //  $extension = strtolower($request->logo->getClientOriginalExtension());
- 
-        //  if(!in_array($extension, $formatCheck))
-        //  {
-        //      return prepareResult(false,'file_not_allowed' ,[], 500);
-        //  } 
 
              $user = User::find($id);
             //  $user->role_id = $request->role_id;
@@ -284,13 +282,21 @@ class CafeController extends Controller
                     $CafeSetting->logo = $request->logo;
                 }
                 else{
-                       $file=$request->logo;
+                    if ($request->hasFile('logo')) {
+                        $file = $request->file('logo');
                         $filename=time().'.'.$file->getClientOriginalExtension();
-                        $CafeSetting->logo=env('CDN_DOC_URL').$request->logo->move('assets\user_photos',$filename);
+                        if ($file->move('assets/user_photos', $filename)) {
+                            $CafeSetting->logo=env('CDN_DOC_URL').'assets/user_photos/'.$filename.'';
+                        }
+                       }
                 }
             }
               $CafeSetting->save();
 
+         //----------------saving image--------------------------//
+           $user = User::find($id);
+           $user->image =  $CafeSetting->logo;
+           $user->save();
          
    
         DB::commit();
@@ -374,7 +380,7 @@ class CafeController extends Controller
              $CafeSetting->subscription_startDate = $request->subscription_startDate;
              $CafeSetting->subscription_endDate = $request->subscription_endDate;
              $CafeSetting->subscription_type = $request->subscription_type;
-              $CafeSetting->save();
+             $CafeSetting->save();
 
          
    
