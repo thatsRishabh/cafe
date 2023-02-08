@@ -24,7 +24,6 @@ class UnitController extends Controller
                     }
                     if(!empty($request->name))
                     {
-                        // $query->where('name', $request->name);
                         $query->where('name', 'LIKE', '%'.$request->name.'%');
                     }
                     if(!empty($request->per_page_record))
@@ -65,8 +64,6 @@ class UnitController extends Controller
             $validation = Validator::make($request->all(), [
                         'name'                       => 'required',
                         'abbreiation'                => 'required',
-                        // 'minvalue'                   => 'required|numeric',
-                        // 'minvalue'                   => ($request->minvalue) > 10 ? '': 'declined:false',
                        
                     ]);
         if ($validation->fails()) {

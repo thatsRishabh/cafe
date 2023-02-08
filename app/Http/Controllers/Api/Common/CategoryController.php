@@ -18,10 +18,7 @@ class CategoryController extends Controller
         try {
 
         $query = Category::select('*')
-                        // ->whereNull('parent_id')
-                        // ->with('subCategory')
                         ->orderBy('id', 'desc');
-                        //  ->orderBy('name', 'asc');
                 if(!empty($request->id))
                 {
                     $query->where('id', $request->id);
@@ -127,11 +124,8 @@ class CategoryController extends Controller
         DB::beginTransaction();
         try {
         $validation = Validator::make($request->all(),  [
-            // 'name'                       => 'required|unique:App\Models\Category,name', 
-            // 'image'                  => 'mimes:jpeg,jpg,png,gif|max:10000',
             'image'                       => $request->image ? 'mimes:jpeg,jpg,png,gif|max:10000' : '',
             'name'                      => $nameCheck ? 'required|declined:false' : 'required',
-            // 'password_confirmation' => 'required'
         ],
         [
             'name.declined' => 'Name already exists',
@@ -141,25 +135,9 @@ class CategoryController extends Controller
             return prepareResult(false,'validation_failed' ,$validation->errors(), 500);
            
         }       
-        //  // file upload format check
-
-        // //  $formatCheck = ['doc','docx','png','jpeg','jpg','pdf','svg','mp4','tif','tiff','bmp','gif','eps','raw','jfif','webp','pem','csv'];
-        // $formatCheck = ['png','jpeg','jpg','bmp','webp'];
-        //  $extension = strtolower($request->logo->getClientOriginalExtension());
- 
-        //  if(!in_array($extension, $formatCheck))
-        //  {
-        //      return prepareResult(false,'file_not_allowed' ,[], 500);
-        //  } 
+    
         $info = new Category;
 
-    
-        //  if(!empty($request->image))
-        //  {
-        //    $file=$request->image;
-        //  $filename=time().'.'.$file->getClientOriginalExtension();
-        //  $info->image=env('CDN_DOC_URL').$request->image->move('assets\category_photos',$filename);
-        //  }
         if ($request->hasFile('image')) {
             $file = $request->file('image');
             $filename=time().'.'.$file->getClientOriginalExtension();
@@ -189,10 +167,7 @@ class CategoryController extends Controller
         $nameCheck = Category::where('id',  $id)->get('name')->first();
 
         $validation = Validator::make($request->all(), [
-            // 'name'                       => 'required|unique:App\Models\Category,name'.$id, 
             'name'                      => 'required|unique:categories,name,'.$id,
-            // 'image'                         => 'mimes:jpeg,jpg,png,gif|max:10000',
-            // 'name'                      => $nameCheck ->name == $request->name ? 'required' : 'required|unique:App\Models\Category,name',
            
         ]);
 
@@ -207,9 +182,6 @@ class CategoryController extends Controller
                         $info->image = $request->image;
                     }
                     else{
-                        // $file=$request->image;
-                        //     $filename=time().'.'.$file->getClientOriginalExtension();
-                        //     $info->image=env('CDN_DOC_URL').$request->image->move('assets\category_photos',$filename);
                         if ($request->hasFile('image')) {
                             $file = $request->file('image');
                             $filename=time().'.'.$file->getClientOriginalExtension();

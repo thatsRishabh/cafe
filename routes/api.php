@@ -34,12 +34,8 @@ Route::namespace('App\Http\Controllers\Api\Common')->group(function () {
 
     // Route::post('user-login', [App\Http\Controllers\Api\Common\UserLoginController::class, 'login']);
 
-
     Route::group(['middleware' => 'auth:api'],function () {
-        // Route::controller(FileUploadController::class)->group(function () {
-        //     Route::post('file-uploads', 'fileUploads')->name('file-uploads');
-        //     Route::post('file-upload', 'store')->name('file-upload');
-        // });
+    
 
         Route::controller(EmployeeController::class)->group(function () {
             Route::post('employees', 'searchEmployee');
