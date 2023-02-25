@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\Common;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-
+use Illuminate\Support\Str;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -108,6 +108,7 @@ class EmployeeController extends Controller
        
 
                 $user = new User;
+                $user->uuid = Str::uuid();
                  $user->role_id = $request->role_id;
                  if($request->role_id == 5)
                   {
@@ -192,6 +193,7 @@ class EmployeeController extends Controller
 
 
              $user = User::find($id);
+             $user->uuid = Str::uuid();
              $user->role_id = $request->role_id;
              if($request->role_id == 5)
              {

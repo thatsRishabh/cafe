@@ -6,6 +6,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Str;
 use Spatie\Permission\Models\Permission;
 // use Spatie\Permission\PermissionRegistrar;
 
@@ -45,10 +46,12 @@ class UserSeeder extends Seeder
             'name' => 'AdminEmployee',
             'guard_name' => 'api'
         ]);
-
+       
         /*-----------Create Admin-------------*/
         $adminUser = new User();
         $adminUser->id                      = '1';
+        // $adminUser->uuid                    = '7260012f-897a-4da1-8a54-5a6c7d7c048c';
+        $adminUser->uuid                    = Str::uuid();
         $adminUser->role_id                 = '1';
         $adminUser->cafe_id                 = '1';
         $adminUser->name                    = 'Admin';

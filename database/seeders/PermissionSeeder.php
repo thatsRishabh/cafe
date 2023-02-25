@@ -122,6 +122,12 @@ class PermissionSeeder extends Seeder
         Permission::create(['name' => 'order-edit', 'guard_name' => 'api','group_name'=>'order','se_name'=>'order-edit','belongs_to'=>'5']);
         Permission::create(['name' => 'order-delete', 'guard_name' => 'api','group_name'=>'order','se_name'=>'order-delete','belongs_to'=>'5']);
         Permission::create(['name' => 'order-browse', 'guard_name' => 'api','group_name'=>'order','se_name'=>'order-browse','belongs_to'=>'5']);
+
+        Permission::create(['name' => 'packaging-read', 'guard_name' => 'api','group_name'=>'packaging','se_name'=>'packaging-read','belongs_to'=>'5']);
+        Permission::create(['name' => 'packaging-add', 'guard_name' => 'api','group_name'=>'packaging','se_name'=>'packaging-create','belongs_to'=>'5']);
+        Permission::create(['name' => 'packaging-edit', 'guard_name' => 'api','group_name'=>'packaging','se_name'=>'packaging-edit','belongs_to'=>'5']);
+        Permission::create(['name' => 'packaging-delete', 'guard_name' => 'api','group_name'=>'packaging','se_name'=>'packaging-delete','belongs_to'=>'5']);
+        Permission::create(['name' => 'packaging-browse', 'guard_name' => 'api','group_name'=>'packaging','se_name'=>'packaging-browse','belongs_to'=>'5']);
         
         // Permission::create(['name' => 'role-browse', 'guard_name' => 'api','group_name'=>'role','se_name'=>'role-browse','belongs_to'=>'3']);
     	// Permission::create(['name' => 'role-read', 'guard_name' => 'api','group_name'=>'role','se_name'=>'role-read','belongs_to'=>'3']);

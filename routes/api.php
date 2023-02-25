@@ -152,6 +152,7 @@ Route::namespace('App\Http\Controllers\Api\Admin')->group(function () {
         
             Route::controller(CafeController::class)->group(function () {
                 Route::post('cafes', 'searchCafe');
+                Route::post('cafe-child', 'childLogin');
                 Route::post('cafe-subscription', 'cafeSubscription');
                 Route::put('cafe-subscription-update/{id?}', 'cafeSubscriptionUpdate');
                 Route::post('cafe-update/{id?}', 'update');

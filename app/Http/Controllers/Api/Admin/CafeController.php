@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Controllers\Controller;
 
 use App\Models\User;
+use Illuminate\Support\Str;
 use App\Models\CafeSetting;
 use App\Models\Unit;
 use Illuminate\Http\Request;
@@ -11,7 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Hash;
-
+use Spatie\Permission\Models\Role;
 
 
 class CafeController extends Controller
@@ -112,6 +113,8 @@ class CafeController extends Controller
           $user = new User;
               //  $user->role_id = $request->role_id;
           $user->role_id = 2;
+          $user->uuid = Str::uuid();
+        //   $user->uuid = base64_encode(Str::uuid());
           $user->name = $request->name;
           $user->email  = $request->email;
     
@@ -120,19 +123,7 @@ class CafeController extends Controller
           $user->mobile = $request->mobile;
           $user->is_parent = 1;
           $user->address = $request->address;
-        //   $user->subscription_charge = $request->subscription_charge;
-        //   $user->subscription_startDate = $request->subscription_startDate;
-        //   $user->subscription_endDate = $request->subscription_endDate;
-        //   $user->subscription_type = $request->subscription_type;
           $user->subscription_status = $request->subscription_status;
-            //   //  $user->created_by = auth()->id();
-            //   if(!empty($request->logo))
-            //   {
-            //   $file=$request->logo;
-            //   $filename=time().'.'.$file->getClientOriginalExtension();
-            //   // $info->image=env('CDN_DOC_URL').$request->image->move('assets',$filename);
-            //   $user->image=env('CDN_DOC_URL').$request->logo->move('assets\user_photos',$filename);
-            //   }
           $user->save();
           $updateCafeId = User::where('id',$user->id)->update(['cafe_id'=> $user->id]);
                 
@@ -231,6 +222,7 @@ class CafeController extends Controller
 
              $user = User::find($id);
             //  $user->role_id = $request->role_id;
+            $user->uuid = Str::uuid();
             $user->role_id = 2;
              $user->name = $request->name;
              $user->email  = $request->email;
@@ -428,6 +420,116 @@ class CafeController extends Controller
             return prepareResult(false,'something_went_wrong' ,$e->getMessage(), 500);
         }
     }
+
+    public function childLogin(Request $request)
+    {
+    
+
+        $validation = Validator::make($request->all(),  [
+            'account_uuid'      => 'required'
+           
+        ]);
+
+        if ($validation->fails()) {
+            return prepareResult(false,'validation_failed' ,$validation->errors(), 500);
+           
+        }  
+
+        try {
+            $parent_key = null;
+            if(empty($request->is_back_to_self_account))
+            {
+                $parent_key = base64_encode(auth()->user()->uuid);
+            }
+
+            $user = User::select('*')
+            ->where('uuid', base64_decode($request->account_uuid))
+            // ->where('uuid', $request->account_uuid)
+            ->withoutGlobalScope('cafe_id')
+            ->first();
+            // return $user;
+            if (!$user)  {
+                return prepareResult(false,'user_not_exist' ,[], 500);
+                // return response()->json(prepareResult(true, [], trans('translate.user_not_exist'), $this->intime), config('httpcodes.not_found'));
+            }
+            // $user = $user->makeHidden(['promotional_route','transaction_route','two_waysms_route','voice_sms_route']);
+
+            // if(in_array($user->status, [0,3])) {
+            //     return response()->json(prepareResult(true, [], trans('translate.account_is_inactive'), $this->intime), config('httpcodes.unauthorized'));
+            // }
+
+            // $accessToken = $user->createToken('authToken')->accessToken;
+            // $user['token'] = $accessToken;
+            // $user['email'] = $user->email;
+            // $user['id'] = $user->id;
+            $data = [];
+
+                    
+            $data['token'] = $user->createToken('authToken')->accessToken;
+            $data['email'] = $user->email;
+            $data['id'] = $user->id;
+            $data['parent_key'] =  $parent_key;
+            // $user['parent_key'] = $parent_key;
+            $role   = Role::where('id', $user->role_id)->first();
+            $data['permissions']  = $role->permissions()->select('id','se_name', 'group_name','belongs_to')->get();
+        
+            $userData =[
+                   // 'role'=>"admin"$user
+                'name'=>$user->name,
+                'logo'=>$user->image,
+                   'role_id'=>$user->role_id,
+            ];
+            $data['userData'] =  $userData;
+
+            // $user['permissions'] = $user->permissions()->select('id','name')->orderBy('permission_id', 'ASC')->get();
+
+            return prepareResult(true,'request_successfully_submitted' ,$data, 200);
+            // return response()->json(prepareResult(false, $user, trans('translate.request_successfully_submitted'), $this->intime), config('httpcodes.success'));
+        } catch (\Throwable $e) {
+            Log::error($e);
+            return prepareResult(false,'something_went_wrong' ,$e->getMessage(), 500);
+        }
+    }
+    // public function childLogin(Request $request)
+    // {
+    //     $validation = \Validator::make($request->all(), [
+    //         'account_uuid'      => 'required'
+    //     ]);
+
+    //     if ($validation->fails()) {
+    //         return response()->json(prepareResult(true, $validation->messages(), trans('translate.validation_failed'), $this->intime), config('httpcodes.bad_request'));
+    //     }
+
+    //     try {
+    //         $parent_key = null;
+    //         if(empty($request->is_back_to_self_account))
+    //         {
+    //             $parent_key = base64_encode(auth()->user()->uuid);
+    //         }
+
+    //         $user = User::select('*', 'is_show_ratio as sp_operation')
+    //         ->where('uuid', base64_decode($request->account_uuid))
+    //         ->withoutGlobalScope('parent_id')
+    //         ->first();
+    //         if (!$user)  {
+    //             return response()->json(prepareResult(true, [], trans('translate.user_not_exist'), $this->intime), config('httpcodes.not_found'));
+    //         }
+    //         $user = $user->makeHidden(['promotional_route','transaction_route','two_waysms_route','voice_sms_route']);
+
+    //         if(in_array($user->status, [0,3])) {
+    //             return response()->json(prepareResult(true, [], trans('translate.account_is_inactive'), $this->intime), config('httpcodes.unauthorized'));
+    //         }
+
+    //         $accessToken = $user->createToken('authToken')->accessToken;
+    //         $user['access_token'] = $accessToken;
+    //         $user['permissions'] = $user->permissions()->select('id','name')->orderBy('permission_id', 'ASC')->get();
+    //         $user['parent_key'] = $parent_key;
+    //         return response()->json(prepareResult(false, $user, trans('translate.request_successfully_submitted'), $this->intime), config('httpcodes.success'));
+    //     } catch (\Throwable $e) {
+    //         \Log::error($e);
+    //         return response()->json(prepareResult(true, $e->getMessage(), trans('translate.something_went_wrong'), $this->intime), config('httpcodes.internal_server_error'));
+    //     }
+    // }
 
     // /**
     //  * Display a listing of the resource.
