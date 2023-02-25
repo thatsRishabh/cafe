@@ -6,6 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\ProductMenu;
 use App\Models\Category;
+use App\Models\ProductInfo;
+use App\Models\Unit;
+use App\Models\Recipe;
+use App\Models\RecipeContains;
 use Illuminate\Support\Facades\DB;  
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -166,24 +170,21 @@ class ProductMenuController extends Controller
         //     if ($validation->fails()) {
         //         return response(prepareResult(false, $validation->errors(), trans('translate.validation_failed')), 500,  ['Result'=>'Your data has not been saved']);
         //     } 
-        // }
+        // }  
             $info = new ProductMenu;
             foreach ($request->product_list as $key => $products) {
              
                    $addProduct = new ProductMenu;
+                   $addProduct->product_info_stock_id =  $products['product_info_stock_id'];
+                   $addProduct->without_recipe =  $products['without_recipe'];
+                   $addProduct->quantity = $products['quantity'];
+                //    $addProduct->unit_id = $products['unit_id'];
                    $addProduct->name =  $products['name'];
                    $addProduct->description =  $products['description'];
                    $addProduct->price =  $products['price'];
                    $addProduct->order_duration =  $products['order_duration'];
                    $addProduct->priority_rank =  $products['priority_rank'] ? $products['priority_rank'] : "10000" ;
                    $addProduct->category_id =  $products['category_id'];
-                       
-                    // if(!empty($products['image']))
-                    //     {
-                    //     $file=$products['image'];
-                    //     $filename=time().'.'.$file->getClientOriginalExtension();
-                    //     $addProduct->image =env('CDN_DOC_URL').$products['image']->move('assets\'product_photos',$filename);
-                    //     }
 
                      if(!empty($products['image']))
                         {
@@ -193,7 +194,34 @@ class ProductMenuController extends Controller
                             $addProduct->image=env('CDN_DOC_URL').'assets/product_photos/'.$filename.'';
                         }}
                    $addProduct->save();
-               }
+                    }
+
+                //     foreach ($request->product_list as $key => $products) {
+                //      if($products['without_recipe']==1){
+                //   //    creating recipe
+                //     $addRecipe = new Recipe;
+                //     $addRecipe->name = $products['name'];
+                //     $addRecipe->product_menu_id = $addProduct->id;
+                //     $addRecipe->description =$products['description'];
+                //     // $addRecipe->recipe_status = $request->recipe_status;
+                //     $addRecipe->save();
+           
+           
+                //     $product_info_name = ProductInfo::where('product_infos.id', $products['product_info_stock_id'])->get('name')->first();
+                //     $unitInfo = Unit::find( $products['unit_id']);
+
+                //     $addRecipeContains = new RecipeContains;
+                //     $addRecipeContains->recipe_id =  $$addRecipe->id;
+                //     //    $addRecipe->name = $recipe['name'];
+                //     $addRecipeContains->name = $product_info_name->name; 
+                //     $addRecipeContains->product_info_stock_id = $products['product_info_stock_id'];
+                //     $addRecipeContains->quantity = $products['quantity'];
+                //     $addRecipeContains->unit_id = $products['unit_id'];
+                //     $addRecipeContains->unit_name = $unitInfo->name;
+                //     $addRecipeContains->unit_minValue = $unitInfo->minvalue;
+                //     $addRecipeContains->save();
+                //    }
+                // }
             DB::commit();
             return prepareResult(true,'Your data has been saved successfully' , $info, 200);
            
@@ -267,7 +295,10 @@ class ProductMenuController extends Controller
                 // $filename=time().'.'.$file->getClientOriginalExtension();
                 // $info->image=imageBaseURL().$request->image->move('assets',$filename);
                 }
-    
+
+                $info->product_info_stock_id = $request->product_info_stock_id;
+                $info->without_recipe = $request->without_recipe;
+                $info->quantity = $request->quantity;
                 $info->name = $request->name;
                 $info->order_duration = $request->order_duration;
                 $info->description = $request->description;

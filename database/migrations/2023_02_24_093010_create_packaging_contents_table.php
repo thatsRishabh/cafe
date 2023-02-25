@@ -13,17 +13,15 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('product_infos', function (Blueprint $table) {
+        Schema::create('packaging_contents', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('cafe_id')->nullable();
             $table->foreign('cafe_id')->references('id')->on('users')->onDelete('cascade');
-            $table->unsignedBigInteger('unit_id')->comment('This will be from unit(id) table')->nullable();
-            $table->foreign('unit_id')->references('id')->on('units')->onDelete('cascade');
-            $table->string('name', 50);
-            $table->text('description');
-            $table->float('price', 12, 4);
-            // $table->integer('minimum_qty')->nullable();
-            $table->float('current_quanitity', 12, 4);
+            $table->unsignedBigInteger('packaging_id')->nullable();
+            $table->foreign('packaging_id')->references('id')->on('packagings')->onDelete('cascade');
+            $table->unsignedBigInteger('product_info_stock_id')->nullable();
+            $table->foreign('product_info_stock_id')->references('id')->on('product_infos')->onDelete('cascade');
+            $table->integer('quantity')->nullable();
             $table->timestamps();
         });
     }
@@ -35,6 +33,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('product_infos');
+        Schema::dropIfExists('packaging_contents');
     }
 };

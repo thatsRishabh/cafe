@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\OrderContain;
 use App\Models\ProductMenu;
+use App\Models\Packaging;
+use App\Models\PackagingContents;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
@@ -135,6 +137,7 @@ class OrderController extends Controller
                 $info->taxes = $request->taxes;
                 $info->netAmount = $request->netAmount;
                 $info->order_status = $request->order_status;
+                $info->order_parcel = $request->order_parcel;
                 $info->duration_expired = $request->duration_expired;
                 $info->save();
     
@@ -171,6 +174,13 @@ class OrderController extends Controller
                      if($request->order_status == "2"){
                      $recipeID = Recipe::where('product_menu_id', $order['product_menu_id'])->get('id')->first();
                      $recipeID ? recipeDeduction($recipeID->id, $order['quantity']) : '';
+
+                     $productMenuItem->without_recipe==1 ? withoutRecipeDeduction($productMenuItem->product_info_stock_id, $order['quantity']) : '';
+
+                     $packagingID = Packaging::where('category_id', $order['category_id'])->get('id')->first();
+                     if($packagingID){
+                     $request->order_parcel==1 ? packagingDeduction($packagingID->id, $order['quantity']) : '';
+                     }
                      }
                 }
      
@@ -236,6 +246,7 @@ class OrderController extends Controller
                 $info->taxes = $request->taxes;
                 $info->netAmount = $request->netAmount;
                 $info->order_status = $request->order_status;
+                $info->order_parcel = $request->order_parcel;
                 $info->duration_expired = $request->duration_expired;
                 $info->save();
     
@@ -272,6 +283,9 @@ class OrderController extends Controller
                     if($request->order_status == "2"){
                         $recipeID = Recipe::where('product_menu_id', $order['product_menu_id'])->get('id')->first();
                         $recipeID ? recipeDeduction($recipeID->id, $order['quantity']) : '';
+
+                        $productMenuItem->without_recipe==1 ? withoutRecipeDeduction($productMenuItem->product_info_stock_id, $order['quantity']) : '';
+
                         }
                 }
      

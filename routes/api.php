@@ -129,7 +129,12 @@ Route::namespace('App\Http\Controllers\Api\Common')->group(function () {
             Route::resource('customer-account-manage', CustomerAccountManageController::class)->only([
                 'store','destroy','show', 'update' ]);
         });
-
+        // Packaging
+        Route::controller(PackagingController::class)->group(function () {
+            Route::post('packagings', 'searchPackaging');
+            Route::resource('packaging', PackagingController::class)->only([
+                'store','destroy','show', 'update' ]);
+        });
  // dashboard        
             Route::controller(DashboardController::class)->group(function () {
                 Route::post('dashboard', 'dashboard');

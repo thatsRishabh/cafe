@@ -19,7 +19,12 @@ return new class extends Migration
             $table->foreign('cafe_id')->references('id')->on('users')->onDelete('cascade');
             $table->unsignedBigInteger('category_id')->comment('This will be from category(id) table')->nullable();
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
-
+            $table->unsignedBigInteger('product_info_stock_id')->nullable();
+            $table->foreign('product_info_stock_id')->references('id')->on('product_infos')->onDelete('cascade');
+            $table->boolean('without_recipe')->comment('1 means Active')->nullable();  
+            $table->unsignedBigInteger('unit_id')->comment('This will be from unit(id) table')->nullable();
+            $table->foreign('unit_id')->references('id')->on('units')->onDelete('cascade');
+            $table->integer('quantity')->nullable();
             // $table->unsignedBigInteger('subcategory_id')->comment('This will be from subcategory(id) table')->nullable();
             // $table->foreign('subcategory_id')->references('id')->on('categories')->onDelete('cascade');
             // $table->unsignedBigInteger('parent_id')->nullable();

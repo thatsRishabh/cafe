@@ -16,7 +16,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
-
+use App\Models\Packaging;
+use App\Models\PackagingContents;
 
 
     function prepareResult($status, $message, $payload, $status_code)
@@ -1324,6 +1325,53 @@ use Illuminate\Support\Facades\Auth;
 				// 	'emp_2' =>  $updateStock->current_quanitity,				
 				// ];
 			}
+			
+			// return $recipeStock;
+		}    
+
+		function packagingDeduction($packagingID, $quantity)
+		{
+			
+			$deletOld  = PackagingContents::where('packaging_id', $packagingID)->get();
+			foreach ($deletOld as $key => $value) {
+					
+				
+				$updateStock = ProductInfo::find($value->product_info_stock_id);
+
+				   $updateStock->current_quanitity =  $updateStock->current_quanitity - ($value->quantity * $quantity) ;
+				   $updateStock->save();
+				
+				   
+				//    below code is for debugging purpose, getting output of array
+
+				// $recipeStock[] = [
+				// 	// 'emp_id' =>  $getCurrentQuantity->current_quanitity,
+				// 	'emp_2' =>  $updateStock->current_quanitity,				
+				// ];
+			}
+			
+			// return $recipeStock;
+		}    
+		function withoutRecipeDeduction($product_info_stock_id, $quantity)
+		{
+			
+			// $deletOld  = RecipeContains::where('recipe_id', $productID)->get();
+			// $recipeStock = []; 
+			// foreach ($deletOld as $key => $value) {
+					
+				
+				$updateStock = ProductInfo::find($product_info_stock_id);
+			   $updateStock->current_quanitity =  $updateStock->current_quanitity - $quantity ;
+			   $updateStock->save();
+				
+				   
+				//    below code is for debugging purpose, getting output of array
+
+				// $recipeStock[] = [
+				// 	// 'emp_id' =>  $getCurrentQuantity->current_quanitity,
+				// 	'emp_2' =>  $updateStock->current_quanitity,				
+				// ];
+			// }
 			
 			// return $recipeStock;
 		}    

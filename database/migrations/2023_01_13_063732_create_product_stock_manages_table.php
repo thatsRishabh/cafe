@@ -19,9 +19,9 @@ return new class extends Migration
             $table->foreign('cafe_id')->references('id')->on('users')->onDelete('cascade');
             $table->unsignedBigInteger('product_id')->comment('This will be from product_infos(id) table')->nullable();
             $table->foreign('product_id')->references('id')->on('product_infos')->onDelete('cascade'); 
-            $table->integer('old_stock')->nullable();
-            $table->float('change_stock')->nullable();
-            $table->integer('new_stock')->nullable();
+            $table->float('old_stock', 12, 4)->nullable();
+            $table->float('change_stock', 12, 4)->nullable();
+            $table->float('new_stock', 12, 4)->nullable();
             $table->enum('stock_operation', ['Out', 'In']);
             $table->integer('unit_id')->nullable();
             $table->timestamps();

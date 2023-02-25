@@ -297,11 +297,22 @@ class ProductStockManageController extends Controller
     public function destroy($id)
     {
         try {
-            
+            DB::beginTransaction();
             $info = ProductStockManage::find($id);
             if($info)
             {
+                $oldStockValue =ProductStockManage::find($id);
+               $unitData =Unit::find($oldStockValue->unit_id);
+
+              // restoring productinfo old stock to previous value after kg/gram/dozen conversion
+              $updateStock = ProductInfo::find( $oldStockValue->product_id);
+              $updateStock->current_quanitity = strtolower($oldStockValue->stock_operation) == "in" 
+              ? $oldStockValue->new_stock - ($oldStockValue->change_stock * $unitData->minvalue)  
+              : $oldStockValue->new_stock + ($oldStockValue->change_stock * $unitData->minvalue);
+              $updateStock->save();
+
                 $result=$info->delete();
+                DB::commit();
                 return prepareResult(true,'Record Id Deleted Successfully' ,$result, 200); 
             }
             return prepareResult(false,'Record Id Not Found' ,[], 500);
