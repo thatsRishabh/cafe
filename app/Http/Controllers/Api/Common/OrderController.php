@@ -203,7 +203,7 @@ class OrderController extends Controller
         DB::beginTransaction();
         try {
             $validation = Validator::make($request->all(), [
-                        'table_number'                    => 'required|numeric',
+                        // 'table_number'                    => 'required|numeric',
                         'order_status'                   => 'nullable|numeric',
                         'taxes'                      => 'nullable|numeric',
                        
