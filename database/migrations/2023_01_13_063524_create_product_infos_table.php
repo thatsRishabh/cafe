@@ -20,8 +20,8 @@ return new class extends Migration
             $table->unsignedBigInteger('unit_id')->comment('This will be from unit(id) table')->nullable();
             $table->foreign('unit_id')->references('id')->on('units')->onDelete('cascade');
             $table->string('name', 50);
-            $table->text('description');
-            $table->float('price', 12, 4);
+            $table->text('description')->nullable();
+            // $table->float('price', 12, 4);
             // $table->integer('minimum_qty')->nullable();
             $table->float('current_quanitity', 12, 4);
             $table->timestamps();

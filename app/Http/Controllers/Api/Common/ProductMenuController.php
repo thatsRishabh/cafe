@@ -33,22 +33,6 @@ class ProductMenuController extends Controller
                 // $query->where('name', $request->name);
                 $query->where('name', 'LIKE', '%'.$request->name.'%');
             }
-            // if(!empty($request->price))
-            // {
-            //     $query->where('product_menus.price', $request->price);
-            // }
-            // if(!empty($request->category_id))
-            // {
-            //     $query->where('product_menus.category_id', $request->category_id);
-            // }
-            // if(!empty($request->subcategory_id))
-            // {
-            //     $query->where('product_menus.subcategory_id', $request->subcategory_id);
-            // }
-            // if(!empty($request->product))
-            // {
-            //     $query->where('product', 'LIKE', '%'.$request->product.'%');
-            // }
 
 
             if(!empty($request->per_page_record))
@@ -141,11 +125,8 @@ class ProductMenuController extends Controller
         DB::beginTransaction();
         try {
             $validation = Validator::make($request->all(), [
-            // {($request->parent_id) ? $request->parent_id :null}
-    //    'price'                      => ($productMenuData->price <= $request->price) ? 'required|declined:false' : 'required',
-           
             "product_list.*.name"  => "required", 
-            "product_list.*.description"  => "required", 
+            // "product_list.*.description"  => "required", 
             "product_list.*.price"  => "required|numeric", 
             "product_list.*.order_duration"  => "required|numeric", 
             "product_list.*.category_id"  => "required|numeric", 
@@ -157,20 +138,6 @@ class ProductMenuController extends Controller
             return prepareResult(false,'validation_failed' ,$validation->errors(), 500);
            
         }      
-              // if($request->parent_id){
-        //     $productMenuData = ProductMenu::where('product_menus.id', $request->parent_id)->get('price')->first();
-
-        //     $validation = Validator::make($request->all(),[     
-        //        'price'  => ($productMenuData->price <= $request->price) ? 'required|declined:false' : 'required',   
-               
-        //     ],
-        //     [
-        //         'price.declined' => 'Half price is greater than full price'
-        //     ]);
-        //     if ($validation->fails()) {
-        //         return response(prepareResult(false, $validation->errors(), trans('translate.validation_failed')), 500,  ['Result'=>'Your data has not been saved']);
-        //     } 
-        // }  
             $info = new ProductMenu;
             foreach ($request->product_list as $key => $products) {
              
@@ -196,32 +163,6 @@ class ProductMenuController extends Controller
                    $addProduct->save();
                     }
 
-                //     foreach ($request->product_list as $key => $products) {
-                //      if($products['without_recipe']==1){
-                //   //    creating recipe
-                //     $addRecipe = new Recipe;
-                //     $addRecipe->name = $products['name'];
-                //     $addRecipe->product_menu_id = $addProduct->id;
-                //     $addRecipe->description =$products['description'];
-                //     // $addRecipe->recipe_status = $request->recipe_status;
-                //     $addRecipe->save();
-           
-           
-                //     $product_info_name = ProductInfo::where('product_infos.id', $products['product_info_stock_id'])->get('name')->first();
-                //     $unitInfo = Unit::find( $products['unit_id']);
-
-                //     $addRecipeContains = new RecipeContains;
-                //     $addRecipeContains->recipe_id =  $$addRecipe->id;
-                //     //    $addRecipe->name = $recipe['name'];
-                //     $addRecipeContains->name = $product_info_name->name; 
-                //     $addRecipeContains->product_info_stock_id = $products['product_info_stock_id'];
-                //     $addRecipeContains->quantity = $products['quantity'];
-                //     $addRecipeContains->unit_id = $products['unit_id'];
-                //     $addRecipeContains->unit_name = $unitInfo->name;
-                //     $addRecipeContains->unit_minValue = $unitInfo->minvalue;
-                //     $addRecipeContains->save();
-                //    }
-                // }
             DB::commit();
             return prepareResult(true,'Your data has been saved successfully' , $info, 200);
            
@@ -240,25 +181,9 @@ class ProductMenuController extends Controller
         try {
 
               $validation = Validator::make($request->all(), [
-             // {($request->parent_id) ? $request->parent_id :null}
-            
-            // 'name'                    => ($request->parent_id) ? ' ': 'required',
-            // 'description'                => ($request->parent_id) ? ' ': 'required',
-            // 'category_id'                   => 'required|numeric',
-            // 'subcategory_id'                => 'required|numeric',
-            // 'category_id'                   => ($request->parent_id) ? ' ': 'required',
-            // 'subcategory_id'                => ($request->parent_id) ? ' ': 'required',
-            // 'price'                      => 'required|numeric',
-            // 'price'                      => ($productMenuData->price <= $request->price) ? 'required|declined:false' : 'required',
-
-                // "product_list.*.name"  => "required", 
-                // "product_list.*.description"  => "required", 
-                // "product_list.*.price"  => "required|numeric", 
-                // "product_list.*.order_duration"  => "required|numeric", 
-                // "product_list.*.category_id"  => "required|numeric", 
 
               "name"  => "required", 
-                "description"  => "required", 
+                // "description"  => "required", 
                 "price"  => "required|numeric", 
                 "order_duration"  => "required|numeric", 
                 "category_id"  => "required|numeric", 
@@ -279,9 +204,6 @@ class ProductMenuController extends Controller
                         $info->image = $request->image;
                     }
                     else{
-                        //    $file=$request->image;
-                        //     $filename=time().'.'.$file->getClientOriginalExtension();
-                        //     $info->image=env('CDN_DOC_URL').$request->image->move('assets\'product_photos',$filename);
                         if ($request->hasFile('image')) {
                             $file = $request->file('image');
                             $filename=time().'.'.$file->getClientOriginalExtension();
@@ -290,10 +212,6 @@ class ProductMenuController extends Controller
                             }
                            }
                     }
-    
-                //   $file=$request->image;
-                // $filename=time().'.'.$file->getClientOriginalExtension();
-                // $info->image=imageBaseURL().$request->image->move('assets',$filename);
                 }
 
                 $info->product_info_stock_id = $request->product_info_stock_id;

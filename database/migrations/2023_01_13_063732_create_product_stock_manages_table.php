@@ -24,6 +24,7 @@ return new class extends Migration
             $table->float('new_stock', 12, 4)->nullable();
             $table->enum('stock_operation', ['Out', 'In']);
             $table->integer('unit_id')->nullable();
+            $table->float('price', 12, 4)->nullable();
             $table->timestamps();
         });
     }

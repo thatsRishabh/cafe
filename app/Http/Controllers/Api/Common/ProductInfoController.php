@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use App\Models\ProductInfo;
 use App\Models\Unit;
-
+use App\Models\ProductStockManage;
 
 class ProductInfoController extends Controller
 {
@@ -87,11 +87,11 @@ class ProductInfoController extends Controller
             $validation = Validator::make($request->all(), [
                             'name'                      => $nameCheck ? 'required|declined:false' : 'required',
                             // 'name'                       => 'required|unique:App\Models\ProductInfo,name',
-                            'description'                => 'required',
+                            // 'description'                => 'required',
                             'unit_id'                    => 'required|numeric',
                             // 'minimum_qty'              => 'required|numeric',
                             'current_quanitity'                  => 'required|gte:0.1',
-                            'price'                      => 'required|numeric',
+                            // 'price'                      => 'required|numeric',
                             
                            
                         ],
@@ -109,9 +109,19 @@ class ProductInfoController extends Controller
                     $info->unit_id = $request->unit_id;
                     $info->current_quanitity = unitConversion($request->unit_id, $request->current_quanitity);
                     // $info->minimum_qty = $request->minimum_qty;
-                    $info->price = $request->price;
-                    
+                    // $info->price = $request->price;
                     $info->save();
+
+                    // saving in product stock manage
+                    $addStockManage = new ProductStockManage;
+                    $addStockManage->product_id = $info->id;
+                    $addStockManage->unit_id = $request->unit_id;
+                    $addStockManage->old_stock = 0;
+                    $addStockManage->price = $request->price;
+                    $addStockManage->change_stock = unitConversion($request->unit_id, $request->current_quanitity);
+                    $addStockManage->new_stock = unitConversion($request->unit_id, $request->current_quanitity);
+                    $addStockManage->stock_operation ="in";
+                    $addStockManage->save();
        
             DB::commit();
             return prepareResult(true,'Your data has been saved successfully' , $info, 200);
@@ -135,11 +145,11 @@ class ProductInfoController extends Controller
            $validation = Validator::make($request->all(), [
                'name'                       => 'required',
                'name'                      => $nameCheck ->name == $request->name ? 'required' : 'required|unique:App\Models\ProductInfo,name',
-               'description'                => 'required',
+            //    'description'                => 'required',
                'unit_id'                    => 'required|numeric',
                // 'minimum_qty'                => 'required|numeric',
             'current_quanitity'           => 'required|gte:0.1',
-               'price'                      => 'required|numeric',
+            //    'price'                      => 'required|numeric',
                        
            ]);
            if ($validation->fails()) {
@@ -153,7 +163,7 @@ class ProductInfoController extends Controller
            $info->unit_id = $request->unit_id;
            $info->current_quanitity = unitConversion($request->unit_id, $request->current_quanitity);
            // $info->minimum_qty = $request->minimum_qty;
-           $info->price = $request->price;
+        //    $info->price = $request->price;
            $info->save();
         DB::commit();
         return prepareResult(true,'Your data has been Updated successfully' ,$info, 200);

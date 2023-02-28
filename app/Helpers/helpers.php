@@ -114,70 +114,6 @@ use App\Models\PackagingContents;
 		return auth('api')->user();
 	}
 
-	// function getLast30TotalName($day, $startDate , $endDate, $category)
-	// 	{
-	// 		if(!empty($day))
-    //         {
-
-	// 			$today     = new \DateTime();
-	// 			// $begin     = $today->sub(new \DateInterval('P30D'));
-	
-	// 			if(($day == 1 ))
-	// 			{
-	// 				$begin = $today->sub(new \DateInterval('P0D'));
-	// 			}
-	// 			elseif (($day == 7)) 
-	// 			{
-	// 				$begin= $today->sub(new \DateInterval('P7D'));
-	// 			}
-	// 			elseif (($day == 30 )) 
-	// 			{
-	// 				$begin= $today->sub(new \DateInterval('P30D'));
-	// 			}
-	
-	// 			$end       = new \DateTime();
-	// 			$end       = $end->modify('+1 day');
-	// 			$interval  = new \DateInterval('P1D');
-	// 			$daterange = new \DatePeriod($begin, $interval, $end);
-	// 			$totalSale =[];
-	// 			foreach ($daterange as $date) {
-					
-	// 			$salesSum = OrderContain::where('category_id',$category)->whereDate('created_at',$date->format('Y-m-d'))->get('name'); 
-					
-	// 				$totalSale[] = $salesSum;
-	// 			}
-	// 		}
-
-		
-		// 	if(!empty( $startDate))
-        //     {
-
-		// 		$rangArray = []; 
-		// 		$startDate = strtotime($startDate);
-		// 		$endDate = strtotime($endDate);
-					
-		// 			for ($currentDate = $startDate; $currentDate <= $endDate; 
-		// 											$currentDate += (86400)) {
-															
-		// 				$date = date('Y-m-d', $currentDate);
-		// 				$rangArray[] = $date;
-		// 			}
-  			
-		// 		$totalSale =[];
-		// 		foreach ($rangArray as $date) {
-					
-		// 			$salesSum = OrderContain::where('category_id',$category)->whereDate('created_at',$date->format('Y-m-d'))->sum('netPrice');
-					
-		// 			$totalSale[] = $salesSum;
-		// 		}
-		
-		// 	}
-		
-		
-
-		// 	// $data = implode(', ', $totalSale);
-		// 	return $totalSale;
-		// }
 
 	
 		function getLast30TotalSale($day, $startDate , $endDate, $subcategory, $cafe_id)
@@ -557,40 +493,6 @@ use App\Models\PackagingContents;
 			return $totalSale;
 		}
 
-	// function getLast30TotalCustomer($day)
-	// 	{
-	// 		$today     = new \DateTime();
-	// 		// $begin     = $today->sub(new \DateInterval('P30D'));
-
-	// 		if(($day == 1 ))
-	// 		{
-	// 			$begin = $today->sub(new \DateInterval('P0D'));
-	// 		}
-	// 		elseif (($day == 7)) 
-	// 		{
-	// 			$begin= $today->sub(new \DateInterval('P7D'));
-	// 		}
-	// 		elseif (($day == 30 )) 
-	// 		{
-	// 			$begin= $today->sub(new \DateInterval('P30D'));
-	// 		}
-
-	// 		$end       = new \DateTime();
-	// 		$end       = $end->modify('+1 day');
-	// 		$interval  = new \DateInterval('P1D');
-	// 		$daterange = new \DatePeriod($begin, $interval, $end);
-	// 		$totalCustomer =[];
-	// 		foreach ($daterange as $date) {
-				
-	// 		$customer = Order::whereDate('created_at',$date->format('Y-m-d'))->count(); 
-				
-	// 			$totalCustomer[] = $customer;
-	// 		}
-		
-
-	// 		// $data = implode(', ', $totalCustomer);
-	// 		return $totalCustomer;
-	// 	}
 
 	function getLast30TotalProduct($day, $startDate , $endDate, $subcategory, $cafe_id)
 		{
@@ -810,67 +712,10 @@ use App\Models\PackagingContents;
 
 		function getCategoryName($categoryDay)
 		{
-			// if(!empty($categoryDay))
-            // {
-
-			// 			$today     = new \DateTime();
-			// 		// // $begin     = $today->sub(new \DateInterval('P30D'));
-
-			// 		if(($categoryDay == 1 ))
-			// 		{
-			// 			$begin = $today->sub(new \DateInterval('P0D'));
-			// 		}
-			// 		elseif (($categoryDay == 7)) 
-			// 		{
-			// 			$begin= $today->sub(new \DateInterval('P7D'));
-			// 		}
-			// 		elseif (($categoryDay == 30 )) 
-			// 		{
-			// 			$begin= $today->sub(new \DateInterval('P30D'));
-			// 		}
-
-			// 		$end       = new \DateTime();
-			// 		$end       = $end->modify('+1 day');
-			// 		$interval  = new \DateInterval('P1D');
-			// 		$daterange = new \DatePeriod($begin, $interval, $end);
-					
-			// 		// $tree = User::where('branch_id',$branch_id)->pluck('id')
-			// 		// ->toArray();
-			// 		$catogoryID =[];
-			// 		foreach ($daterange as $date) {
-						
-			// 			// $categorySearch= OrderContain::whereDate('created_at',$date->format('Y-m-d'))->pluck('category_id');
-			// 			$categorySearch= OrderContain::whereDate('created_at',$date->format('Y-m-d'))->get('category_id')->unique();
-						
-			// 			$catogoryID[] = $categorySearch;
-			// 		}
-
-			// 		// $catogoryName=[];
-			// 		// foreach ($catogoryID as $category) {
-						
-			// 		// 	$catogoryName[]= Category::where('id',$category)->pluck('name')->first();
-						
-				
-			// 		// }
-					
-			// }
 			
- 
-			// $unique = $catogoryID->unique();
-			 
-			// $unique->values()->all();
-
-			// $data = implode(', ', $totalRevenue);
-
 			
 
 			$categorySearch= DB::table("order_contains")->select('category_id')->whereDate('created_at','>', now()->subDays(30)->endOfDay())->unique()->all();
-
-			// $users = DB::table("users")
-			// 	->select('id')
-			// 	->where('accounttype', 'standard')
-			// 	->where('created_at', '>', now()->subDays(30)->endOfDay())
-			// 	->all();	
 			return $categorySearch;
 		}
 
@@ -1029,71 +874,7 @@ use App\Models\PackagingContents;
 
 	
 	}
-	// function getLast30TotalSales($day, $startDate , $endDate)
-	// 	{
-	// 		if(!empty($day))
-    //         {
-
-	// 					$today     = new \DateTime();
-	// 				// // $begin     = $today->sub(new \DateInterval('P30D'));
-
-	// 				if(($day == 1 ))
-	// 				{
-	// 					$begin = $today->sub(new \DateInterval('P0D'));
-	// 				}
-	// 				elseif (($day == 7)) 
-	// 				{
-	// 					$begin= $today->sub(new \DateInterval('P7D'));
-	// 				}
-	// 				elseif (($day == 30 )) 
-	// 				{
-	// 					$begin= $today->sub(new \DateInterval('P30D'));
-	// 				}
-
-	// 				$end       = new \DateTime();
-	// 				$end       = $end->modify('+1 day');
-	// 				$interval  = new \DateInterval('P1D');
-	// 				$daterange = new \DatePeriod($begin, $interval, $end);
-					
-	// 				$totalRevenue =[];
-	// 				foreach ($daterange as $date) {
-						
-	// 					$salesSum = Order::whereDate('created_at',$date->format('Y-m-d'))->sum('netAmount'); 
-						
-	// 					$totalSale[] = $salesSum;
-	// 				}
-
-	// 		}
-
-	// 		if(!empty( $startDate))
-    //         {
-
-	// 			$rangArray = []; 
-	// 			$startDate = strtotime($startDate);
-	// 			$endDate = strtotime($endDate);
-					
-	// 				for ($currentDate = $startDate; $currentDate <= $endDate; 
-	// 												$currentDate += (86400)) {
-															
-	// 					$date = date('Y-m-d', $currentDate);
-	// 					$rangArray[] = $date;
-	// 				}
-  			
-	// 			$totalRevenue =[];
-	// 			foreach ($rangArray as $date) {
-					
-	// 				$salesSum = Order::whereDate('created_at',$date)->sum('netAmount'); 
-					
-	// 				$totalSale[] = $salesSum;
-	// 			}
-		
-	// 		}
-			
-		
-
-	// 		// $data = implode(', ', $totalRevenue);
-	// 		return $totalSale;
-	// 	}
+	
 
 		function getLast30details($day, $startDate , $endDate, $cafe_id)
 		{
@@ -1258,25 +1039,6 @@ use App\Models\PackagingContents;
 			// $data = implode(', ', $totalProduct);
 		}
 
-		// function recipeDeductionValidation($productID, $quantity)
-		// {
-			
-		// 	$deletOld  = RecipeContains::where('recipe_id', $productID)->get();
-		// 	$recipeStock = []; 
-		// 	foreach ($deletOld as $key => $value) {
-					
-				
-		// 		$updateStock = ProductInfo::find($value->product_info_stock_id);
-
-		// 		   $currentQuanitity =  $updateStock->current_quanitity - (unitConversion($value->unit_id, $value->quantity) * $quantity );
-		// 			$validation1 = $currentQuanitity < 0 ? 1 : '';
-		// 			return $validation1;
-				
-		// 		}
-			
-		// 	// return $recipeStock;
-		// }
-
 		function recipeDeductionValidation($productID, $quantity)
 		{
 			
@@ -1303,6 +1065,24 @@ use App\Models\PackagingContents;
 			
 			// return "hello";
 		}
+
+		function withoutRecipeDeductionValidation($product_info_stock_id, $quantity)
+		{
+				   $updateStock = ProductInfo::find($product_info_stock_id);
+				   $lessQuantity =  $updateStock->current_quanitity - $quantity ;
+
+					// return $lessQuantity;
+				   if($lessQuantity < 0)
+				   {
+					return 'required|declined:false';
+				   }
+				   else
+				   {
+					return 'required';
+				   }
+		}
+			
+		
 
 		function recipeDeduction($productID, $quantity)
 		{

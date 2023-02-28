@@ -123,7 +123,6 @@ class AuthController extends Controller
 
        if ($validation->fails()) {
         return prepareResult(false,'validation_failed' ,$validation->errors(), 500);
-           // return response()->json(prepareResult(true, $validation->messages(), trans('translate.validation_failed')), config('httpcodes.bad_request'));
        }
 
        try {
@@ -134,17 +133,10 @@ class AuthController extends Controller
                $user = User::where('email', Auth::user()->email)
                    ->withoutGlobalScope('store_id')
                    ->update(['password' => Hash::make($request->password)]);
-
-               ////////notification and mail//////////
-            //    $variable_data = [
-            //        '{{name}}' => $user->name
-            //    ];
-               //notification('password-changed', $user, $variable_data);
-               /////////////////////////////////////
            }
            else
            {
-            return prepareResult(true,'old_password_not_matched' ,[], 500);
+            return prepareResult(false,'old_password_not_matched' ,[], 500);
             //    return response()->json(prepareResult(true, [], trans('translate.old_password_not_matched')),config('httpcodes.unauthorized'));
            }
            return prepareResult(true,'password_changed' , $user, 200);

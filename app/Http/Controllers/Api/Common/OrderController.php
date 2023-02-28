@@ -48,16 +48,28 @@ class OrderController extends Controller
             // }
            
             // date wise filter with order status
+            // print_r($request->all());
+            // die;
             if(!empty($request->end_date) && !empty($request->order_status))
             {
                 $query->where('order_status', $request->order_status)->whereDate('updated_at', '=', $request->end_date);
             }
 
            // date wise filter from here
-            if(!empty($request->from_date) && !empty($request->end_date))
-            {
-                $query->whereDate('created_at', '>=', $request->from_date)->whereDate('created_at', '<=', $request->end_date);
-            }
+           if(!empty($request->from_date) && !empty($request->end_date))
+           {
+               $query->whereDate('created_at', '>=', $request->from_date)->whereDate('created_at', '<=', $request->end_date);
+           }
+           elseif(!empty($request->from_date) && empty($request->end_date))
+           {
+               $query->whereDate('created_at', '>=', $request->from_date);
+           }
+           elseif(empty($request->from_date) && !empty($request->end_date))
+           {
+               $query->whereDate('created_at', '<=', $request->end_date);
+           }
+          // print_r($query->toSql());
+          // die;
 
             if(!empty($request->per_page_record))
             {
@@ -112,7 +124,7 @@ class OrderController extends Controller
                 // return  recipeDeductionValidation($recipeID->id, $recipe1['quantity']);
                 $validation = Validator::make($request->all(),[     
 
-
+                   
                     "order_contains.*.product_menu_id"  =>$recipeID ? recipeDeductionValidation($recipeID->id, $recipe1['quantity']) : 'required', 
                     
                  ],
@@ -128,6 +140,32 @@ class OrderController extends Controller
             }
 
         }
+
+        if($request->order_status == "2"){
+
+            foreach ($request->order_contains as $key => $order1) {
+                
+           
+                $productMenuItem1 = ProductMenu::find( $order1['product_menu_id']);
+               
+                $validation = Validator::make($request->all(),[     
+
+                    "order_contains.*.product_menu_id"  => $productMenuItem1->without_recipe==1 ? withoutRecipeDeductionValidation($productMenuItem1->product_info_stock_id, $order1['quantity']) : 'required',
+                    
+                 ],
+                 [
+                     'order_contains.*.product_menu_id.declined' => 'Less value left in stock',
+                 ]
+             );
+
+             
+             if ($validation->fails()) {
+                return prepareResult(false,'validation_failed' ,$validation->errors(), 500);
+            } 
+            }
+
+        }
+
                  $info = new Order;
                 $info->table_number = $request->table_number;
                 $info->customer_id = $request->customer_id;
