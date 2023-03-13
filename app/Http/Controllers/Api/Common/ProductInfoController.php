@@ -16,12 +16,6 @@ class ProductInfoController extends Controller
     public function searchProductInfo(Request $request)
     {
         try {
-            // $query = DB::table('product_infos')
-            //             ->join('units', 'product_infos.unit_id', '=', 'units.id')
-            //             ->select('product_infos.*', 'units.name as units_name', 'units.minvalue as units_minvalue')
-            //             ->orderBy('product_infos.id', 'desc');
-            //           // in above we have to specify that it has to sort according to ID of which table, product_infos or Unit
-
             $query = ProductInfo::select('*')
                             ->with('unitName:id,name,minvalue')
                             ->orderBy('id', 'desc');
@@ -91,9 +85,7 @@ class ProductInfoController extends Controller
                             'unit_id'                    => 'required|numeric',
                             // 'minimum_qty'              => 'required|numeric',
                             'current_quanitity'                  => 'required|gte:0.1',
-                            // 'price'                      => 'required|numeric',
-                            
-                           
+                            // 'price'                      => 'required|numeric',                           
                         ],
                         [
                             'name.declined' =>          'Name already exists',
@@ -143,7 +135,7 @@ class ProductInfoController extends Controller
           $nameCheck = ProductInfo::where('id',  $id)->get('name')->first();
 
            $validation = Validator::make($request->all(), [
-               'name'                       => 'required',
+            //    'name'                       => 'required',
                'name'                      => $nameCheck ->name == $request->name ? 'required' : 'required|unique:App\Models\ProductInfo,name',
             //    'description'                => 'required',
                'unit_id'                    => 'required|numeric',

@@ -11,6 +11,7 @@
         "laravel/passport": "^11.4",
         "laravel/sanctum": "^3.0",
         "laravel/tinker": "^2.7",
+        "maatwebsite/excel": "^3.1",
         "spatie/laravel-permission": "^5.7"
     },
     "require-dev": {
