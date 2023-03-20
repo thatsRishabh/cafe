@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Validator;
 use App\Models\ProductInfo;
 use App\Models\Unit;
 use App\Models\ProductStockManage;
+use App\Imports\StockImport;
+// use Maatwebsite\Excel\Excel;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ProductInfoController extends Controller
 {
@@ -198,6 +201,69 @@ class ProductInfoController extends Controller
         } catch (\Throwable $e) {
             Log::error($e);
             return prepareResult(false,'something_went_wrong' ,$e->getMessage(), 500);
+        }
+    }
+
+    public function excelImport(Request $request)
+    {
+        DB::beginTransaction();
+        try {
+           
+             $validation = Validator::make($request->all(),
+             [
+                      'file' => 'required',   
+             ],
+             [
+                 'file' =>  'File is required.',
+            ]);
+
+            $file = $request->file;
+            $extension = $file->getClientOriginalExtension();
+            $allowedExt = ['xlsx'];
+            if (!in_array($extension, $allowedExt)) {
+                return prepareResult(false, 'Only XLSX file extension allowed.',[], 500);
+            }
+
+        if ($validation->fails()) {
+            return prepareResult(false,'validation_failed' ,$validation->errors(), 500);
+           
+        }  
+        $patients = Excel::toArray(new StockImport(), $file);
+        $excalRow   = $patients[0];
+        $errorShow = false;
+        $error = null;
+        foreach($excalRow as $key => $patient)
+        {
+            return $excalRow;
+        }     
+            //         $info = new ProductInfo;
+            //         $info->name = $request->name;
+            //         $info->description = $request->description;
+            //         $info->unit_id = $request->unit_id;
+            //         $info->current_quanitity = unitConversion($request->unit_id, $request->current_quanitity);
+            //         // $info->minimum_qty = $request->minimum_qty;
+            //         // $info->price = $request->price;
+            //         $info->save();
+
+            //         // saving in product stock manage
+            //         $addStockManage = new ProductStockManage;
+            //         $addStockManage->product_id = $info->id;
+            //         $addStockManage->unit_id = $request->unit_id;
+            //         $addStockManage->old_stock = 0;
+            //         $addStockManage->price = $request->price;
+            //         $addStockManage->change_stock = unitConversion($request->unit_id, $request->current_quanitity);
+            //         $addStockManage->new_stock = unitConversion($request->unit_id, $request->current_quanitity);
+            //         $addStockManage->stock_operation ="in";
+            //         $addStockManage->save();
+       
+            // DB::commit();
+            return prepareResult(true,'Your data has been saved successfully' , [], 200);
+           
+        } catch (\Throwable $e) {
+            Log::error($e);
+            DB::rollback();
+            return prepareResult(false,'Your data has not been saved' ,$e->getMessage(), 500);
+            
         }
     }
 }

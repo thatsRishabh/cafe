@@ -74,7 +74,7 @@ Route::namespace('App\Http\Controllers\Api\Common')->group(function () {
  // product-info
         Route::controller(ProductInfoController::class)->group(function () {
             Route::post('product-infos', 'searchProductInfo');
-            // Route::post('customer-update/{id?}', 'update');
+            Route::post('excel-import', 'excelImport');
             Route::resource('product-info', ProductInfoController::class)->only([
                 'store','destroy','show', 'update' ]);
         });
