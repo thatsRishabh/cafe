@@ -232,32 +232,30 @@ class ProductInfoController extends Controller
         $excalRow   = $patients[0];
         $errorShow = false;
         $error = null;
-        foreach($excalRow as $key => $patient)
+        foreach($excalRow as $key => $stockProduct)
         {
-            return $excalRow;
-        }     
-            //         $info = new ProductInfo;
-            //         $info->name = $request->name;
-            //         $info->description = $request->description;
-            //         $info->unit_id = $request->unit_id;
-            //         $info->current_quanitity = unitConversion($request->unit_id, $request->current_quanitity);
-            //         // $info->minimum_qty = $request->minimum_qty;
-            //         // $info->price = $request->price;
-            //         $info->save();
+            // return $excalRow;
+            // return  $stockProduct['item'];
 
-            //         // saving in product stock manage
-            //         $addStockManage = new ProductStockManage;
-            //         $addStockManage->product_id = $info->id;
-            //         $addStockManage->unit_id = $request->unit_id;
-            //         $addStockManage->old_stock = 0;
-            //         $addStockManage->price = $request->price;
-            //         $addStockManage->change_stock = unitConversion($request->unit_id, $request->current_quanitity);
-            //         $addStockManage->new_stock = unitConversion($request->unit_id, $request->current_quanitity);
-            //         $addStockManage->stock_operation ="in";
-            //         $addStockManage->save();
+            $info = new ProductInfo;
+            $info->name = $stockProduct['item'];
+            $info->current_quanitity = $stockProduct['quantity'];
+            $info->save();
+
+            // saving in product stock manage
+            $addStockManage = new ProductStockManage;
+            $addStockManage->product_id = $info->id;
+            $addStockManage->old_stock = 0;
+            $addStockManage->price = $stockProduct['price'];
+            $addStockManage->change_stock = $stockProduct['quantity'];
+            $addStockManage->new_stock =$stockProduct['quantity'];
+            $addStockManage->stock_operation ="in";
+            $addStockManage->save();
+
+        }     
        
-            // DB::commit();
-            return prepareResult(true,'Your data has been saved successfully' , [], 200);
+            DB::commit();
+            return prepareResult(true,'Product data successfully imported' , [], 200);
            
         } catch (\Throwable $e) {
             Log::error($e);

@@ -110,7 +110,7 @@ class ProductStockManageController extends Controller
     {
         DB::beginTransaction();
         try {
-    // $temp= unitSimilarTypeCheck($request->unit_id,$request->product_id);
+         // $temp= unitSimilarTypeCheck($request->unit_id,$request->product_id);
         // return $temp;
         $old = ProductInfo::where('product_infos.id', $request->product_id)->get('current_quanitity')->first();
 

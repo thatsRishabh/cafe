@@ -81,14 +81,14 @@ class AuthController extends Controller
                     }
                      else 
                      {
-            
                         return  prepareResult(false,'wrong email or password' ,[], 500);
-                      } 
+                     } 
              } else {
                 return prepareResult(false,'user not found' ,[], 500);    
             }
             
-         } catch (\Throwable $e) {
+        } 
+        catch (\Throwable $e) {
                 Log::error($e);
                 return prepareResult(false,$e->getMessage() ,[], 500); 
             }

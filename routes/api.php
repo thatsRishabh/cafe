@@ -85,6 +85,7 @@ Route::namespace('App\Http\Controllers\Api\Common')->group(function () {
             // Route::post('customer-update/{id?}', 'update');
             Route::resource('product-stock-manage', ProductStockManageController::class)->only([
                 'store','destroy','show', 'update' ]);
+                
         });
 
    // recipe
