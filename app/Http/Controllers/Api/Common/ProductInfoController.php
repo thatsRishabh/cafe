@@ -237,21 +237,26 @@ class ProductInfoController extends Controller
             // return $excalRow;
             // return  $stockProduct['item'];
 
-            $info = new ProductInfo;
-            $info->name = $stockProduct['item'];
-            $info->current_quanitity = $stockProduct['quantity'];
-            $info->save();
+            $nameCheck = ProductInfo::where('name', $stockProduct['item'])->first();
 
-            // saving in product stock manage
-            $addStockManage = new ProductStockManage;
-            $addStockManage->product_id = $info->id;
-            $addStockManage->old_stock = 0;
-            $addStockManage->price = $stockProduct['price'];
-            $addStockManage->change_stock = $stockProduct['quantity'];
-            $addStockManage->new_stock =$stockProduct['quantity'];
-            $addStockManage->stock_operation ="in";
-            $addStockManage->save();
-
+            if(empty($nameCheck))
+               {
+                $info = new ProductInfo;
+                $info->name = $stockProduct['item'];
+                $info->current_quanitity = $stockProduct['quantity'];
+                $info->save();
+    
+                // saving in product stock manage
+                $addStockManage = new ProductStockManage;
+                $addStockManage->product_id = $info->id;
+                $addStockManage->old_stock = 0;
+                $addStockManage->price = $stockProduct['price'];
+                $addStockManage->change_stock = $stockProduct['quantity'];
+                $addStockManage->new_stock =$stockProduct['quantity'];
+                $addStockManage->stock_operation ="in";
+                $addStockManage->save();
+              }
+            
         }     
        
             DB::commit();

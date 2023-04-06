@@ -132,7 +132,7 @@ class ProductStockManageController extends Controller
             'change_stock.declined' => 'Low quantity in stock',
             'unit_id.declined' => 'Invalid Unit Type'
         ]);
-        if ($validation->fails()) {
+        if ($validation->fails()) { 
             return prepareResult(false,'validation_failed' ,$validation->errors(), 500);
            
         }       

@@ -70,11 +70,11 @@ class UnitController extends Controller
             return prepareResult(false,'validation_failed' ,$validation->errors(), 500);
            
         }       
-                $info = new Unit;
-                $info->name = $request->name;
-                $info->abbreiation = $request->abbreiation;
-                $info->minvalue = $request->minvalue;
-                $info->save();
+            $info = new Unit;
+            $info->name = $request->name;
+            $info->abbreiation = $request->abbreiation;
+            $info->minvalue = $request->minvalue;
+            $info->save();
             DB::commit();
             return prepareResult(true,'Your data has been saved successfully' , $info, 200);
            
