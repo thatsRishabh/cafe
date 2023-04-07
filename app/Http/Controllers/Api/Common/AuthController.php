@@ -21,131 +21,101 @@ use Spatie\Permission\Models\Permission;
 
 class AuthController extends Controller
 {
-    public function login(Request $request)
-    {
-       
-       
-        try {
-            
-            $user = User::select('*')->where('email', $request->email)->withoutGlobalScope('cafe_id')->first();
-            if (!empty($user)) {
+	public function login(Request $request)
+	{
+		$validation = Validator::make($request->all(),  [
+			'email'                      => 'required|email',
+			'password'                  => 'required',
 
-                $validation = Validator::make($request->all(),  [
-                   
-                    'email'                      => 'required|email',
-                    'password'                  => 'required',
-                   
-                ]);
-        
-                if ($validation->fails()) {
-                    return  prepareResult(false,'validation failed' ,[], 500);
-                }
+		]);
+		if ($validation->fails()) {
+			return  prepareResult(false,'validation failed' ,[], 500);
+		}
+
+		try 
+		{
+			$user = User::select('id','name','email','image','role_id','subscription_status','cafe_id','password')->where('email', $request->email)->withoutGlobalScope('cafe_id')->first();
+			if (!empty($user)) {
 
                 //  user subscription status check
-                if($user->subscription_status == 2)
-                {
-                    return prepareResult(false,'Your subscription is inactive' ,[], 500);
-                } 
+				if($user->subscription_status == 2)
+				{
+					return prepareResult(false,'Your subscription is inactive' ,[], 500);
+				} 
 
-                if (Hash::check($request->password, $user->password)) {
+				if (Hash::check($request->password, $user->password)) {
+					$user['token'] = $user->createToken('authToken')->accessToken;
+					$role   = Role::where('id', $user->role_id)->first();
+					$user['permissions']  = $role->permissions()->select('id','se_name', 'group_name','belongs_to')->get();
+					return prepareResult(true,'logged in successfully' ,$user, 200);
+				}
+				else 
+				{
+					return  prepareResult(false,'wrong Password' ,[], 500);
+				} 
+			} else {
+				return prepareResult(false,'user not found' ,[], 500);    
+			}
 
-                    $data = [];
+		} 
+		catch (\Throwable $e) {
+			Log::error($e);
+			return prepareResult(false,$e->getMessage() ,[], 500); 
+		}
+	}
 
-                    
-                    $data['token'] = $user->createToken('authToken')->accessToken;
-                    $data['email'] = $request->email;
-                    $data['id'] = $user->id;
-                    // $permissionData[] =[
-                    //     'action'=>"dashboard",
-                    //     'name'=>"dashboard-view",
-                    // ];
-                    // $data['permissions'] =  $permissionData;
-                    $role   = Role::where('id', $user->role_id)->first();
-                    $data['permissions']  = $role->permissions()->select('id','se_name', 'group_name','belongs_to')->get();
-                    // $userData =[
-                    //     // 'role'=>"admin"$user
-                    //     'role_id'=>$user->role_id
-                    // ];
-                    // $data['user'] =  $userData;
-                    $userData =[
-                        // 'role'=>"admin"$user
-                        'name'=>$user->name,
-                        'logo'=>$user->image,
-                        'role_id'=>$user->role_id,
+	public function logout(Request $request)
+	{
+		if (Auth::check()) 
+		{
+			try
+			{
+				$token = Auth::user()->token();
+				$token->revoke();
+				auth('api')->user()->tokens->each(function ($token, $key) {
+					$token->delete();
+				});
+				return prepareResult(true,'logged out successfully' ,[], 200); 
+			}
+			catch (\Throwable $e) {
+				Log::error($e);
+				return prepareResult(false,'internal_server_error' ,[], 500);
+			}
+		}
+	}
 
-                    ];
-                    $data['userData'] =  $userData;
-                   
-                    return prepareResult(true,'logged in successfully' ,$data, 200);
+	public function changePassword(Request $request)
+	{
+		$validation = Validator::make($request->all(),[ 
+			'old_password'  => 'required|min:6',
+			'password'      => 'required|min:6'
+		]);
 
-                    }
-                     else 
-                     {
-                        return  prepareResult(false,'wrong email or password' ,[], 500);
-                     } 
-             } else {
-                return prepareResult(false,'user not found' ,[], 500);    
-            }
-            
-        } 
-        catch (\Throwable $e) {
-                Log::error($e);
-                return prepareResult(false,$e->getMessage() ,[], 500); 
-            }
-   }
+		if ($validation->fails()) {
+			return prepareResult(false,'validation_failed' ,$validation->errors(), 500);
+		}
 
-   public function logout(Request $request)
-   {
-    if (Auth::check()) 
-    {
-        try
-        {
-            $token = Auth::user()->token();
-            $token->revoke();
-            auth('api')->user()->tokens->each(function ($token, $key) {
-                $token->delete();
-            });
-            return prepareResult(true,'logged out successfully' ,[], 200); 
-        }
-        catch (\Throwable $e) {
-            Log::error($e);
-            return prepareResult(false,'internal_server_error' ,[], 500);
-        }
-    }
-   }
+		try {
 
-  public function changePassword(Request $request)
-   {
-       $validation = Validator::make($request->all(),[ 
-           'old_password'  => 'required|min:6',
-           'password'      => 'required|min:6'
-       ]);
+			$user = User::where('email', Auth::user()->email)->withoutGlobalScope('store_id')->first();
 
-       if ($validation->fails()) {
-        return prepareResult(false,'validation_failed' ,$validation->errors(), 500);
-       }
-
-       try {
-           
-           $user = User::where('email', Auth::user()->email)->withoutGlobalScope('store_id')->first();
-           
-           if(Hash::check($request->old_password, $user->password)) {
-               $user = User::where('email', Auth::user()->email)
-                   ->withoutGlobalScope('store_id')
-                   ->update(['password' => Hash::make($request->password)]);
-           }
-           else
-           {
-            return prepareResult(false,'old_password_not_matched' ,[], 500);
+			if(Hash::check($request->old_password, $user->password)) {
+				$user = User::where('email', Auth::user()->email)
+				->withoutGlobalScope('store_id')
+				->update(['password' => Hash::make($request->password)]);
+			}
+			else
+			{
+				return prepareResult(false,'old_password_not_matched' ,[], 500);
             //    return response()->json(prepareResult(true, [], trans('translate.old_password_not_matched')),config('httpcodes.unauthorized'));
-           }
-           return prepareResult(true,'password_changed' , $user, 200);
+			}
+			return prepareResult(true,'password_changed' , $user, 200);
 
-       } catch (\Throwable $e) {
-        Log::error($e);
-        return prepareResult(false,'internal_server_error' ,[], 500);
-       }
-   }
+		} catch (\Throwable $e) {
+			Log::error($e);
+			return prepareResult(false,'internal_server_error' ,[], 500);
+		}
+	}
 
     // public function login(Request $request)
     // {
@@ -279,7 +249,7 @@ class AuthController extends Controller
     //         $user = User::where('email', $tokenExist->email)
     //                 ->withoutGlobalScope('store_id')
     //                 ->update(['password' => Hash::make($request->password)]);
- 
+
     //         DB::table('password_resets')->where(['email'=> $tokenExist->email])->delete();
 
     //         ////////notification and mail//////////
@@ -310,9 +280,9 @@ class AuthController extends Controller
     //     }
 
     //     try {
-            
+
     //         $user = User::where('email', Auth::user()->email)->withoutGlobalScope('store_id')->first();
-            
+
     //         if(in_array($user->status, [0,3])) {
     //             return response()->json(prepareResult(true, [], trans('translate.account_is_inactive')), config('httpcodes.unauthorized'));
     //         }
@@ -332,7 +302,7 @@ class AuthController extends Controller
     //         {
     //             return response()->json(prepareResult(true, [], trans('translate.old_password_not_matched')),config('httpcodes.unauthorized'));
     //         }
-            
+
     //         return response()->json(prepareResult(false, $request->email, trans('translate.password_changed')),config('httpcodes.success'));
 
     //     } catch (\Throwable $e) {
