@@ -52,7 +52,7 @@ Route::namespace('App\Http\Controllers\Api\Common')->group(function () {
 
         Route::controller(CategoryController::class)->group(function () {
             Route::post('categorys', 'searchCategory');
-            Route::post('subcategorys', 'searchSubcategory');
+            // Route::post('subcategorys', 'searchSubcategory');
             Route::post('category-update/{id?}', 'update');
             Route::resource('category', CategoryController::class)->only([
                 'store','destroy','show' ]);

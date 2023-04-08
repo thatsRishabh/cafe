@@ -100,8 +100,7 @@ class CafeController extends Controller
             'contact_person_phone'                      => 'required',
             // 'password'              => 'required|confirmed|min:6|max:25',
             'password'                   => 'required|min:6|max:25',
-            'logo'                       => $request->logo ? 'mimes:jpeg,jpg,png,gif|max:10000' : '',
-            // 'logo'                       => 'mimes:jpeg,jpg,png,gif|max:10000'
+            'image'                       => $request->image ? 'mimes:jpeg,jpg,png,gif|max:10000' : '',
             // 'password_confirmation' => 'required'
            
         ]);
@@ -141,24 +140,18 @@ class CafeController extends Controller
           $CafeSetting->contact_person_email = $request->contact_person_email; 
           $CafeSetting->contact_person_name = $request->contact_person_name;
           $CafeSetting->contact_person_phone = $request->contact_person_phone;
-          if ($request->hasFile('logo')) {
-            $file = $request->file('logo');
+          if ($request->hasFile('image')) {
+            $file = $request->file('image');
             $filename=time().'.'.$file->getClientOriginalExtension();
             if ($file->move('assets/user_photos', $filename)) {
-                $CafeSetting->logo=env('CDN_DOC_URL').'assets/user_photos/'.$filename.'';
+                $CafeSetting->image=env('CDN_DOC_URL').'assets/user_photos/'.$filename.'';
             }
            }
-        //  if(!empty($request->logo))
-        //   {
-        //   $file=$request->logo;
-        //    $filename=time().'.'.$file->getClientOriginalExtension();
-        //    $CafeSetting->logo=env('CDN_DOC_URL').$request->logo->move('assets/user_photos',$filename);
-        //   }
           $CafeSetting->save();
 
            //----------------saving image--------------------------//
            $user = User::find($user->id);
-           $user->image =  $CafeSetting->logo;
+           $user->image =  $CafeSetting->image;
            $user->save();
 
         //    below Unit sometime does not work because someone deletes unit from admin
@@ -248,10 +241,6 @@ class CafeController extends Controller
              $CafeSetting->cafe_id =  $user->id;
               $CafeSetting->name  = $request->name;
               $CafeSetting->description  = $request->description;
-             //  if(!empty($request->logo))
-             //  {
-             //      $CafeSetting->logo = $request->logo;
-             //  }
               $CafeSetting->website     = $request->website;
               $CafeSetting->address     = $request->address;
               $CafeSetting->subscription_charge = $request->subscription_charge;
@@ -261,24 +250,17 @@ class CafeController extends Controller
               $CafeSetting->contact_person_email = $request->contact_person_email; 
               $CafeSetting->contact_person_name = $request->contact_person_name;
               $CafeSetting->contact_person_phone = $request->contact_person_phone;
-            //   if(!empty($request->logo))
-            //    {
-            //    $file=$request->logo;
-            //    $filename=time().'.'.$file->getClientOriginalExtension();
-            //    // $info->image=env('CDN_DOC_URL').$request->image->move('assets',$filename);
-            //    $CafeSetting->logo=env('CDN_DOC_URL').$request->logo->move('assets\user_photos',$filename);
-            //   }
-            if(!empty($request->logo))
+            if(!empty($request->image))
             {
-                if(gettype($request->logo) == "string"){
-                    $CafeSetting->logo = $request->logo;
+                if(gettype($request->image) == "string"){
+                    $CafeSetting->image = $request->image;
                 }
                 else{
-                    if ($request->hasFile('logo')) {
-                        $file = $request->file('logo');
+                    if ($request->hasFile('image')) {
+                        $file = $request->file('image');
                         $filename=time().'.'.$file->getClientOriginalExtension();
                         if ($file->move('assets/user_photos', $filename)) {
-                            $CafeSetting->logo=env('CDN_DOC_URL').'assets/user_photos/'.$filename.'';
+                            $CafeSetting->image=env('CDN_DOC_URL').'assets/user_photos/'.$filename.'';
                         }
                        }
                 }
@@ -287,7 +269,7 @@ class CafeController extends Controller
 
          //----------------saving image--------------------------//
            $user = User::find($id);
-           $user->image =  $CafeSetting->logo;
+           $user->image =  $CafeSetting->image;
            $user->save();
          
    
@@ -450,40 +432,31 @@ class CafeController extends Controller
             // return $user;
             if (!$user)  {
                 return prepareResult(false,'user_not_exist' ,[], 500);
-                // return response()->json(prepareResult(true, [], trans('translate.user_not_exist'), $this->intime), config('httpcodes.not_found'));
             }
-            // $user = $user->makeHidden(['promotional_route','transaction_route','two_waysms_route','voice_sms_route']);
-
-            // if(in_array($user->status, [0,3])) {
-            //     return response()->json(prepareResult(true, [], trans('translate.account_is_inactive'), $this->intime), config('httpcodes.unauthorized'));
-            // }
-
-            // $accessToken = $user->createToken('authToken')->accessToken;
-            // $user['token'] = $accessToken;
-            // $user['email'] = $user->email;
-            // $user['id'] = $user->id;
-            $data = [];
+            // $data = [];
 
                     
-            $data['token'] = $user->createToken('authToken')->accessToken;
-            $data['email'] = $user->email;
-            $data['id'] = $user->id;
-            $data['parent_key'] =  $parent_key;
-            // $user['parent_key'] = $parent_key;
-            $role   = Role::where('id', $user->role_id)->first();
-            $data['permissions']  = $role->permissions()->select('id','se_name', 'group_name','belongs_to')->get();
+            // $data['token'] = $user->createToken('authToken')->accessToken;
+            // $data['email'] = $user->email;
+            // $data['id'] = $user->id;
+            // $data['parent_key'] =  $parent_key;
+            // $role   = Role::where('id', $user->role_id)->first();
+            // $data['permissions']  = $role->permissions()->select('id','se_name', 'group_name','belongs_to')->get();
         
-            $userData =[
-                   // 'role'=>"admin"$user
-                'name'=>$user->name,
-                'logo'=>$user->image,
-                   'role_id'=>$user->role_id,
-            ];
-            $data['userData'] =  $userData;
+            // $userData =[
+            //        // 'role'=>"admin"$user
+            //     'name'=>$user->name,
+            //     'image'=>$user->image,
+            //        'role_id'=>$user->role_id,
+            // ];
+            // $data['userData'] =  $userData;
 
-            // $user['permissions'] = $user->permissions()->select('id','name')->orderBy('permission_id', 'ASC')->get();
-
-            return prepareResult(true,'request_successfully_submitted' ,$data, 200);
+            $user['token'] = $user->createToken('authToken')->accessToken;
+            $role   = Role::where('id', $user->role_id)->first();
+            $user['permissions']  = $role->permissions()->select('id','se_name', 'group_name','belongs_to')->get();
+            $user['parent_key'] =  $parent_key;
+            
+            return prepareResult(true,'request_successfully_submitted' ,$user, 200);
             // return response()->json(prepareResult(false, $user, trans('translate.request_successfully_submitted'), $this->intime), config('httpcodes.success'));
         } catch (\Throwable $e) {
             Log::error($e);

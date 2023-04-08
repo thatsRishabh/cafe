@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use App\Models\ProductInfo;
+use App\Models\ProductMenu;
 use App\Models\Unit;
 
 class RecipeController extends Controller
@@ -87,6 +88,13 @@ class RecipeController extends Controller
             return prepareResult(false,'validation_failed' ,$validation->errors(), 500);
            
         }
+         // to check if product is to be made without recipe
+         $checkRecipe =  ProductMenu::find($request->product_menu_id);
+         if($checkRecipe->without_recipe == 1)
+         {
+             return prepareResult(false,'Recipe for this product already exits' ,[], 500);
+         } 
+
      if($request->recipe_methods){
 
             foreach ($request->recipe_methods as $key => $recipe1) {

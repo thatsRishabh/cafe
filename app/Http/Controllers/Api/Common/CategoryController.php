@@ -67,55 +67,55 @@ class CategoryController extends Controller
         }
     }
 
-    public function searchSubcategory(Request $request)
-    {
-        try {
-            $query = Category::select('*')
-                ->whereNotNull('parent_id')
-                ->orderBy('name', 'asc');
-            if(!empty($request->id))
-            {
-                $query->where('id', $request->id);
-            }
-            if(!empty($request->category))
-            {
-                // $query->where('category', $request->category);
-                $query->where('category', 'LIKE', '%'.$request->category.'%');
-            }
-            if(!empty($request->parent_id))
-            {
-                $query->where('parent_id', $request->parent_id);
-            }
+    // public function searchSubcategory(Request $request)
+    // {
+    //     try {
+    //         $query = Category::select('*')
+    //             ->whereNotNull('parent_id')
+    //             ->orderBy('name', 'asc');
+    //         if(!empty($request->id))
+    //         {
+    //             $query->where('id', $request->id);
+    //         }
+    //         if(!empty($request->category))
+    //         {
+    //             // $query->where('category', $request->category);
+    //             $query->where('category', 'LIKE', '%'.$request->category.'%');
+    //         }
+    //         if(!empty($request->parent_id))
+    //         {
+    //             $query->where('parent_id', $request->parent_id);
+    //         }
 
 
-            if(!empty($request->per_page_record))
-            {
-                $perPage = $request->per_page_record;
-                $page = $request->input('page', 1);
-                $total = $query->count();
-                $result = $query->offset(($page - 1) * $perPage)->limit($perPage)->get();
+    //         if(!empty($request->per_page_record))
+    //         {
+    //             $perPage = $request->per_page_record;
+    //             $page = $request->input('page', 1);
+    //             $total = $query->count();
+    //             $result = $query->offset(($page - 1) * $perPage)->limit($perPage)->get();
 
-                $pagination =  [
-                    'data' => $result,
-                    'total' => $total,
-                    'current_page' => $page,
-                    'per_page' => $perPage,
-                    'last_page' => ceil($total / $perPage)
-                ];
-                $query = $pagination;
-            }
-            else
-            {
-                $query = $query->get();
-            }
+    //             $pagination =  [
+    //                 'data' => $result,
+    //                 'total' => $total,
+    //                 'current_page' => $page,
+    //                 'per_page' => $perPage,
+    //                 'last_page' => ceil($total / $perPage)
+    //             ];
+    //             $query = $pagination;
+    //         }
+    //         else
+    //         {
+    //             $query = $query->get();
+    //         }
 
-            return prepareResult(true,'Record Fatched Successfully' ,$query, 200);
-        } 
-        catch (\Throwable $e) {
-            Log::error($e);
-            return prepareResult(false,'Error while fatching Records' ,$e->getMessage(), 500);
-        }
-    }
+    //         return prepareResult(true,'Record Fatched Successfully' ,$query, 200);
+    //     } 
+    //     catch (\Throwable $e) {
+    //         Log::error($e);
+    //         return prepareResult(false,'Error while fatching Records' ,$e->getMessage(), 500);
+    //     }
+    // }
 
     public function store(Request $request)
     {
@@ -124,7 +124,7 @@ class CategoryController extends Controller
         DB::beginTransaction();
         try {
         $validation = Validator::make($request->all(),  [
-            'image'                       => $request->image ? 'mimes:jpeg,jpg,png,gif|max:10000' : '',
+            'image'                       => $request->hasFile('image') ? 'mimes:jpeg,jpg,png,gif|max:10000' : '',
             'name'                      => $nameCheck ? 'required|declined:false' : 'required',
         ],
         [
@@ -168,6 +168,7 @@ class CategoryController extends Controller
 
         $validation = Validator::make($request->all(), [
             'name'                      => 'required|unique:categories,name,'.$id,
+            'image'                       => $request->hasFile('image') ? 'mimes:jpeg,jpg,png,gif|max:10000' : '',
            
         ]);
 

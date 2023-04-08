@@ -187,6 +187,7 @@ class ProductMenuController extends Controller
                 "price"  => "required|numeric", 
                 "order_duration"  => "required|numeric", 
                 "category_id"  => "required|numeric", 
+                'image'                       => $request->hasFile('image') ? 'mimes:jpeg,jpg,png,gif|max:10000' : '',
            
         ]);
 

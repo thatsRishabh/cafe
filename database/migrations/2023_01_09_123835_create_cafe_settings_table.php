@@ -31,7 +31,7 @@ return new class extends Migration
             $table->string('contact_person_phone')->nullable();
             $table->text('address')->nullable();
             $table->text('description')->nullable();
-            $table->string('logo')->nullable();
+            $table->string('image')->nullable();
             $table->timestamps();
         });
     }

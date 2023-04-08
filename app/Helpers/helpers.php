@@ -1134,24 +1134,10 @@ use App\Models\PackagingContents;
 		}    
 		function withoutRecipeDeduction($product_info_stock_id, $quantity)
 		{
-			
-			// $deletOld  = RecipeContains::where('recipe_id', $productID)->get();
-			// $recipeStock = []; 
-			// foreach ($deletOld as $key => $value) {
-					
-				
+						
 				$updateStock = ProductInfo::find($product_info_stock_id);
-			   $updateStock->current_quanitity =  $updateStock->current_quanitity - $quantity ;
+				$productMenuQuanitity  = ProductMenu::where('product_info_stock_id', $product_info_stock_id)->first();
+			   $updateStock->current_quanitity =  $updateStock->current_quanitity -  ($quantity * $productMenuQuanitity->quantity);
 			   $updateStock->save();
 				
-				   
-				//    below code is for debugging purpose, getting output of array
-
-				// $recipeStock[] = [
-				// 	// 'emp_id' =>  $getCurrentQuantity->current_quanitity,
-				// 	'emp_2' =>  $updateStock->current_quanitity,				
-				// ];
-			// }
-			
-			// return $recipeStock;
 		}    

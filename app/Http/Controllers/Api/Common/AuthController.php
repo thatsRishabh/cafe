@@ -21,79 +21,121 @@ use Spatie\Permission\Models\Permission;
 
 class AuthController extends Controller
 {
-    public function login(Request $request)
-    {
+//     public function login(Request $request)
+//     {
        
        
-        try {
+//         try {
             
-            $user = User::select('*')->where('email', $request->email)->withoutGlobalScope('cafe_id')->first();
-            if (!empty($user)) {
+//             $user = User::select('*')->where('email', $request->email)->withoutGlobalScope('cafe_id')->first();
+//             if (!empty($user)) {
 
-                $validation = Validator::make($request->all(),  [
+//                 $validation = Validator::make($request->all(),  [
                    
-                    'email'                      => 'required|email',
-                    'password'                  => 'required',
+//                     'email'                      => 'required|email',
+//                     'password'                  => 'required',
                    
-                ]);
+//                 ]);
         
-                if ($validation->fails()) {
-                    return  prepareResult(false,'validation failed' ,[], 500);
-                }
+//                 if ($validation->fails()) {
+//                     return  prepareResult(false,'validation failed' ,[], 500);
+//                 }
 
-                //  user subscription status check
-                if($user->subscription_status == 2)
-                {
-                    return prepareResult(false,'Your subscription is inactive' ,[], 500);
-                } 
+//                 //  user subscription status check
+//                 if($user->subscription_status == 2)
+//                 {
+//                     return prepareResult(false,'Your subscription is inactive' ,[], 500);
+//                 } 
 
-                if (Hash::check($request->password, $user->password)) {
+//                 if (Hash::check($request->password, $user->password)) {
 
-                    $data = [];
+//                     $data = [];
 
                     
-                    $data['token'] = $user->createToken('authToken')->accessToken;
-                    $data['email'] = $request->email;
-                    $data['id'] = $user->id;
-                    // $permissionData[] =[
-                    //     'action'=>"dashboard",
-                    //     'name'=>"dashboard-view",
-                    // ];
-                    // $data['permissions'] =  $permissionData;
-                    $role   = Role::where('id', $user->role_id)->first();
-                    $data['permissions']  = $role->permissions()->select('id','se_name', 'group_name','belongs_to')->get();
-                    // $userData =[
-                    //     // 'role'=>"admin"$user
-                    //     'role_id'=>$user->role_id
-                    // ];
-                    // $data['user'] =  $userData;
-                    $userData =[
-                        // 'role'=>"admin"$user
-                        'name'=>$user->name,
-                        'logo'=>$user->image,
-                        'role_id'=>$user->role_id,
+//                     $data['token'] = $user->createToken('authToken')->accessToken;
+//                     $data['email'] = $request->email;
+//                     $data['id'] = $user->id;
+//                     // $permissionData[] =[
+//                     //     'action'=>"dashboard",
+//                     //     'name'=>"dashboard-view",
+//                     // ];
+//                     // $data['permissions'] =  $permissionData;
+//                     $role   = Role::where('id', $user->role_id)->first();
+//                     $data['permissions']  = $role->permissions()->select('id','se_name', 'group_name','belongs_to')->get();
+//                     // $userData =[
+//                     //     // 'role'=>"admin"$user
+//                     //     'role_id'=>$user->role_id
+//                     // ];
+//                     // $data['user'] =  $userData;
+//                     $userData =[
+//                         // 'role'=>"admin"$user
+//                         'name'=>$user->name,
+//                         'logo'=>$user->image,
+//                         'role_id'=>$user->role_id,
 
-                    ];
-                    $data['userData'] =  $userData;
+//                     ];
+//                     $data['userData'] =  $userData;
                    
-                    return prepareResult(true,'logged in successfully' ,$data, 200);
+//                     return prepareResult(true,'logged in successfully' ,$data, 200);
 
-                    }
-                     else 
-                     {
-                        return  prepareResult(false,'wrong email or password' ,[], 500);
-                     } 
-             } else {
-                return prepareResult(false,'user not found' ,[], 500);    
-            }
+//                     }
+//                      else 
+//                      {
+//                         return  prepareResult(false,'wrong email or password' ,[], 500);
+//                      } 
+//              } else {
+//                 return prepareResult(false,'user not found' ,[], 500);    
+//             }
             
-        } 
-        catch (\Throwable $e) {
+//         } 
+//         catch (\Throwable $e) {
+//                 Log::error($e);
+//                 return prepareResult(false,$e->getMessage() ,[], 500); 
+//             }
+//    }
+
+        public function login(Request $request)
+        {
+            $validation = Validator::make($request->all(),  [
+                'email'                      => 'required|email',
+                'password'                  => 'required',
+
+            ]);
+            if ($validation->fails()) {
+                return  prepareResult(false,'validation failed' ,[], 500);
+            }
+
+            try 
+            {
+                $user = User::select('id','name','email','image','role_id','subscription_status','cafe_id','password','address','gender','joining_date','mobile','birth_date')->where('email', $request->email)->withoutGlobalScope('cafe_id')->first();
+                if (!empty($user)) {
+
+                    //  user subscription status check
+                    if($user->subscription_status == 2)
+                    {
+                        return prepareResult(false,'Your subscription is inactive' ,[], 500);
+                    } 
+
+                    if (Hash::check($request->password, $user->password)) {
+                        $user['token'] = $user->createToken('authToken')->accessToken;
+                        $role   = Role::where('id', $user->role_id)->first();
+                        $user['permissions']  = $role->permissions()->select('id','se_name', 'group_name','belongs_to')->get();
+                        return prepareResult(true,'logged in successfully' ,$user, 200);
+                    }
+                    else 
+                    {
+                        return  prepareResult(false,'wrong Password' ,[], 500);
+                    } 
+                } else {
+                    return prepareResult(false,'user not found' ,[], 500);    
+                }
+
+            } 
+            catch (\Throwable $e) {
                 Log::error($e);
                 return prepareResult(false,$e->getMessage() ,[], 500); 
             }
-   }
-
+        }
    public function logout(Request $request)
    {
     if (Auth::check()) 
