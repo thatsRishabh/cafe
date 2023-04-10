@@ -26,7 +26,7 @@ class OrderController extends Controller
 		try {
 
 			$query = Order::select('*')
-			->with('orderContains','cafeDetail:cafe_id,email,mobile')
+			->with('orderContains','cafeDetail:id,cafe_id,email,mobile,image','cafeDetail.cafeSetting:cafe_id,contact_person_email,contact_person_name,contact_person_phone')
 			->orderBy('id', 'desc');
 
 			if(!empty($request->id))
@@ -133,11 +133,11 @@ class OrderController extends Controller
 
 						"order_contains.*.product_menu_id"  => $productMenuItem1->without_recipe==1 ? withoutRecipeDeductionValidation($productMenuItem1->product_info_stock_id, $order1['quantity']) : 'required',
 
-						],
-						[
-							'order_contains.*.product_menu_id.declined' => 'Less value left in stock',
-						]
-					);
+					],
+					[
+						'order_contains.*.product_menu_id.declined' => 'Less value left in stock',
+					]
+				);
 
 
 					if ($validation->fails()) {
@@ -218,14 +218,11 @@ class OrderController extends Controller
 		DB::beginTransaction();
 		try {
 			$validation = Validator::make($request->all(), [
-                        // 'table_number'                    => 'required|numeric',
 				'order_status'                   => 'nullable|numeric',
 				'taxes'                      => 'nullable|numeric',
-
 			]);
 			if ($validation->fails()) {
 				return prepareResult(false,$validation->errors()->first() ,$validation->errors(), 500);
-
 			} 
 			if($request->order_status == "2"){
 
@@ -248,23 +245,22 @@ class OrderController extends Controller
 
 					if ($validation->fails()) {
 						return prepareResult(false,$validation->errors()->first() ,$validation->errors(), 500);
-
-					} 
+					}
 				}
 
 			}   
-			$order = Order::find($id);
-			$order->table_number = $request->table_number;
-			$order->customer_id = $request->customer_id;
-			$order->mode_of_transaction = $request->mode_of_transaction;
-			$order->cartTotalQuantity = $request->cartTotalQuantity;
-			$order->cartTotalAmount = $request->cartTotalAmount;
-			$order->taxes = $request->taxes;
-			$order->netAmount = $request->netAmount;
-			$order->order_status = $request->order_status;
-			$order->order_parcel = $request->order_parcel;
-			$order->duration_expired = $request->duration_expired;
-			$order->save();
+			$info = Order::find($id);
+			$info->table_number = $request->table_number;
+			$info->customer_id = $request->customer_id;
+			$info->mode_of_transaction = $request->mode_of_transaction;
+			$info->cartTotalQuantity = $request->cartTotalQuantity;
+			$info->cartTotalAmount = $request->cartTotalAmount;
+			$info->taxes = $request->taxes;
+			$info->netAmount = $request->netAmount;
+			$info->order_status = $request->order_status;
+			$info->order_parcel = $request->order_parcel;
+			$info->duration_expired = $request->duration_expired;
+			$info->save();
 
 			$deletOld = OrderContain::where('order_id', $id)->delete();
 
@@ -273,7 +269,7 @@ class OrderController extends Controller
 				$productMenuItem = ProductMenu::find( $order['product_menu_id']);
 
 				$addorder = new OrderContain;
-				$addorder->order_id =  $order->id;
+				$addorder->order_id =  $info->id;
 				$addorder->product_menu_id = $order['product_menu_id'];
 				$addorder->category_id = $order['category_id'];
                 //    $addorder->unit_id = $order['unit_id'];
@@ -288,6 +284,7 @@ class OrderController extends Controller
                     // below data is from another table
                    // $addorder->price = $productMenuItem->price;
 				$addorder->price = $order['price'];
+                   // $addorder->netPrice = $order['quantity'] * $productMenuItem->price ;
 				$addorder->netPrice = $order['netPrice'];
 				$addorder->save();
 
@@ -303,10 +300,20 @@ class OrderController extends Controller
 
 				}
 			}
+
+                //     // database sum querry
+                // $quantitySum= DB::table('order_contains')->where('order_contains.order_id', $info->id)->sum('quantity');
+                // $amountSum= DB::table('order_contains')->where('order_contains.order_id', $info->id)->sum('netPrice');
+
+                // $info = Order::find( $info->id);
+                // $info->cartTotalQuantity = $quantitySum;
+                // $info->cartTotalAmount = $amountSum;
+                // $info->taxes = $request->taxes;
+                // $info->netAmount = $amountSum + $request->taxes;
+                // $info->save();
 			DB::commit();
-			$order['order_contains'] = $order->orderContains;
-			DB::commit();
-			return prepareResult(true,'Your data has been Updated successfully' ,$order, 200);
+			$info['order_contains'] = $info->orderContains;
+			return prepareResult(true,'Your data has been Updated successfully' ,$info, 200);
 
 		} catch (\Throwable $e) {
 			Log::error($e);

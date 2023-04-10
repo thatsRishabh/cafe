@@ -9,14 +9,12 @@ use App\Traits\CafeId;
 class EmployeeAttendence extends Model
 {
     use HasFactory,CafeId;
-
-    public function attendenceLists()
-    {
-        return $this->hasMany(AttendenceList::class, 'attendence_id', 'id');
-    }
-
-    public function Activity()
-    {
-        return $this->belongsTo(AttendenceList::class,'id' ,'attendence_id');
-    }
+    protected $fillable=[
+        'employee_id',
+        'attendence',
+        'created_by',
+        'updated_by',
+        'date',
+        'cafe_id'
+    ];
 }

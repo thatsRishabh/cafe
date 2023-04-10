@@ -142,6 +142,7 @@ class ProductInfoController extends Controller
 			$productInfo->unit_id = $request->unit_id;
 			$productInfo->current_quanitity = unitConversion($request->unit_id, $request->current_quanitity);
 			$productInfo->save();
+
 			DB::commit();
 			return prepareResult(true,'Your data has been Updated successfully' ,$productInfo, 200);
 		} catch (\Throwable $e) {
@@ -171,6 +172,8 @@ class ProductInfoController extends Controller
 			$productInfo = ProductInfo::find($id);
 			if($productInfo)
 			{
+	            // del in product stock manage
+				$delStockManage = ProductStockManage::where('product_id',$id)->delete();
 				$result=$productInfo->delete();
 				return prepareResult(true,'Record Deleted Successfully' ,$result, 200); 
 			}

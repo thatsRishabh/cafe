@@ -73,7 +73,6 @@ class EmployeeController extends Controller
 			}
 
 			return prepareResult(true,'Records Fatched Successfully' ,$query, 200);
-
 		} catch (\Throwable $e) {
 			Log::error($e);
 			return prepareResult(false,'Oops! Something went wrong.' ,$e->getMessage(), 500);
@@ -83,13 +82,15 @@ class EmployeeController extends Controller
 	public function store(Request $request)
 	{
 		$validation = Validator::make($request->all(),  [
-			'name' => 'required',
-			'mobile' => 'required|numeric|digits_between:10,10|unique:App\Models\User,mobile',
-			'email' => 'required|email|unique:App\Models\User,email',
-			'document_number' => 'required|unique:App\Models\User,document_number',
-			'image' => $request->image ? 'mimes:jpeg,jpg,png,gif|max:10000' : '',
-			'password' => 'required|min:6|max:25',
-		]);
+            'name'                      => 'required',
+            'mobile'                      => 'required|numeric|digits_between:10,10|unique:App\Models\User,mobile',
+            'email'                      => 'required|email|unique:App\Models\User,email',
+            'document_number'                      => 'required|unique:App\Models\User,document_number',
+            'image'                       => $request->image ? 'mimes:jpeg,jpg,png,gif|max:10000' : '',
+            'designation'                   => 'required',
+            'address'             => 'required',
+            'password'              => 'required|min:6|max:25',           
+        ]);
 		if ($validation->fails()) {
 			return prepareResult(false,$validation->errors()->first() ,$validation->errors(), 500);
 
@@ -140,6 +141,8 @@ class EmployeeController extends Controller
 			'mobile' => 'required|numeric|digits_between:10,10|unique:users,mobile,'.$id,
 			'email' => 'email|required|unique:users,email,'.$id,
 			'document_number' => 'required|unique:users,document_number,'.$id,
+			'designation'                   => 'required',
+            'address'                       => 'required',
 		]);
 		if ($validation->fails()) {
 			return prepareResult(false,$validation->errors()->first() ,$validation->errors(), 500);

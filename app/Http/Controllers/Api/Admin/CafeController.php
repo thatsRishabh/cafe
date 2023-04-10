@@ -127,7 +127,7 @@ class CafeController extends Controller
 				$file = $request->file('image');
 				$filename = time().'.'.$file->getClientOriginalExtension();
 				if ($file->move('assets/user_photos', $filename)) {
-					$CafeSetting->image = env('CDN_DOC_URL').'assets/user_photos/'.$filename.'';
+					$CafeSetting->logo = env('CDN_DOC_URL').'assets/user_photos/'.$filename.'';
 				}
 			}
 			$CafeSetting->save();
@@ -219,7 +219,7 @@ class CafeController extends Controller
 						$file = $request->file('image');
 						$filename=time().'.'.$file->getClientOriginalExtension();
 						if ($file->move('assets/user_photos', $filename)) {
-							$CafeSetting->image=env('CDN_DOC_URL').'assets/user_photos/'.$filename.'';
+							$CafeSetting->logo = env('CDN_DOC_URL').'assets/user_photos/'.$filename.'';
 						}
 					}
 				}

@@ -60,10 +60,14 @@ class CategoryController extends Controller
 
 	public function store(Request $request)
 	{
-		$validation = Validator::make($request->all(),  [
-			'image' => $request->image ? 'mimes:jpeg,jpg,png,gif|max:10000' : '',
-			'name' => 'required|unique:categories',
-		]);
+		$nameCheck = Category::where('name', $request->name)->first();
+        $validation = Validator::make($request->all(),  [
+            'image'                       => $request->hasFile('image') ? 'mimes:jpeg,jpg,png,gif|max:10000' : '',
+            'name'                      => $nameCheck ? 'required|declined:false' : 'required',
+        ],
+        [
+            'name.declined' => 'Name already exists',
+        ]);
 		if ($validation->fails()) {
 			return prepareResult(false,$validation->errors()->first() ,$validation->errors(), 500);
 		} 
@@ -88,8 +92,7 @@ class CategoryController extends Controller
 			return prepareResult(false,'Oops! Something went wrong.' ,$e->getMessage(), 500);
 		}
 	}
-
-
+    
 	public function update(Request $request, $id)
 	{
 		$validation = Validator::make($request->all(), [
