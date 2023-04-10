@@ -62,9 +62,9 @@ class User extends Authenticatable
     ];
 
 
-    public function CafeSetting()
+    public function cafeSetting()
     {
-        return $this->belongsTo(CafeSetting::class, 'id', 'cafe_id');
+        return $this->hasOne(CafeSetting::class, 'cafe_id', 'id');
     }
 
     public function cafeSubscription()

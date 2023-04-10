@@ -85,10 +85,10 @@ class EmployeeAttendenceController extends Controller
 			$attendence_ids = [];
 			if($request->employee_attendence){
 				foreach ($request->employee_attendence as $key => $value) {
-					$attenceCheck = EmployeeAttendence::whereDate('date', $date)->where('employee_id', $value['employee_id'])->get('employee_id')->first();
+					$attendenceCheck = EmployeeAttendence::whereDate('date', $date)->where('employee_id', $value['employee_id'])->get('employee_id')->first();
 
 					$validation = Validator::make($request->all(),[      
-						"employee_attendence.*.employee_id"  => $attenceCheck ? 'required|declined:false' : 'required', 
+						"employee_attendence.*.employee_id"  => $attendenceCheck ? 'required|declined:false' : 'required', 
 					],
 					[
 						'employee_attendence.*.employee_id.declined' => 'Attendence already exists',
@@ -130,10 +130,10 @@ class EmployeeAttendenceController extends Controller
 		} 
 		DB::beginTransaction();
 		try {
-			$attenceCheck = EmployeeAttendence::whereDate('date', $request->date)->where('employee_id', $request->employee_id)->where('id','!=',$id)->first();
+			$attendenceCheck = EmployeeAttendence::whereDate('date', $request->date)->where('employee_id', $request->employee_id)->where('id','!=',$id)->first();
 
 			$validation = Validator::make($request->all(),[      
-				"employee_id"  => $attenceCheck ? 'required|declined:false' : 'required', 
+				"employee_id"  => $attendenceCheck ? 'required|declined:false' : 'required', 
 			],
 			[
 				'employee_id.declined' => 'Attendence already exists',
@@ -154,6 +154,52 @@ class EmployeeAttendenceController extends Controller
 			$attendenceList->save();
 			DB::commit();
 			return prepareResult(true,'Your data has been Updated successfully' ,$attendenceList, 200);
+		} catch (\Throwable $e) {
+			Log::error($e);
+			return prepareResult(false,'Oops! Something went wrong.' ,$e->getMessage(), 500);
+		}
+	}
+
+	public function multipleUpdate(Request $request)
+	{
+		$validation = Validator::make($request->all(), [
+			'date' => 'required',
+			'employee_attendence'=>'required|array',
+		]);
+		if ($validation->fails()) {
+			return prepareResult(false,$validation->errors()->first() ,$validation->errors(), 500);
+		} 
+		DB::beginTransaction();
+		try {
+			$attendence_ids = [];
+			if($request->employee_attendence){
+				foreach ($request->employee_attendence as $key => $value) {
+					// $attendenceCheck = EmployeeAttendence::whereDate('date', $request->date)->where('employee_id', $request->employee_id)->where('id','!=',$value['id'])->get('employee_id')->first();
+					// $validation = Validator::make($request->all(),[      
+					// 	"employee_attendence.*.employee_id"  => $attendenceCheck ? 'required|declined:false' : 'required', 
+					// ],
+					// [
+					// 	'employee_attendence.*.employee_id.declined' => 'Attendence already exists',
+					// ]);
+					// if ($validation->fails()) {
+					// 	return prepareResult(false,$validation->errors()->first() ,$validation->errors(), 500);
+					// } 
+					$attendenceList = EmployeeAttendence::find($value['id']);
+					if(empty($attendenceList))
+					{
+						return prepareResult(false,'Record not found' ,[], 500);
+					}
+					$attendenceList->date = $request->date;
+					$attendenceList->employee_id = $request->employee_id;
+					$attendenceList->attendence = $request->attendence;
+					$attendenceList->updated_by = auth()->id();
+					$attendenceList->save();
+					$attendence_ids[] = $attendenceList->id; 
+				}
+			}
+			$data = EmployeeAttendence::whereIn('id',$attendence_ids)->get();
+			DB::commit();
+			return prepareResult(true,'Your data has been Updated successfully' ,$data, 200);
 		} catch (\Throwable $e) {
 			Log::error($e);
 			return prepareResult(false,'Oops! Something went wrong.' ,$e->getMessage(), 500);

@@ -8,7 +8,7 @@ use App\Models\ProductMenu;
 use App\Models\Order;
 use App\Models\Employee;
 use App\Models\User;
-use App\Models\AttendenceList;
+use App\Models\EmployeeAttendence;
 use App\Models\OrderContain;
 use Illuminate\Support\Facades\DB;  
 use Illuminate\Support\Facades\Log;
@@ -23,8 +23,8 @@ class DashboardController extends Controller
 		try {
 			$data = [];
 			$data['todaySale'] = Order::whereDate('created_at', date("Y-m-d"))->sum('netAmount');
-			$data['employeePresentToday'] = AttendenceList::where('attendence',2)->whereDate('created_at', date("Y-m-d"))->count();
-			$data['employeeHalfDayToday'] = AttendenceList::where('attendence',3)->whereDate('created_at', date("Y-m-d"))->count();
+			$data['employeePresentToday'] = EmployeeAttendence::where('attendence',2)->whereDate('created_at', date("Y-m-d"))->count();
+			$data['employeeHalfDayToday'] = EmployeeAttendence::where('attendence',3)->whereDate('created_at', date("Y-m-d"))->count();
 			$data['totalEmployee'] = User::where('role_id', 3)->count();
 			return prepareResult(true,'Report data Fatched Successfully' ,$data, 200);
 		} catch (\Throwable $e) {

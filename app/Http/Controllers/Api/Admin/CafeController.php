@@ -22,7 +22,7 @@ class CafeController extends Controller
 		try {
 			$query = User::select('*')
 			->where('role_id', 2)
-			->with('cafeSubscription:id,subscription_type,subscription_charge,subscription_startDate,subscription_endDate,subscription_id','CafeSetting')
+			->with('cafeSubscription:id,subscription_type,subscription_charge,subscription_startDate,subscription_endDate,subscription_id','cafeSetting')
 			->orderBy('id', 'desc');
 			if(!empty($request->id))
 			{
@@ -344,10 +344,8 @@ class CafeController extends Controller
 		$validation = Validator::make($request->all(),  [
 			'account_uuid'      => 'required'
 		]);
-
 		if ($validation->fails()) {
 			return prepareResult(false,$validation->errors()->first() ,$validation->errors(), 500);
-
 		}  
 
 		try {
@@ -358,8 +356,8 @@ class CafeController extends Controller
 			}
 
 			$user = User::select('*')
-			->where('uuid', base64_decode($request->account_uuid))
-            // ->where('uuid', $request->account_uuid)
+			// ->where('uuid', base64_decode($request->account_uuid))
+            ->where('uuid', $request->account_uuid)
 			->withoutGlobalScope('cafe_id')
 			->first();
 			if (!$user)  {
@@ -367,9 +365,9 @@ class CafeController extends Controller
 			}
 			$user['token'] = $user->createToken('authToken')->accessToken;
 			$user['parent_key'] =  $parent_key;
+			$user['cafe_setting'] =  $user->cafeSetting;
 			$role   = Role::where('id', $user->role_id)->first();
 			$user['permissions']  = $role->permissions()->select('id','se_name', 'group_name','belongs_to')->get();
-
 			return prepareResult(true,'request_successfully_submitted' ,$user, 200);
 		} catch (\Throwable $e) {
 			Log::error($e);

@@ -16,13 +16,8 @@ class Order extends Model
     {
         return $this->hasMany(OrderContain::class, 'order_id', 'id');
     }
-
-    public function cafeDetails()
-    {
-        return $this->belongsTo(CafeSetting::class, 'cafe_id', 'cafe_id');
-    }
     public function cafeDetail()
     {
-        return $this->belongsTo(User::class, 'cafe_id', 'cafe_id');
+        return $this->belongsTo(User::class, 'cafe_id', 'id');
     }
 }

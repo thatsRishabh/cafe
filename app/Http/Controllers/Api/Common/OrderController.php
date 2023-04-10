@@ -12,7 +12,6 @@ use App\Models\PackagingContents;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
-// use Barryvdh\DomPDF\Facade\PDF;
 use PDF;
 use App\Models\Recipe;
 use App\Models\RecipeContains;
@@ -324,8 +323,7 @@ class OrderController extends Controller
 	public function show($id)
 	{
 		try {
-
-			$order = Order::with('orderContains','cafeDetail:id,cafe_id,email,mobile,image','cafeDetail.cafeSetting:cafe_id,contact_person_email,contact_person_name,contact_person_phone,logo')->find($id);
+			$order = Order::with('orderContains','cafeDetail:id,cafe_id,email,mobile,image','cafeDetail.cafeSetting:id,cafe_id,contact_person_email,contact_person_name,contact_person_phone,logo')->find($id);
 			if($order)
 			{
 				return prepareResult(true,'Record Fatched Successfully' ,$order, 200); 
