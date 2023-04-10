@@ -264,7 +264,6 @@ class ProductStockManageController extends Controller
 		}
 	}
 
-	<<<<<<< HEAD
 	public function destroy($id)
 	{
 		try {
@@ -283,53 +282,22 @@ class ProductStockManageController extends Controller
 				}
 				else
 				{
-              // restoring productinfo old stock to previous value after kg/gram/dozen conversion
+              		// restoring productinfo old stock to previous value after kg/gram/dozen conversion
 					$updateStock = ProductInfo::find( $oldStockValue->product_id);
 					$updateStock->current_quanitity = strtolower($oldStockValue->stock_operation) == "in" 
 					? $oldStockValue->new_stock - ($oldStockValue->change_stock * $unitData->minvalue)  
 					: $oldStockValue->new_stock + ($oldStockValue->change_stock * $unitData->minvalue);
 					$updateStock->save();
 				}
-
 				$result=$info->delete();
 				DB::commit();
-
 				return prepareResult(true,'Record Deleted Successfully' ,$result, 200); 
 			}
 			return prepareResult(false,'Record Not Found' ,[], 500);
-			} catch (\Throwable $e) {
-				Log::error($e);
-				return prepareResult(false,'Oops! Something went wrong.' ,$e->getMessage(), 500);
-			}
+		} catch (\Throwable $e) {
+			Log::error($e);
+			return prepareResult(false,'Oops! Something went wrong.' ,$e->getMessage(), 500);
 		}
-		=======
-		if($oldStockValue->change_stock == $oldStockValue->new_stock)
-		{
-			$updateStock = ProductInfo::find( $oldStockValue->product_id);
-			$updateStock->current_quanitity = 0;
-			$updateStock->save();
-		}
-		else
-		{
-              // restoring productinfo old stock to previous value after kg/gram/dozen conversion
-			$updateStock = ProductInfo::find( $oldStockValue->product_id);
-			$updateStock->current_quanitity = strtolower($oldStockValue->stock_operation) == "in" 
-			? $oldStockValue->new_stock - ($oldStockValue->change_stock * $unitData->minvalue)  
-			: $oldStockValue->new_stock + ($oldStockValue->change_stock * $unitData->minvalue);
-			$updateStock->save();
-		}
-
-		$result=$info->delete();
-		DB::commit();
-
-		return prepareResult(true,'Record Id Deleted Successfully' ,$result, 200); 
 	}
-	return prepareResult(false,'Record Id Not Found' ,[], 500);
-	} catch (\Throwable $e) {
-		Log::error($e);
-		return prepareResult(false,'something_went_wrong' ,$e->getMessage(), 500);
-	}
-}
->>>>>>> ee2420ee00c316fd8c74dd8562dcc923af1a7d72
 
 }
