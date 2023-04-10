@@ -120,7 +120,8 @@ Route::namespace('App\Http\Controllers\Api\Common')->group(function () {
 				'store','destroy','show', 'update' ]);
 			Route::get('employee-id', 'employeeID'); 
 			Route::post('monthly-attendence', 'monthlyAttendence'); 
-			Route::post('attendences-date-wise', 'dateWiseSearch'); 
+			Route::post('attendences-date-wise', 'dateWiseSearch');
+			Route::post('employee-attendence-multiple-update', 'multipleUpdate'); 
 		});
 
  		// CustomerAccountManage
