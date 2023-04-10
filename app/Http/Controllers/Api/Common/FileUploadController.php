@@ -51,8 +51,8 @@ class FileUploadController extends Controller
 
             return response(prepareResult(false, $query, trans('translate.fetched_records')), config('httpcodes.success'));
         } catch (\Throwable $e) {
-            \Log::error($e);
-            return response()->json(prepareResult(true, $e->getMessage(), trans('translate.something_went_wrong')), config('httpcodes.internal_server_error'));
+            Log::error($e);
+            return prepareResult(false,'Oops! Something went wrong.' ,$e->getMessage(), 500);
         }
     }
 
@@ -164,12 +164,9 @@ class FileUploadController extends Controller
                 ];
                 return response()->json(prepareResult(false, $fileInfo, trans('translate.created')),config('httpcodes.created'));
             }   
-        }
-        catch (\Throwable $e) {
-            \Log::error($e);
-            return response()->json(prepareResult(true, $e->getMessage(), trans('translate.something_went_wrong')), config('httpcodes.internal_server_error'));
+        } catch (\Throwable $e) {
+            Log::error($e);
+            return prepareResult(false,'Oops! Something went wrong.' ,$e->getMessage(), 500);
         }
     }
-
-    
 }

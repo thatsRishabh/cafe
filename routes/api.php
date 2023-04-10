@@ -38,42 +38,41 @@ Route::namespace('App\Http\Controllers\Api\Common')->group(function () {
 
 
 		Route::controller(EmployeeController::class)->group(function () {
-			Route::post('employees', 'searchEmployee');
+			Route::post('employees', 'employees');
 			Route::post('employee-update/{id?}', 'update');
 			Route::resource('employee', EmployeeController::class)->only([
 				'store','destroy','show' ]);
 		});
 
 		Route::controller(CustomerController::class)->group(function () {
-			Route::post('customers', 'searchCustomer');
+			Route::post('customers', 'customers');
 			Route::resource('customer', CustomerController::class)->only([
 				'store','destroy','show', 'update' ]);
 		});
 
 		Route::controller(CategoryController::class)->group(function () {
-			Route::post('categorys', 'searchCategory');
-			Route::post('subcategorys', 'searchSubcategory');
+			Route::post('categories', 'categories');
 			Route::post('category-update/{id?}', 'update');
 			Route::resource('category', CategoryController::class)->only([
 				'store','destroy','show' ]);
 		});
 
 		Route::controller(ProductMenuController::class)->group(function () {
-			Route::post('product-menus', 'searchProductMenu');
-			Route::post('product-menus-list', 'productMenuList');
+			Route::post('category-product-menus', 'categoryProductMenus');
+			Route::post('product-menus', 'productMenus');
 			Route::post('product-menu-update/{id?}', 'update');
 			Route::resource('product-menu', ProductMenuController::class)->only([
 				'store','destroy','show' ]);
 		});
  		// Unit
 		Route::controller(UnitController::class)->group(function () {
-			Route::post('units', 'searchUnit');
+			Route::post('units', 'units');
 			Route::resource('unit', UnitController::class)->only([
 				'store','destroy','show', 'update' ]);
 		});
  		// product-info
 		Route::controller(ProductInfoController::class)->group(function () {
-			Route::post('product-infos', 'searchProductInfo');
+			Route::post('product-infos', 'productInfos');
 			Route::post('excel-import', 'excelImport');
 			Route::resource('product-info', ProductInfoController::class)->only([
 				'store','destroy','show', 'update' ]);
@@ -81,7 +80,7 @@ Route::namespace('App\Http\Controllers\Api\Common')->group(function () {
 
  		// ProductStockManage
 		Route::controller(ProductStockManageController::class)->group(function () {
-			Route::post('product-stock-manages', 'searchProductStockManage');
+			Route::post('product-stock-manages', 'productStockManages');
             // Route::post('customer-update/{id?}', 'update');
 			Route::resource('product-stock-manage', ProductStockManageController::class)->only([
 				'store','destroy','show', 'update' ]);
@@ -90,33 +89,33 @@ Route::namespace('App\Http\Controllers\Api\Common')->group(function () {
 
    		// recipe
 		Route::controller(RecipeController::class)->group(function () {
-			Route::post('recipes', 'searchRecipe');
+			Route::post('recipes', 'recipes');
 			Route::resource('recipe', RecipeController::class)->only([
 				'store','destroy','show', 'update' ]);
 		});
   		// Order
 		Route::controller(OrderController::class)->group(function () {
-			Route::post('orders', 'searchOrder');
+			Route::post('orders', 'orders');
 			Route::get('print-order/{id?}', 'printOrder'); 
 			Route::resource('order', OrderController::class)->only([
 				'store','destroy','show', 'update' ]);
 		});
     	// expense
 		Route::controller(ExpenseController::class)->group(function () {
-			Route::post('expenses', 'searchExpense');
+			Route::post('expenses', 'expenses');
 			Route::resource('expense', ExpenseController::class)->only([
 				'store','destroy','show', 'update' ]);
 		});
 
         // SalaryManagement
 		Route::controller(SalaryManagementController::class)->group(function () {
-			Route::post('salary-managements', 'searchSalary');
+			Route::post('salary-managements', 'salaryManagements');
 			Route::resource('salary-management', SalaryManagementController::class)->only([
 				'store','destroy','show', 'update' ]);
 		});      
 		// EmployeeAttendence
 		Route::controller(EmployeeAttendenceController::class)->group(function () {
-			Route::post('employee-attendences', 'searchEmployeeAttendence');
+			Route::post('employee-attendences', 'employeeAttendences');
 			Route::resource('employee-attendence', EmployeeAttendenceController::class)->only([
 				'store','destroy','show', 'update' ]);
 			Route::get('employee-id', 'employeeID'); 
@@ -126,13 +125,13 @@ Route::namespace('App\Http\Controllers\Api\Common')->group(function () {
 
  		// CustomerAccountManage
 		Route::controller(CustomerAccountManageController::class)->group(function () {
-			Route::post('customer-account-manages', 'searchCustomerAccount');
+			Route::post('customer-account-manages', 'customerAccountManages');
 			Route::resource('customer-account-manage', CustomerAccountManageController::class)->only([
 				'store','destroy','show', 'update' ]);
 		});
         // Packaging
 		Route::controller(PackagingController::class)->group(function () {
-			Route::post('packagings', 'searchPackaging');
+			Route::post('packagings', 'packagings');
 			Route::resource('packaging', PackagingController::class)->only([
 				'store','destroy','show', 'update' ]);
 		});
@@ -152,7 +151,7 @@ Route::namespace('App\Http\Controllers\Api\Admin')->group(function () {
 		Route::group(['middleware' => 'admin'],function () {
 
 			Route::controller(CafeController::class)->group(function () {
-				Route::post('cafes', 'searchCafe');
+				Route::post('cafes', 'cafes');
 				Route::post('cafe-child', 'childLogin');
 				Route::post('cafe-subscription', 'cafeSubscription');
 				Route::put('cafe-subscription-update/{id?}', 'cafeSubscriptionUpdate');
