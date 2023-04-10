@@ -141,10 +141,10 @@ class ProductStockManageController extends Controller
             $info = new ProductStockManage;
             $info->product_id = $request->product_id;
             $info->unit_id = $request->unit_id;
-
-            // storing old stock from product infos stock table
             $info->old_stock = $old->current_quanitity;
-            $info->change_stock = $request->change_stock;
+            // storing old stock from product infos stock table
+            $info->price = $request->price;
+            $info->change_stock =  unitConversion($request->unit_id, $request->change_stock);
 
             // stock in/out calculation
             $info->new_stock = strtolower($request->stock_operation) == "in" 
@@ -230,8 +230,31 @@ class ProductStockManageController extends Controller
         if ($validator->fails()) {
             return prepareResult(false,'validation_failed' ,$validator->errors(), 500);
            
-        }    
-          $oldStockValue =ProductStockManage::find($id);
+        }   
+        
+        $oldStockValue =ProductStockManage::find($id);
+
+        if($oldStockValue->change_stock == $oldStockValue->new_stock){
+
+            if(strtolower($request->stock_operation) == "out"){
+                return prepareResult(false,'Only "Stock IN operation allowed for this product"' ,[], 500);
+            }
+
+            $info = ProductStockManage::find($id);
+            $info->change_stock = unitConversion($request->unit_id, $request->change_stock);
+            $info->new_stock = strtolower($request->stock_operation) == "in" 
+            ? unitConversion($request->unit_id, $request->change_stock) 
+            : " ";
+            $info->unit_id = $request->unit_id;
+            $info->save();
+
+            // updating the productinfo table as well
+            $updateStock = ProductInfo::find( $request->product_id);
+            $updateStock->current_quanitity = $info->new_stock;
+            $updateStock->unit_id = $request->unit_id;
+            $updateStock->save();
+        }
+        else{
             $unitData =Unit::find($oldStockValue->unit_id);
 
             
@@ -248,10 +271,10 @@ class ProductStockManageController extends Controller
              $info = ProductStockManage::find($id);
              $info->product_id = $request->product_id;
              $info->unit_id = $request->unit_id;
- 
+             $info->price = $request->price;
              // storing old stock from product infos stock table
              $info->old_stock = $old->current_quanitity;
-             $info->change_stock = $request->change_stock;
+             $info->change_stock = unitConversion($request->unit_id, $request->change_stock);
  
               // stock in/out calculation
             $info->new_stock = strtolower($request->stock_operation) == "in" 
@@ -266,6 +289,8 @@ class ProductStockManageController extends Controller
              $updateStock = ProductInfo::find( $request->product_id);
              $updateStock->current_quanitity = $info->new_stock;
              $updateStock->save();
+        }
+          
 
         DB::commit();
         return prepareResult(true,'Your data has been Updated successfully' ,$info, 200);
@@ -304,15 +329,25 @@ class ProductStockManageController extends Controller
                 $oldStockValue =ProductStockManage::find($id);
                $unitData =Unit::find($oldStockValue->unit_id);
 
+               if($oldStockValue->change_stock == $oldStockValue->new_stock)
+               {
+                $updateStock = ProductInfo::find( $oldStockValue->product_id);
+                $updateStock->current_quanitity = 0;
+                $updateStock->save();
+               }
+               else
+               {
               // restoring productinfo old stock to previous value after kg/gram/dozen conversion
               $updateStock = ProductInfo::find( $oldStockValue->product_id);
               $updateStock->current_quanitity = strtolower($oldStockValue->stock_operation) == "in" 
               ? $oldStockValue->new_stock - ($oldStockValue->change_stock * $unitData->minvalue)  
               : $oldStockValue->new_stock + ($oldStockValue->change_stock * $unitData->minvalue);
               $updateStock->save();
-
+               }
+             
                 $result=$info->delete();
                 DB::commit();
+
                 return prepareResult(true,'Record Id Deleted Successfully' ,$result, 200); 
             }
             return prepareResult(false,'Record Id Not Found' ,[], 500);

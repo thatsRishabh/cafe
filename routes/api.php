@@ -44,11 +44,11 @@ Route::namespace('App\Http\Controllers\Api\Common')->group(function () {
 				'store','destroy','show' ]);
 		});
 
-		// Route::controller(CustomerController::class)->group(function () {
-		// 	Route::post('customers', 'searchCustomer');
-		// 	Route::resource('customer', CustomerController::class)->only([
-		// 		'store','destroy','show', 'update' ]);
-		// });
+		Route::controller(CustomerController::class)->group(function () {
+			Route::post('customers', 'searchCustomer');
+			Route::resource('customer', CustomerController::class)->only([
+				'store','destroy','show', 'update' ]);
+		});
 
 		Route::controller(CategoryController::class)->group(function () {
 			Route::post('categorys', 'searchCategory');
