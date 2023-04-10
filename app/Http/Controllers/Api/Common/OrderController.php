@@ -26,7 +26,7 @@ class OrderController extends Controller
 		try {
 
 			$query = Order::select('*')
-			->with('orderContains','cafeDetail:id,cafe_id,email,mobile,image','cafeDetail.cafeSetting:cafe_id,contact_person_email,contact_person_name,contact_person_phone')
+			->with('orderContains','cafeDetail:id,cafe_id,email,mobile,image','cafeDetail.cafeSetting:cafe_id,contact_person_email,contact_person_name,contact_person_phone,logo')
 			->orderBy('id', 'desc');
 
 			if(!empty($request->id))
@@ -325,7 +325,7 @@ class OrderController extends Controller
 	{
 		try {
 
-			$order = Order::find($id);
+			$order = Order::with('orderContains','cafeDetail:id,cafe_id,email,mobile,image','cafeDetail.cafeSetting:cafe_id,contact_person_email,contact_person_name,contact_person_phone,logo')->find($id);
 			if($order)
 			{
 				return prepareResult(true,'Record Fatched Successfully' ,$order, 200); 
