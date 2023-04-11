@@ -64,10 +64,11 @@ class ProductMenuController extends Controller
 	public function productMenus(Request $request)
 	{
 		try {
+			$query = ProductMenu::select('*')->with('category:id,name');
 			if(!empty($request->priority_rank)){
-				$query = ProductMenu::select('*') ->orderBy('priority_rank', 'asc');
+				$query = $query->orderBy('priority_rank', 'asc');
 			}else{ 
-				$query = ProductMenu::select('*')->orderBy('id', 'desc');
+				$query = $query->orderBy('id', 'desc');
 			}
 			if(!empty($request->id))
 			{
@@ -80,6 +81,10 @@ class ProductMenuController extends Controller
 			if(!empty($request->category_id))
 			{
 				$query->where('category_id', $request->category_id);
+			}
+			if(!empty($request->price))
+			{
+				$query->where('price', $request->price);
 			}
 
 

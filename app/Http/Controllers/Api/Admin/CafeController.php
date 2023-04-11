@@ -342,8 +342,7 @@ class CafeController extends Controller
 		]);
 		if ($validation->fails()) {
 			return prepareResult(false,$validation->errors()->first() ,$validation->errors(), 500);
-		}  
-
+		}
 		try {
 			$parent_key = null;
 			if(empty($request->is_back_to_self_account))
@@ -353,7 +352,6 @@ class CafeController extends Controller
 
 			$user = User::select('*')
 			->where('uuid', base64_decode($request->account_uuid))
-            // ->where('uuid', $request->account_uuid)
 			->withoutGlobalScope('cafe_id')
 			->first();
 			if (!$user)  {

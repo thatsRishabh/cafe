@@ -44,6 +44,13 @@ Route::namespace('App\Http\Controllers\Api\Common')->group(function () {
 				'store','destroy','show' ]);
 		});
 
+		Route::controller(EmployeeLeaveController::class)->group(function () {
+			Route::post('employee-leaves', 'employeeLeaves');
+			Route::post('employee-leave-update', 'update');
+			Route::resource('employee-leave', EmployeeLeaveController::class)->only([
+				'store','destroy','show' ]);
+		});
+
 		Route::controller(CustomerController::class)->group(function () {
 			Route::post('customers', 'customers');
 			Route::resource('customer', CustomerController::class)->only([

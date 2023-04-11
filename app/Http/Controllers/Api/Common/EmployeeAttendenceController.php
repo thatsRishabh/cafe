@@ -62,7 +62,7 @@ class EmployeeAttendenceController extends Controller
 			{
 				$query = $query->get();
 			}
-			return prepareResult(true,'Record Fatched Successfully' ,$query, 200);
+			return prepareResult(true,'Record Fatched Successfully' ,['employee_attendence'=>$query], 200);
 
 		} catch (\Throwable $e) {
 			Log::error($e);

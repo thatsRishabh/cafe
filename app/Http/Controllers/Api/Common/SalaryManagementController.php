@@ -13,7 +13,6 @@ use App\Models\User;
 
 class SalaryManagementController extends Controller
 {
-    //
 	public function salaryManagements(Request $request)
 	{
 		try {
@@ -73,12 +72,11 @@ class SalaryManagementController extends Controller
 	public function store(Request $request)
 	{
 		$validation = Validator::make($request->all(), [
-			'paid_amount'                   => 'required|numeric',
-			'employee_id'                         => 'required|numeric|exists:users,id',
+			'paid_amount' => 'required|numeric',
+			'employee_id' => 'required|numeric|exists:users,id',
 		]);
 		if ($validation->fails()) {
 			return prepareResult(false,$validation->errors()->first() ,$validation->errors(), 500);
-
 		}    
 		DB::beginTransaction();
 		try {   
