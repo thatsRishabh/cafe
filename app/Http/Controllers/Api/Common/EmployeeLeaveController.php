@@ -69,7 +69,7 @@ class EmployeeLeaveController extends Controller
 	public function store(Request $request)
 	{
 		$validation = Validator::make($request->all(),  [
-            'month' => 'required',
+            'year_month' => 'required',
             'leaves' => 'required|array'           
         ]);
 		if ($validation->fails()) {
@@ -77,20 +77,16 @@ class EmployeeLeaveController extends Controller
 		} 
 		DB::beginTransaction();
 		try {
-			if(empty($request->year))
-			{
-				if($request->month < date('m'))
-				{
-					$year = int(date('Y')) + 1;
-				}
-			}
+			$date = $request->year_month.'-1';
+			$month = date('m',strtotime($date));
+			$year = date('Y',strtotime($date));
 			$eLeave_ids = [];
 			foreach ($request->leaves as $key => $leave) {
 				$eLeave = new EmployeeLeave;
 				$eLeave->employee_id = $leave['employee_id'];
 				$eLeave->no_of_leaves  = $leave['no_of_leaves'];
-				$eLeave->month = $request->month;
-				$eLeave->year = $request->year;
+				$eLeave->month = $month;
+				$eLeave->year = $year;
 				$eLeave->save();
 				$eLeave_ids[] = $eLeave->id;
 			}
@@ -106,8 +102,7 @@ class EmployeeLeaveController extends Controller
 	public function update(Request $request)
 	{
 		$validation = Validator::make($request->all(),  [
-            'month' => 'required',
-            'year' => 'required',
+            'year_month' => 'required',
             'leaves' => 'required|array'           
         ]);
 		if ($validation->fails()) {
@@ -115,6 +110,9 @@ class EmployeeLeaveController extends Controller
 		} 
 		DB::beginTransaction();
 		try {
+			$date = $request->year_month.'-1';
+			$month = date('m',strtotime($date));
+			$year = date('Y',strtotime($date));
 			$eLeave_ids = [];
 			foreach ($request->leaves as $key => $leave) {
 				$eLeave = EmployeeLeave::find($leave['id']);
@@ -123,8 +121,8 @@ class EmployeeLeaveController extends Controller
 				}
 				$eLeave->employee_id = $leave['employee_id'];
 				$eLeave->no_of_leaves  = $leave['no_of_leaves'];
-				$eLeave->month = $request->month;
-				$eLeave->year = $request->year;
+				$eLeave->month = $month;
+				$eLeave->year = $year;
 				$eLeave->save();
 				$eLeave_ids[] = $eLeave->id;
 			}
