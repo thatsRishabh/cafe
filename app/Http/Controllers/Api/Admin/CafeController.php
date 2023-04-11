@@ -82,20 +82,19 @@ class CafeController extends Controller
 		DB::beginTransaction();
 		try {
 			$validation = Validator::make($request->all(),  [
-				'name'                      => 'required',
-				'mobile'                      => 'required|numeric|digits_between:10,10',
-				'email'                      => 'required|email|unique:App\Models\User,email',
-				'contact_person_email'                   => 'required',
-				'contact_person_name'                      => 'required',
-				'contact_person_phone'                      => 'required',
-				'password'                   => 'required|min:6|max:25',
-				'image'                       => $request->image ? 'mimes:jpeg,jpg,png,gif|max:10000' : '',
+				'name' => 'required',
+				'mobile' => 'required|numeric|digits_between:10,10',
+				'email' => 'required|email|unique:users,email',
+				'contact_person_email' => 'required',
+				'contact_person_name' => 'required',
+				'contact_person_phone' => 'required',
+				'password' => 'required|min:6|max:25',
+				'image' => $request->image ? 'mimes:jpeg,jpg,png,gif|max:10000' : '',
 			]);
-
 			if ($validation->fails()) {
-			return prepareResult(false,$validation->errors()->first() ,$validation->errors(), 500);
+				return prepareResult(false,$validation->errors()->first() ,$validation->errors(), 500);
+			}  
 
-		}      
 			$user = new User;
 			$user->role_id = 2;
 			$user->uuid = Str::uuid();
@@ -110,31 +109,30 @@ class CafeController extends Controller
 			$updateCafeId = User::where('id',$user->id)->update(['cafe_id'=> $user->id]);
 
           //Create Store Setting
-			$CafeSetting = new CafeSetting();
-			$CafeSetting->cafe_id =  $user->id;
-			$CafeSetting->name  = $request->name;
-			$CafeSetting->description  = $request->description;
-			$CafeSetting->website     = $request->website;
-			$CafeSetting->address     = $request->address;
-			$CafeSetting->subscription_charge = $request->subscription_charge;
-			$CafeSetting->subscription_startDate = $request->subscription_startDate;
-			$CafeSetting->subscription_endDate = $request->subscription_endDate;
-			$CafeSetting->subscription_type = $request->subscription_type;
-			$CafeSetting->contact_person_email = $request->contact_person_email; 
-			$CafeSetting->contact_person_name = $request->contact_person_name;
-			$CafeSetting->contact_person_phone = $request->contact_person_phone;
+			$cafeSetting = new CafeSetting();
+			$cafeSetting->cafe_id =  $user->id;
+			$cafeSetting->name  = $request->name;
+			$cafeSetting->description  = $request->description;
+			$cafeSetting->website     = $request->website;
+			$cafeSetting->address     = $request->address;
+			$cafeSetting->subscription_charge = $request->subscription_charge;
+			$cafeSetting->subscription_startDate = $request->subscription_startDate;
+			$cafeSetting->subscription_endDate = $request->subscription_endDate;
+			$cafeSetting->subscription_type = $request->subscription_type;
+			$cafeSetting->contact_person_email = $request->contact_person_email; 
+			$cafeSetting->contact_person_name = $request->contact_person_name;
+			$cafeSetting->contact_person_phone = $request->contact_person_phone;
 			if ($request->hasFile('image')) {
 				$file = $request->file('image');
 				$filename = time().'.'.$file->getClientOriginalExtension();
 				if ($file->move('assets/user_photos', $filename)) {
-					$CafeSetting->logo = env('CDN_DOC_URL').'assets/user_photos/'.$filename.'';
+					$cafeSetting->logo = env('CDN_DOC_URL').'assets/user_photos/'.$filename.'';
 				}
 			}
-			$CafeSetting->save();
+			$cafeSetting->save();
 
            //----------------saving image--------------------------//
-			$user = User::find($user->id);
-			$user->image =  $CafeSetting->image;
+			$user->image =  $cafeSetting->logo;
 			$user->save();
 
         //    below Unit sometime does not work because someone deletes unit from admin
@@ -147,7 +145,6 @@ class CafeController extends Controller
 				$info->abbreiation = $unit['abbreiation'];
 				$info->minvalue = $unit['minvalue'];
 				$info->save();
-
 			}
 			DB::commit();
 			return prepareResult(true,'Your data has been saved successfully' , $user, 200);
@@ -195,40 +192,39 @@ class CafeController extends Controller
 			$user->subscription_status = $request->subscription_status;
 			$user->save();
 
-			$CafeSetting = CafeSetting::where('cafe_id', $user->id)->first();
-			$CafeSetting->cafe_id =  $user->id;
-			$CafeSetting->name  = $request->name;
-			$CafeSetting->description  = $request->description;
-			$CafeSetting->website     = $request->website;
-			$CafeSetting->address     = $request->address;
-			$CafeSetting->subscription_charge = $request->subscription_charge;
-			$CafeSetting->subscription_startDate = $request->subscription_startDate;
-			$CafeSetting->subscription_endDate = $request->subscription_endDate;
-			$CafeSetting->subscription_type = $request->subscription_type;
-			$CafeSetting->contact_person_email = $request->contact_person_email; 
-			$CafeSetting->contact_person_name = $request->contact_person_name;
-			$CafeSetting->contact_person_phone = $request->contact_person_phone;
+			$cafeSetting = CafeSetting::where('cafe_id', $user->id)->first();
+			$cafeSetting->cafe_id =  $user->id;
+			$cafeSetting->name  = $request->name;
+			$cafeSetting->description  = $request->description;
+			$cafeSetting->website     = $request->website;
+			$cafeSetting->address     = $request->address;
+			$cafeSetting->subscription_charge = $request->subscription_charge;
+			$cafeSetting->subscription_startDate = $request->subscription_startDate;
+			$cafeSetting->subscription_endDate = $request->subscription_endDate;
+			$cafeSetting->subscription_type = $request->subscription_type;
+			$cafeSetting->contact_person_email = $request->contact_person_email; 
+			$cafeSetting->contact_person_name = $request->contact_person_name;
+			$cafeSetting->contact_person_phone = $request->contact_person_phone;
 
 			if(!empty($request->image))
 			{
 				if(gettype($request->image) == "string"){
-					$CafeSetting->image = $request->image;
+					$cafeSetting->image = $request->image;
 				}
 				else{
 					if ($request->hasFile('image')) {
 						$file = $request->file('image');
 						$filename=time().'.'.$file->getClientOriginalExtension();
 						if ($file->move('assets/user_photos', $filename)) {
-							$CafeSetting->logo = env('CDN_DOC_URL').'assets/user_photos/'.$filename.'';
+							$cafeSetting->logo = env('CDN_DOC_URL').'assets/user_photos/'.$filename.'';
 						}
 					}
 				}
 			}
-			$CafeSetting->save();
+			$cafeSetting->save();
 
          //----------------saving image--------------------------//
-			$user = User::find($id);
-			$user->image =  $CafeSetting->image;
+			$user->image =  $cafeSetting->logo;
 			$user->save();
 
 
@@ -257,17 +253,17 @@ class CafeController extends Controller
 
 
           //Create Store Setting
-			$CafeSetting = new CafeSetting();
-			$CafeSetting->subscription_id =  $request->cafe_id;
-			$CafeSetting->subscription_charge = $request->subscription_charge;
-			$CafeSetting->subscription_startDate = $request->subscription_startDate;
-			$CafeSetting->subscription_endDate = $request->subscription_endDate;
-			$CafeSetting->subscription_type = $request->subscription_type;
-			$CafeSetting->save();
+			$cafeSetting = new CafeSetting();
+			$cafeSetting->subscription_id =  $request->cafe_id;
+			$cafeSetting->subscription_charge = $request->subscription_charge;
+			$cafeSetting->subscription_startDate = $request->subscription_startDate;
+			$cafeSetting->subscription_endDate = $request->subscription_endDate;
+			$cafeSetting->subscription_type = $request->subscription_type;
+			$cafeSetting->save();
 
 
 			DB::commit();
-			return prepareResult(true,'Your data has been saved successfully' , $CafeSetting, 200);
+			return prepareResult(true,'Your data has been saved successfully' , $cafeSetting, 200);
 
 		} catch (\Throwable $e) {
 			Log::error($e);
@@ -356,8 +352,8 @@ class CafeController extends Controller
 			}
 
 			$user = User::select('*')
-			// ->where('uuid', base64_decode($request->account_uuid))
-            ->where('uuid', $request->account_uuid)
+			->where('uuid', base64_decode($request->account_uuid))
+            // ->where('uuid', $request->account_uuid)
 			->withoutGlobalScope('cafe_id')
 			->first();
 			if (!$user)  {

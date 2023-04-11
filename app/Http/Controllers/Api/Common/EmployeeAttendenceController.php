@@ -190,8 +190,8 @@ class EmployeeAttendenceController extends Controller
 						return prepareResult(false,'Record not found' ,[], 500);
 					}
 					$attendenceList->date = $request->date;
-					$attendenceList->employee_id = $request->employee_id;
-					$attendenceList->attendence = $request->attendence;
+					$attendenceList->employee_id = $value['employee_id'];
+					$attendenceList->attendence = $value['attendence'];
 					$attendenceList->updated_by = auth()->id();
 					$attendenceList->save();
 					$attendence_ids[] = $attendenceList->id; 
