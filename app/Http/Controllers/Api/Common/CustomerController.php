@@ -99,7 +99,6 @@ class CustomerController extends Controller
 		]);
 		if ($validation->fails()) {
 			return prepareResult(false,$validation->errors()->first() ,$validation->errors(), 500);
-
 		} 
 		DB::beginTransaction();
 		try {

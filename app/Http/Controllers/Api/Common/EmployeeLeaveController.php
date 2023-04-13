@@ -58,8 +58,7 @@ class EmployeeLeaveController extends Controller
 			{
 				$query = $query->get();
 			}
-
-			return prepareResult(true,'Records Fatched Successfully' ,$query, 200);
+			return prepareResult(true,'Records Fatched Successfully' ,['leaves'=>$query], 200);
 		} catch (\Throwable $e) {
 			Log::error($e);
 			return prepareResult(false,'Oops! Something went wrong.' ,$e->getMessage(), 500);
